@@ -1,0 +1,892 @@
+{
+ "seed": 20261013,
+ "post2_seed": 20260929,
+ "source": "RAGTruth quality=='good', drawn from post 2's 600-case sample",
+ "overlap_with_post2_sample": {
+  "n": 120,
+  "of": 120
+ },
+ "post2_rebuild_check": {
+  "post2_file": "/Users/mity/Projects/jev/hallucination/results/judge_sample.jsonl",
+  "n_theirs": 600,
+  "n_rebuilt": 600,
+  "field_mismatches": 0
+ },
+ "response_ids_sha256_16": "f7d633b04fb50240",
+ "stats": {
+  "n": 120,
+  "n_hallucinated": 60,
+  "n_clean": 60,
+  "by_cell": {
+   "Summary/halluc": 20,
+   "Summary/clean": 20,
+   "QA/halluc": 20,
+   "QA/clean": 20,
+   "Data2txt/halluc": 20,
+   "Data2txt/clean": 20
+  },
+  "spans_per_hallucinated_answer": {
+   "1": 41,
+   "2": 9,
+   "3": 7,
+   "4": 3
+  },
+  "span_label_types": {
+   "Subtle Baseless Info": 17,
+   "Evident Baseless Info": 40,
+   "Evident Conflict": 34,
+   "Subtle Conflict": 1
+  },
+  "generating_models": {
+   "mistral-7B-instruct": 31,
+   "gpt-4-0613": 19,
+   "llama-2-13b-chat": 22,
+   "llama-2-7b-chat": 16,
+   "llama-2-70b-chat": 12,
+   "gpt-3.5-turbo-0613": 20
+  },
+  "response_chars_median": 755
+ },
+ "items": [
+  {
+   "response_id": "4904",
+   "post2_case_id": "summary_halluc_480",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "3728",
+   "post2_case_id": "summary_halluc_579",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "2286",
+   "post2_case_id": "summary_halluc_407",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "464",
+   "post2_case_id": "summary_halluc_071",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "5614",
+   "post2_case_id": "summary_halluc_166",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "3086",
+   "post2_case_id": "summary_halluc_273",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "3854",
+   "post2_case_id": "summary_halluc_508",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "1490",
+   "post2_case_id": "summary_halluc_422",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "3405",
+   "post2_case_id": "summary_halluc_275",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "503",
+   "post2_case_id": "summary_halluc_154",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "636",
+   "post2_case_id": "summary_halluc_420",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "4778",
+   "post2_case_id": "summary_halluc_119",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "1298",
+   "post2_case_id": "summary_halluc_286",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "75",
+   "post2_case_id": "summary_halluc_217",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "2716",
+   "post2_case_id": "summary_halluc_563",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "4768",
+   "post2_case_id": "summary_halluc_268",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "1360",
+   "post2_case_id": "summary_halluc_487",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "1167",
+   "post2_case_id": "summary_halluc_139",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "2661",
+   "post2_case_id": "summary_halluc_270",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "896",
+   "post2_case_id": "summary_halluc_576",
+   "task_type": "Summary",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "479",
+   "post2_case_id": "summary_clean_191",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "4775",
+   "post2_case_id": "summary_clean_335",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "1689",
+   "post2_case_id": "summary_clean_375",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "3007",
+   "post2_case_id": "summary_clean_520",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "5032",
+   "post2_case_id": "summary_clean_219",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "1825",
+   "post2_case_id": "summary_clean_356",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "2450",
+   "post2_case_id": "summary_clean_167",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "4348",
+   "post2_case_id": "summary_clean_346",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "4497",
+   "post2_case_id": "summary_clean_223",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "764",
+   "post2_case_id": "summary_clean_100",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "1961",
+   "post2_case_id": "summary_clean_194",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "1410",
+   "post2_case_id": "summary_clean_518",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "1837",
+   "post2_case_id": "summary_clean_416",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "5467",
+   "post2_case_id": "summary_clean_405",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "2768",
+   "post2_case_id": "summary_clean_522",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "2421",
+   "post2_case_id": "summary_clean_526",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "4854",
+   "post2_case_id": "summary_clean_570",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "5038",
+   "post2_case_id": "summary_clean_417",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "828",
+   "post2_case_id": "summary_clean_159",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "347",
+   "post2_case_id": "summary_clean_392",
+   "task_type": "Summary",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "14432",
+   "post2_case_id": "qa_halluc_443",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "14834",
+   "post2_case_id": "qa_halluc_220",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "17659",
+   "post2_case_id": "qa_halluc_588",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "16815",
+   "post2_case_id": "qa_halluc_550",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "14002",
+   "post2_case_id": "qa_halluc_338",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "17560",
+   "post2_case_id": "qa_halluc_030",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "17194",
+   "post2_case_id": "qa_halluc_592",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "15214",
+   "post2_case_id": "qa_halluc_383",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "16060",
+   "post2_case_id": "qa_halluc_573",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "15777",
+   "post2_case_id": "qa_halluc_074",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "15027",
+   "post2_case_id": "qa_halluc_431",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "15116",
+   "post2_case_id": "qa_halluc_051",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "13438",
+   "post2_case_id": "qa_halluc_129",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "13635",
+   "post2_case_id": "qa_halluc_015",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "11899",
+   "post2_case_id": "qa_halluc_517",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "12996",
+   "post2_case_id": "qa_halluc_215",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "16883",
+   "post2_case_id": "qa_halluc_090",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "13256",
+   "post2_case_id": "qa_halluc_521",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "12650",
+   "post2_case_id": "qa_halluc_206",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "16229",
+   "post2_case_id": "qa_halluc_284",
+   "task_type": "QA",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "16688",
+   "post2_case_id": "qa_clean_468",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "17480",
+   "post2_case_id": "qa_clean_250",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "12048",
+   "post2_case_id": "qa_clean_449",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "15355",
+   "post2_case_id": "qa_clean_258",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "16899",
+   "post2_case_id": "qa_clean_183",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "12286",
+   "post2_case_id": "qa_clean_540",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "15495",
+   "post2_case_id": "qa_clean_337",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "16026",
+   "post2_case_id": "qa_clean_466",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "13166",
+   "post2_case_id": "qa_clean_245",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "15933",
+   "post2_case_id": "qa_clean_360",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "11952",
+   "post2_case_id": "qa_clean_147",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "15184",
+   "post2_case_id": "qa_clean_271",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "17693",
+   "post2_case_id": "qa_clean_504",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "14851",
+   "post2_case_id": "qa_clean_044",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "13516",
+   "post2_case_id": "qa_clean_567",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "14604",
+   "post2_case_id": "qa_clean_301",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "13478",
+   "post2_case_id": "qa_clean_437",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "13650",
+   "post2_case_id": "qa_clean_073",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "11983",
+   "post2_case_id": "qa_clean_496",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "17041",
+   "post2_case_id": "qa_clean_018",
+   "task_type": "QA",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "7448",
+   "post2_case_id": "data2txt_halluc_185",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "10616",
+   "post2_case_id": "data2txt_halluc_464",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "6033",
+   "post2_case_id": "data2txt_halluc_297",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "9596",
+   "post2_case_id": "data2txt_halluc_099",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "10361",
+   "post2_case_id": "data2txt_halluc_173",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "5668",
+   "post2_case_id": "data2txt_halluc_262",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 4
+  },
+  {
+   "response_id": "11464",
+   "post2_case_id": "data2txt_halluc_442",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 4
+  },
+  {
+   "response_id": "7609",
+   "post2_case_id": "data2txt_halluc_122",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "7310",
+   "post2_case_id": "data2txt_halluc_412",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "9602",
+   "post2_case_id": "data2txt_halluc_036",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "11360",
+   "post2_case_id": "data2txt_halluc_452",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "7820",
+   "post2_case_id": "data2txt_halluc_126",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "6541",
+   "post2_case_id": "data2txt_halluc_201",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "6850",
+   "post2_case_id": "data2txt_halluc_402",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 4
+  },
+  {
+   "response_id": "9757",
+   "post2_case_id": "data2txt_halluc_198",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "8655",
+   "post2_case_id": "data2txt_halluc_295",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 2
+  },
+  {
+   "response_id": "10745",
+   "post2_case_id": "data2txt_halluc_150",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "9340",
+   "post2_case_id": "data2txt_halluc_141",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 3
+  },
+  {
+   "response_id": "7769",
+   "post2_case_id": "data2txt_halluc_454",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "9238",
+   "post2_case_id": "data2txt_halluc_560",
+   "task_type": "Data2txt",
+   "hallucinated": true,
+   "n_spans": 1
+  },
+  {
+   "response_id": "8244",
+   "post2_case_id": "data2txt_clean_597",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "8670",
+   "post2_case_id": "data2txt_clean_569",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "8958",
+   "post2_case_id": "data2txt_clean_192",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "9038",
+   "post2_case_id": "data2txt_clean_432",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "10154",
+   "post2_case_id": "data2txt_clean_026",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "9199",
+   "post2_case_id": "data2txt_clean_007",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "7590",
+   "post2_case_id": "data2txt_clean_349",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "11556",
+   "post2_case_id": "data2txt_clean_408",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "8533",
+   "post2_case_id": "data2txt_clean_572",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "7662",
+   "post2_case_id": "data2txt_clean_240",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "9739",
+   "post2_case_id": "data2txt_clean_281",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "10530",
+   "post2_case_id": "data2txt_clean_241",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "8208",
+   "post2_case_id": "data2txt_clean_110",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "9283",
+   "post2_case_id": "data2txt_clean_564",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "7075",
+   "post2_case_id": "data2txt_clean_032",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "9980",
+   "post2_case_id": "data2txt_clean_171",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "11059",
+   "post2_case_id": "data2txt_clean_542",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "8873",
+   "post2_case_id": "data2txt_clean_587",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "6724",
+   "post2_case_id": "data2txt_clean_034",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  },
+  {
+   "response_id": "6571",
+   "post2_case_id": "data2txt_clean_568",
+   "task_type": "Data2txt",
+   "hallucinated": false,
+   "n_spans": 0
+  }
+ ]
+}
