@@ -1,4 +1,4 @@
-# eval-stack-breaks
+# eval-stack
 
 Code for the public test series **"What breaks your eval stack"**. Each post asks one question about LLM-as-judge
 setups and ships everything needed to re-run it.
