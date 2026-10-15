@@ -315,7 +315,8 @@ def write_md(m: dict, checks: dict, figs: list[Path], items: dict, path: Path, p
     L += ["", "## Refusals, parse errors and API errors", ""]
     L += [f"- `{k}`: {v}" for k, v in m["invalid"].items()] or ["- none"]
     L += ["", "## Harness checks", "", "```json", json.dumps(checks, indent=1), "```", "", "## Figures", ""]
-    L += [f"- `{p.relative_to(ROOT)}`" for p in figs]
+    L += [f"![{p.stem}]({p.relative_to(path.parent)})" if p.is_relative_to(path.parent) else f"- `{p.relative_to(ROOT)}`"
+          for p in figs]
     L += ["", "## Limitations", ""] + [f"- {x}" for x in LIMITATIONS] + [""]
     path.write_text("\n".join(L))
 
