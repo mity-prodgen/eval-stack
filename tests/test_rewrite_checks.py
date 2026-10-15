@@ -36,3 +36,11 @@ def test_clean_item_without_spans_passes_on_style_change():
 def test_empty_rewrite_fails():
     ok, info = check({"response": "x", "labels": []}, "  ")
     assert not ok and "empty" in info["reasons"]
+
+
+def test_billing_and_auth_errors_are_fatal_not_drops():
+    from rewrite import is_fatal
+    assert is_fatal("RateLimitError: Error code: 429 - {'error': {'type': 'insufficient_quota', 'code': 'credit_balance_exhausted'}}")
+    assert is_fatal("AuthenticationError: Error code: 401")
+    assert not is_fatal("APITimeoutError: Request timed out.")
+    assert not is_fatal("RateLimitError: Error code: 429 - {'error': {'type': 'requests', 'code': 'rate_limit_exceeded'}}")

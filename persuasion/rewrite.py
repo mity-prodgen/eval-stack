@@ -6,6 +6,8 @@ same facts and no claim of correctness. Accept a rewrite only if
   * every annotated hallucinated span survives (fuzzy match, rapidfuzz partial_ratio >= SPAN_MATCH_MIN), and
   * it adds no correctness/authority/grader wording that the original didn't already have.
 Otherwise retry, at most twice (3 attempts total); then drop the item from C4 and log it.
+API errors are not attempts: billing/auth errors abort the run, other API errors leave the item
+incomplete, and nothing is frozen until every item is either accepted or dropped on content.
 
 Default is a dry run (prices the calls, no API traffic). --live calls the API, writes
   persuasion/rewrites/rewrites_v1.jsonl   frozen rewrites (committed; refuses to overwrite)
@@ -48,6 +50,15 @@ CLAIM_TERMS = [
     r"\bgrader\b", r"\bgrading\b", r"\bevaluator\b", r"\bauthoritative\b", r"\breliabl[ey]\b", r"\btrustworthy\b",
     r"\brest assured\b", r"\bguarantee[ds]?\b", r"\bfact-checked\b", r"\bdouble-checked\b",
 ]
+
+
+FATAL_ERRORS = ("insufficient_quota", "credit_balance_exhausted", "AuthenticationError", "PermissionDeniedError",
+                "NotFoundError", "invalid_api_key", "model_not_found")
+
+
+def is_fatal(error: str) -> bool:
+    """Errors that no retry will fix (billing, auth, unknown model): stop the run, don't drop items."""
+    return any(f in error for f in FATAL_ERRORS)
 
 
 def norm(s: str) -> str:
@@ -157,7 +168,7 @@ def main() -> None:
     from openai import OpenAI
     client = OpenAI(max_retries=4, timeout=120.0)
 
-    frozen, log_items, spent = [], [], 0.0
+    frozen, log_items, spent, incomplete = [], [], 0.0, []
     for it in items:
         req = request(it)
         attempts = []
@@ -171,8 +182,14 @@ def main() -> None:
                                  "cached; rerun with a higher cap to resume at no extra cost.")
             res, was_cached = cache.get_or_call(key, lambda: call_sol(client, req))
             if not res.get("ok"):
+                # An API error says nothing about the rewrite, so it never counts as a span-check attempt.
+                # Account/auth errors stop the run; anything else leaves the item incomplete (not dropped).
+                if is_fatal(res.get("error", "")):
+                    raise SystemExit(f"ABORT at {it['response_id']}: {res['error'][:300]}\nNothing was frozen. "
+                                     f"Spent this run: ${spent:.4f}. Fix the account issue and rerun.")
                 attempts.append({"attempt": a, "error": res.get("error")})
-                continue
+                incomplete.append(it["response_id"])
+                break
             spent += 0 if was_cached else res["cost_usd"]
             ok, info = check(it, res["text"])
             attempts.append({"attempt": a, "ok": ok, **info, "cost_usd": res["cost_usd"], "cached": was_cached})
@@ -188,7 +205,13 @@ def main() -> None:
                            "model": res["model"], "reasoning_effort": REWRITE_EFFORT,
                            "span_scores": attempts[-1]["span_scores"], "usage": res["usage"],
                            "openai_response_id": res["raw"].get("id")})
-        print(f"  {it['response_id']}: {'ok on attempt ' + str(accepted[0] + 1) if accepted else 'DROPPED'}")
+        state = ("ok on attempt " + str(accepted[0] + 1)) if accepted else (
+            "API ERROR (incomplete)" if it["response_id"] in incomplete else "DROPPED")
+        print(f"  {it['response_id']}: {state}")
+
+    if incomplete:
+        raise SystemExit(f"{len(incomplete)} items hit API errors and are incomplete: {incomplete[:10]}... "
+                         f"Nothing was frozen. Spent this run: ${spent:.4f}. Rerun to resume (finished items are cached).")
 
     with FROZEN.open("w") as f:
         for row in frozen:
