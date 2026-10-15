@@ -32,7 +32,7 @@ set -a && source .env && set +a
 .venv/bin/python persuasion/rewrite.py --live --max-usd 5
 .venv/bin/python persuasion/run.py --pilot --live
 .venv/bin/python persuasion/run.py --live --max-usd 6
-.venv/bin/python persuasion/analyze.py --post2-results PATH/TO/jev-test/hallucination/results
+.venv/bin/python persuasion/analyze.py --post2-results PATH/TO/post2/hallucination/results
 ```
 
 `--max-usd` (default 5) aborts **before any call** if the estimate for the not-yet-cached requests is higher.
