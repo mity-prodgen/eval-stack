@@ -26,7 +26,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Iterable
 
-from common import (ARMS, CONDITION_LABELS, CONDITIONS, JUDGE_MODELS, JUDGES, PASS_THRESHOLD, RESULTS, RESULTS_MD,
+from common import (ARMS, CLAUDE_JUDGES, CONDITION_LABELS, CONDITIONS, JUDGE_MODELS, JUDGES, PASS_THRESHOLD, RESULTS, RESULTS_MD,
                     ROOT, SEED)
 from jev_harness.metrics import bootstrap_ci
 
@@ -42,7 +42,7 @@ def verdict_table(rows: Iterable[dict]) -> dict[tuple, dict]:
     keys = {(j, i, c) for (j, _, _, i, c) in by}
     for j, i, c in keys:
         for arm in ARMS:
-            if arm == "P0G" and j in ("haiku", "sonnet"):
+            if arm == "P0G" and j in CLAUDE_JUDGES:
                 jr, gr = by.get((j, "P0", "judge", i, c)), by.get((j, "guard", "guard", i, c))
                 if jr is None and gr is None:
                     continue
@@ -124,7 +124,7 @@ def cost_per_1000(rows: list[dict], n_judgments: dict[str, int]) -> dict:
 def harness_checks(rows, vt, post2_dir: Path | None, items: dict[str, dict]) -> dict:
     checks: dict = {}
     # Claude confidence 0 -> p exactly 0.5 -> counts as pass whatever the verdict said
-    checks["claude_p_exactly_0.5"] = sum(1 for r in rows if r["judge"] in ("haiku", "sonnet")
+    checks["claude_p_exactly_0.5"] = sum(1 for r in rows if r["judge"] in CLAUDE_JUDGES
                                          and r["status"] == VALID and (r.get("p_pass") == 0.5 or r.get("p_guard") == 0.5))
     # does adding the guard question change the judge answer? (Jev/Luna: P0 alone vs P0 inside P0G)
     for j in ("jev", "luna"):
@@ -258,9 +258,13 @@ LIMITATIONS = [
     "shrink further to wrong answers each judge already fails in C0.",
     "RAGTruth labels define 'wrong'. Annotator misses mean some 'correct' answers contain errors, which inflates "
     "the control false-fail rate for every judge alike.",
-    "Sonnet 5.5 rejects temperature, so it runs at default sampling (thinking 'between_tools'); its verdicts are "
-    "not deterministic. Haiku 4.5 runs at temperature 0, while post 2 ran it at the default, so the anchor "
-    "comparison mixes a sampling change with any model drift.",
+    "Sonnet 5.5 and Haiku 5.5 reject temperature, so they run at default sampling with up-front thinking off "
+    "(Sonnet 'between_tools', Haiku 5.5 'disabled'); their verdicts are not deterministic. Haiku 4.5 runs at "
+    "temperature 0, while post 2 ran it at the default, so the anchor comparison mixes a sampling change with "
+    "any model drift.",
+    "Haiku 4.5 (post-2 anchor) and Haiku 5.5 differ in more than generation: tokenizer, sampling, and default "
+    "thinking (turned off here). A difference between them is a difference between these two configured "
+    "judges, not a pure model-version effect.",
     "Claude P(pass) is derived from a verdict plus a 0-100 self-reported confidence (0.5 +/- c/2), not from "
     "token probabilities; Jev and Luna return probabilities. Score shifts are not comparable in scale across "
     "these two groups, only within a judge.",

@@ -28,6 +28,10 @@ class ModelPrice:
     source: str = ""
     checked: str = CHECKED
     notes: str = ""
+    # Prompt-length pricing (Haiku 5.5): a request whose whole prompt (incl. cache reads/writes) exceeds
+    # this many tokens pays the `long` rates instead. None = flat pricing.
+    long_context_over: int | None = None
+    long: "ModelPrice | None" = None
 
 
 MODELS: dict[str, ModelPrice] = {
@@ -80,6 +84,23 @@ MODELS: dict[str, ModelPrice] = {
         "(post 2 logged model claude-haiku-4-5-20251001). Min cacheable prompt 4,096 tokens, so caching "
         "never triggers for these short prompts.",
     ),
+    "claude-haiku-5-5": ModelPrice(
+        model_id="claude-haiku-5-5",
+        display="Claude Haiku 5.5",
+        input=0.10,
+        output=0.50,
+        cache_write_5m=0.125,
+        cache_read=0.01,
+        batch_discount=0.5,
+        min_cacheable_tokens=512,
+        source="https://platform.claude.com/docs/en/models/haiku-5-5/overview",
+        notes="Released 2026-10-07; dateless ID is a pinned snapshot. Prices shown are for prompts <= 100,000 "
+        "tokens (ours are ~1-3k). Sampling parameters return 400 - omit temperature. Adaptive thinking is on by "
+        "default; thinking {'type': 'disabled'} is accepted at high effort or below (default effort medium). "
+        "Newer tokenizer: ~30% more tokens than Haiku 4.5 for the same text.",
+        long_context_over=100_000,
+        long=None,  # filled below
+    ),
     "claude-sonnet-5-5": ModelPrice(
         model_id="claude-sonnet-5-5",
         display="Claude Sonnet 5.5",
@@ -95,6 +116,12 @@ MODELS: dict[str, ModelPrice] = {
         "{'type': 'between_tools'} (no up-front thinking; tool-free requests return text only).",
     ),
 }
+
+
+object.__setattr__(MODELS["claude-haiku-5-5"], "long", ModelPrice(
+    model_id="claude-haiku-5-5", display="Claude Haiku 5.5 (prompt > 100k tokens)", input=0.50, output=2.50,
+    cache_write_5m=0.625, cache_read=0.05, batch_discount=0.5,
+    source="https://platform.claude.com/docs/en/about-claude/pricing"))
 
 
 def price(model: str) -> ModelPrice:
@@ -119,6 +146,8 @@ def usage_cost(
     per Anthropic's pricing page.
     """
     p = price(model)
+    if p.long_context_over and input_tokens + cache_write_tokens + cache_read_tokens > p.long_context_over:
+        p = p.long
     m = p.batch_discount if batch else 1.0
     total = input_tokens * p.input + output_tokens * p.output
     if cache_write_tokens:

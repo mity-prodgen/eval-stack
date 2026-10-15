@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from time import monotonic
 from typing import Any, Callable
 
-from common import (CLAUDE_MAX_TOKENS, HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, SONNET_MODEL, claude_system,
+from common import (CLAUDE_MAX_TOKENS, CLAUDE_SETTINGS, JEV_MODEL, LUNA_MODEL, claude_system,
                     jev_questions, jev_state, judge_user_text, luna_questions, p_from_verdict, passage_text)
 from jev_harness.cache import DiskCache, cache_key
 from jev_harness.llm_judge import _parse_judgment as parse_post2_judgment
@@ -190,20 +190,23 @@ def run_luna(calls: list[Call], cache: DiskCache, max_workers: int = 8, client: 
 # Claude (Haiku 4.5, Sonnet 5.5) - sync or Message Batches
 # =====================================================================================
 def build_claude(call: Call) -> Call:
-    """Haiku: post-2 request shape (single user string) + temperature 0.
-    Sonnet 5.5: temperature can't be set (400), thinking 'between_tools' (lowest; no up-front thinking),
-    and the source passage is its own cache_control block so repeated passages can hit the prompt cache."""
+    """Haiku 4.5: post-2 request shape (single user string) + temperature 0.
+    Haiku 5.5 / Sonnet 5.5: no temperature (400), up-front thinking off (see CLAUDE_SETTINGS), and the
+    source passage is its own cache_control block so repeated passages can hit the prompt cache."""
+    settings = CLAUDE_SETTINGS[call.model]
     system = claude_system("guard" if call.kind == "guard" else call.arm)
     params: dict[str, Any] = {"model": call.model, "max_tokens": CLAUDE_MAX_TOKENS, "system": system}
-    if call.model == SONNET_MODEL:
-        params["thinking"] = {"type": "between_tools"}
+    if "thinking" in settings:
+        params["thinking"] = settings["thinking"]
+    if "temperature" in settings:
+        params["temperature"] = settings["temperature"]
+    if settings.get("cache_passage"):
         params["messages"] = [{"role": "user", "content": [
             {"type": "text", "text": f"SOURCE PASSAGE:\n{passage_text(call.passage)}\n\n",
              "cache_control": {"type": "ephemeral"}},
             {"type": "text", "text": f"RESPONSE:\n{call.response}"},
         ]}]
     else:
-        params["temperature"] = 0
         params["messages"] = [{"role": "user", "content": judge_user_text(call.passage, call.response)}]
     call.payload = params
     call.key = cache_key("claude", params)
@@ -221,13 +224,13 @@ def parse_guard_json(text: str) -> float:
     return p_from_verdict(bool(d["guard"]), float(d["confidence"]) / 100.0)
 
 
-def parse_claude(raw: dict[str, Any], kind: str, batch: bool) -> dict[str, Any]:
+def parse_claude(raw: dict[str, Any], kind: str, batch: bool, requested_model: str) -> dict[str, Any]:
+    """requested_model prices the call: the model we pinned, not a guess from the response's model string."""
     model = raw.get("model")
     u = raw.get("usage") or {}
     usage = _usage(input_=u.get("input_tokens"), output=u.get("output_tokens"),
                    cache_write=u.get("cache_creation_input_tokens"), cache_read=u.get("cache_read_input_tokens"))
-    priced_model = HAIKU_MODEL if (model or "").startswith("claude-haiku-4-5") else SONNET_MODEL
-    cost = usage_cost(priced_model, usage["input"], usage["output"], usage["cache_write"], usage["cache_read"], batch=batch)
+    cost = usage_cost(requested_model, usage["input"], usage["output"], usage["cache_write"], usage["cache_read"], batch=batch)
     common = {"usage": usage, "cost": cost, "raw": raw, "model": model, "batch": batch}
     if raw.get("stop_reason") == "refusal":
         return _result("refusal", error=f"stop_reason=refusal {raw.get('stop_details')}", **common)
@@ -266,7 +269,7 @@ def run_claude_sync(calls: list[Call], cache: DiskCache, max_workers: int = 4, c
                 msg = client.messages.create(**_sync_kwargs(call.payload))
             except Exception as e:  # noqa: BLE001
                 return _result("api_error", error=f"{type(e).__name__}: {e}", latency_ms=(monotonic() - start) * 1000)
-            out = parse_claude(msg.to_dict(), call.kind, batch=False)
+            out = parse_claude(msg.to_dict(), call.kind, batch=False, requested_model=call.model)
             out["latency_ms"] = (monotonic() - start) * 1000
             return out
         res, cached = cache.get_or_call(call.key, do)
@@ -305,7 +308,8 @@ def run_claude_batch(calls: list[Call], cache: DiskCache, batch_dir, poll_s: flo
     if todo:
         batch = client.messages.batches.create(
             requests=[{"custom_id": c.key, "params": c.payload} for c in todo])
-        meta = {"id": batch.id, "keys": [c.key for c in todo], "created": time.time(), "collected": False}
+        meta = {"id": batch.id, "keys": [c.key for c in todo], "created": time.time(), "collected": False,
+                "requests": {c.key: {"model": c.model, "kind": c.kind} for c in todo}}
         f = batch_dir / f"{batch.id}.json"
         f.write_text(json.dumps(meta))
         log(f"submitted batch {batch.id} with {len(todo)} requests")
@@ -322,10 +326,10 @@ def _collect(client, meta, meta_file, by_key, cache, out, poll_s, log) -> None:
         time.sleep(poll_s)
     for entry in client.messages.batches.results(meta["id"]):
         key = entry.custom_id
-        call = by_key.get(key)
+        req = meta["requests"][key]  # recorded at submit time, so a resumed batch prices and parses correctly
         r = entry.result
         if r.type == "succeeded":
-            res = parse_claude(r.message.to_dict(), call.kind if call else "judge", batch=True)
+            res = parse_claude(r.message.to_dict(), req["kind"], batch=True, requested_model=req["model"])
             cache.set(key, res)  # ok / refusal / parse_error are all deterministic outcomes worth keeping
             out[key] = {**res, "cached": False}
         else:  # errored / canceled / expired: not cached, retried next run
@@ -335,4 +339,5 @@ def _collect(client, meta, meta_file, by_key, cache, out, poll_s, log) -> None:
     meta_file.write_text(json.dumps(meta))
 
 
-BUILDERS = {"jev": build_jev, "luna": build_luna, "haiku": build_claude, "sonnet": build_claude}
+BUILDERS = {"jev": build_jev, "luna": build_luna, "haiku": build_claude, "haiku55": build_claude,
+            "sonnet": build_claude}

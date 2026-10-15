@@ -22,7 +22,7 @@ def test_estimates_are_positive_and_batch_halves_claude():
         c = BUILDERS[j](Call(j, m, "P0", "judge", "i", "C0", "passage " * 300, "answer " * 50))
         e = estimate_call(c, batch=False)
         assert e.usd > 0 and e.input > 0
-        if j in ("haiku", "sonnet"):
+        if j in run.CLAUDE_JUDGES:
             assert estimate_call(c, batch=True).usd == pytest.approx(e.usd / 2)
 
 
@@ -30,11 +30,12 @@ def test_plan_counts():
     items = [{"response_id": f"r{i}", "source_passage": "p", "response": "a", "hallucinated": i % 2 == 0,
               "task_type": "QA"} for i in range(4)]
     calls, _ = run.plan(items, list(run.JUDGES), list(run.ARMS), ["C0", "C1"], {}, c4_proxy=False)
-    # 4 items x 2 conditions x 4 judges x 3 requests
-    assert len(calls) == 4 * 2 * 4 * 3
+    # 4 items x 2 conditions x 5 judges x 3 requests
+    assert len(calls) == 4 * 2 * 5 * 3
     kinds = {(c.judge, c.arm, c.kind) for c in calls}
     assert ("haiku", "guard", "guard") in kinds and ("haiku", "P0G", "judge") not in kinds
     assert ("jev", "P0G", "judge") in kinds
+    assert ("haiku55", "guard", "guard") in kinds
 
 
 def test_c4_skipped_live_without_rewrites_and_proxied_in_dry_run():

@@ -8,13 +8,14 @@ Token counts use tiktoken as a proxy, scaled by factors measured on post 2's rea
     Haiku output tokens: 16 on every call                                     -> 20
 
 Sonnet 5.5 uses Anthropic's newer tokenizer; the models overview gives ~750k words per 1M tokens
-before it and ~555k after, a ratio of 1.35, so Sonnet = 1.18 x 1.35 = 1.59. OpenAI models are
+before it and ~555k after, a ratio of 1.35, so Sonnet 5.5 and Haiku 5.5 (same tokenizer; Anthropic says ~30% more than
+Haiku 4.5) = 1.18 x 1.35 = 1.59. OpenAI models are
 estimated with o200k_base and a 1.2 safety factor (no measured calibration yet - the pilot will
 give one). Every choice errs toward over-estimating, because the estimate gates --max-usd:
 
   * Luna: input is assumed billed once per question (unknown for /v1/decisions), so P0+G
     requests are priced at 2x input.
-  * Sonnet: every request whose cacheable prefix (system + passage) clears the 512-token minimum
+  * Sonnet / Haiku 5.5: every request whose cacheable prefix (system + passage) clears the 512-token minimum
     is priced as a cache *write* (1.25x); no cache hits are assumed.
   * gpt-6.1-sol: 1,500 reasoning tokens per call at effort=low (undocumented), and the
     worst case of 3 attempts for every item.
@@ -27,13 +28,14 @@ from dataclasses import dataclass
 
 import tiktoken
 
-from common import HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, REWRITE_MODEL, SONNET_MODEL, passage_text
+from common import HAIKU55_MODEL, HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, REWRITE_MODEL, SONNET_MODEL, passage_text
 from jev_harness.prices import price
 
 _CL100K = tiktoken.get_encoding("cl100k_base")
 _O200K = tiktoken.get_encoding("o200k_base")
 
-FACTOR = {JEV_MODEL: 1.54, HAIKU_MODEL: 1.18, SONNET_MODEL: 1.18 * 1.35, LUNA_MODEL: 1.2, REWRITE_MODEL: 1.2}
+FACTOR = {JEV_MODEL: 1.54, HAIKU_MODEL: 1.18, SONNET_MODEL: 1.18 * 1.35, HAIKU55_MODEL: 1.18 * 1.35,
+          LUNA_MODEL: 1.2, REWRITE_MODEL: 1.2}
 CLAUDE_OUT_TOKENS = 20
 SOL_REASONING_TOKENS = 1500
 SOL_OUTPUT_FACTOR = 1.3  # rewrite length vs original

@@ -33,13 +33,26 @@ TASK_TYPES = ("Summary", "QA", "Data2txt")
 # --- Models (IDs verified in jev_harness/prices.py, with sources) ---
 JEV_MODEL = "jev-1.13.0"
 LUNA_MODEL = "gpt-6-luna"
-HAIKU_MODEL = "claude-haiku-4-5-20251001"
+HAIKU_MODEL = "claude-haiku-4-5-20251001"   # post-2 anchor
+HAIKU55_MODEL = "claude-haiku-5-5"
 SONNET_MODEL = "claude-sonnet-5-5"
 REWRITE_MODEL = "gpt-6.1-sol"
 REWRITE_EFFORT = "low"
 
-JUDGES = ("jev", "luna", "haiku", "sonnet")
-JUDGE_MODELS = {"jev": JEV_MODEL, "luna": LUNA_MODEL, "haiku": HAIKU_MODEL, "sonnet": SONNET_MODEL}
+JUDGES = ("jev", "luna", "haiku", "haiku55", "sonnet")
+CLAUDE_JUDGES = ("haiku", "haiku55", "sonnet")
+JUDGE_MODELS = {"jev": JEV_MODEL, "luna": LUNA_MODEL, "haiku": HAIKU_MODEL, "haiku55": HAIKU55_MODEL,
+                "sonnet": SONNET_MODEL}
+
+# Per-model Claude request settings. Haiku 4.5 is the only Claude judge that accepts temperature 0.
+# The 5.5 models reject sampling parameters, so they run at default sampling with up-front thinking off:
+# Sonnet 5.5 rejects "disabled" and its lowest setting is "between_tools"; Haiku 5.5 accepts "disabled"
+# (at effort high or below; the default is medium). Their passage block is cache_control'd (512-token minimum).
+CLAUDE_SETTINGS: dict[str, dict] = {
+    HAIKU_MODEL: {"temperature": 0},
+    HAIKU55_MODEL: {"thinking": {"type": "disabled"}, "cache_passage": True},
+    SONNET_MODEL: {"thinking": {"type": "between_tools"}, "cache_passage": True},
+}
 ARMS = ("P0", "P1", "P0G")
 CONDITIONS = ("C0", "C1", "C2", "C3", "C4")
 PASS_THRESHOLD = 0.5

@@ -27,7 +27,7 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
-from common import (ARMS, CACHE, CONDITIONS, JUDGE_MODELS, JUDGES, RESULTS, SEED, TASK_TYPES, apply_condition)
+from common import (ARMS, CACHE, CLAUDE_JUDGES, CONDITIONS, JUDGE_MODELS, JUDGES, RESULTS, SEED, TASK_TYPES, apply_condition)
 from estimate import Est, check_budget, estimate_call, print_table
 from judges import (BUILDERS, Call, run_claude_batch, run_claude_sync, run_jev, run_luna)
 from jev_harness.cache import DiskCache
@@ -79,7 +79,7 @@ def plan(items, judges, arms, conditions, rewrites, c4_proxy: bool) -> tuple[lis
                 model = JUDGE_MODELS[j]
                 kinds = []
                 for arm in arms:
-                    if j in ("haiku", "sonnet") and arm == "P0G":
+                    if j in CLAUDE_JUDGES and arm == "P0G":
                         kinds.append(("guard", "guard"))
                         if "P0" not in arms:
                             kinds.append(("P0", "judge"))

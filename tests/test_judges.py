@@ -5,7 +5,7 @@ import json
 import httpx2 as httpx
 import pytest
 
-from common import HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, SONNET_MODEL
+from common import HAIKU55_MODEL, HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, SONNET_MODEL
 from jev_harness.cache import DiskCache
 from judges import (Call, build_claude, build_jev, build_luna, parse_claude, parse_jev, parse_luna,
                     run_claude_batch, run_claude_sync, run_luna)
@@ -43,6 +43,13 @@ def test_sonnet_request_has_no_temperature_and_caches_passage_block():
     assert blocks[0]["text"] + blocks[1]["text"] == judge_user_text(PASSAGE, "It opens at 9.")
 
 
+def test_haiku55_request_has_no_temperature_thinking_disabled_and_cached_passage():
+    p = build_claude(call("haiku55", HAIKU55_MODEL)).payload
+    assert p["model"] == "claude-haiku-5-5" and "temperature" not in p
+    assert p["thinking"] == {"type": "disabled"}
+    assert p["messages"][0]["content"][0]["cache_control"] == {"type": "ephemeral"}
+
+
 def test_claude_guard_uses_guard_system_prompt():
     from common import CLAUDE_GUARD_SYSTEM
     assert build_claude(call("haiku", HAIKU_MODEL, "guard", "guard")).payload["system"] == CLAUDE_GUARD_SYSTEM
@@ -71,24 +78,38 @@ def test_parse_luna_refusal_and_partial_refusal():
 
 def test_parse_claude_judgment_refusal_and_garbage():
     base = {"model": HAIKU_MODEL, "usage": {"input_tokens": 500, "output_tokens": 16}, "stop_reason": "end_turn"}
-    ok = parse_claude({**base, "content": [{"type": "text", "text": '{"hallucinated": true, "confidence": 80}'}]}, "judge", batch=False)
+    ok = parse_claude({**base, "content": [{"type": "text", "text": '{"hallucinated": true, "confidence": 80}'}]}, "judge", batch=False, requested_model=HAIKU_MODEL)
     assert ok["status"] == "ok" and ok["p_pass"] == pytest.approx(0.1)
     assert ok["cost_usd"] == pytest.approx((500 * 1 + 16 * 5) / 1e6)
-    batch = parse_claude({**base, "content": [{"type": "text", "text": '{"hallucinated": false, "confidence": 100}'}]}, "judge", batch=True)
+    batch = parse_claude({**base, "content": [{"type": "text", "text": '{"hallucinated": false, "confidence": 100}'}]}, "judge", batch=True, requested_model=HAIKU_MODEL)
     assert batch["p_pass"] == 1.0 and batch["cost_usd"] == pytest.approx(ok["cost_usd"] / 2)
-    ref = parse_claude({**base, "stop_reason": "refusal", "content": []}, "judge", batch=False)
+    ref = parse_claude({**base, "stop_reason": "refusal", "content": []}, "judge", batch=False, requested_model=HAIKU_MODEL)
     assert ref["status"] == "refusal"
-    bad = parse_claude({**base, "content": [{"type": "text", "text": "The response is fine."}]}, "judge", batch=False)
+    bad = parse_claude({**base, "content": [{"type": "text", "text": "The response is fine."}]}, "judge", batch=False, requested_model=HAIKU_MODEL)
     assert bad["status"] == "parse_error" and bad["ok"] is True  # cached and counted, not retried forever
-    g = parse_claude({**base, "content": [{"type": "text", "text": '{"guard": true, "confidence": 90}'}]}, "guard", batch=False)
+    g = parse_claude({**base, "content": [{"type": "text", "text": '{"guard": true, "confidence": 90}'}]}, "guard", batch=False, requested_model=HAIKU_MODEL)
     assert g["p_guard"] == pytest.approx(0.95) and g["p_pass"] is None
+
+
+def test_cost_uses_requested_model_not_response_model_string():
+    raw = {"model": "claude-haiku-5-5", "stop_reason": "end_turn",
+           "content": [{"type": "text", "text": '{"hallucinated": false, "confidence": 50}'}],
+           "usage": {"input_tokens": 1000, "output_tokens": 16}}
+    r = parse_claude(raw, "judge", batch=False, requested_model=HAIKU55_MODEL)
+    assert r["cost_usd"] == pytest.approx((1000 * 0.10 + 16 * 0.50) / 1e6)
+
+
+def test_haiku55_long_prompt_tier():
+    from jev_harness.prices import usage_cost
+    assert usage_cost(HAIKU55_MODEL, 100_000) == pytest.approx(0.01)
+    assert usage_cost(HAIKU55_MODEL, 100_001) == pytest.approx(100_001 * 0.50 / 1e6)
 
 
 def test_sonnet_cost_counts_cache_write_and_read():
     raw = {"model": SONNET_MODEL, "stop_reason": "end_turn",
            "content": [{"type": "text", "text": '{"hallucinated": false, "confidence": 50}'}],
            "usage": {"input_tokens": 100, "output_tokens": 16, "cache_creation_input_tokens": 1000, "cache_read_input_tokens": 0}}
-    r = parse_claude(raw, "judge", batch=True)
+    r = parse_claude(raw, "judge", batch=True, requested_model=SONNET_MODEL)
     assert r["cost_usd"] == pytest.approx((100 * 2 + 16 * 10 + 1000 * 2.5) * 0.5 / 1e6)
 
 
@@ -168,3 +189,4 @@ def test_claude_batch_round_trip_and_resume_file(tmp_path):
     assert cache.get(calls[0].key) is not None and cache.get(calls[1].key) is None  # errors are retried next run
     meta = json.loads((tmp_path / "batches" / "msgbatch_1.json").read_text())
     assert meta["collected"] is True
+    assert meta["requests"][calls[0].key] == {"model": SONNET_MODEL, "kind": "judge"}

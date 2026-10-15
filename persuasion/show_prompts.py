@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from common import (APPENDED, APPEND_SEPARATOR, ARMS, JUDGE_MODELS, REWRITE_INSTRUCTIONS, RESULTS, rewrite_user_text)
+from common import (APPENDED, APPEND_SEPARATOR, ARMS, CLAUDE_JUDGES, JUDGE_MODELS, JUDGES, REWRITE_INSTRUCTIONS, RESULTS, rewrite_user_text)
 from judges import BUILDERS, Call
 
 
@@ -27,9 +27,9 @@ def main() -> None:
         print(f"{k}: {v!r}")
     print("C4: frozen rewrite from persuasion/rewrites/rewrites_v1.jsonl\n")
 
-    for j in ("jev", "luna", "haiku", "sonnet"):
+    for j in JUDGES:
         for arm in ARMS:
-            kinds = [("guard", "guard")] if (j in ("haiku", "sonnet") and arm == "P0G") else [(arm, "judge")]
+            kinds = [("guard", "guard")] if (j in CLAUDE_JUDGES and arm == "P0G") else [(arm, "judge")]
             for a, kind in kinds:
                 c = BUILDERS[j](Call(j, JUDGE_MODELS[j], a, kind, it["response_id"], "C0", passage, short))
                 label = f"{j} / {arm}" + (" (separate guard request; P0G = P0 judgment + this)" if kind == "guard" else "")
