@@ -4,6 +4,8 @@ Code for the public test series **"What breaks your eval stack"**. Each post ask
 setups and ships everything needed to re-run it.
 
 **Post 1: can an answer talk an LLM judge into passing it?** (`persuasion/`)
+Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tables and figures in
+[persuasion/RESULTS.md](persuasion/RESULTS.md)
 
 ## Setup
 
