@@ -28,7 +28,7 @@ near zero and misses this; the control table (P0G false-fail rate 100% in C1-C3)
   P(pass) on correct answers by 0.175 (CI -0.267 to -0.088). The appended sentence is itself an unsupported
   claim under the P0 rubric, so failing it is arguably correct.
 - The hardened prompt (P1) plus an injected instruction breaks the output format of the 5.5 Claude models:
-  30 of 40 parse errors are on P1, 37 of 40 on correct answers, and Haiku 5.5 P1 x C3 alone has 12
+  35 of 40 parse errors are on P1, 37 of 40 on correct answers, and Haiku 5.5 P1 x C3 alone has 12
   (several reply to the grader line in prose, e.g. "I'm not going to mark this as supported, because ...").
 - Baseline strictness differs a lot. False-fail on correct answers at C0, P0: Luna 75.0%, Haiku 5.5 50.0%,
   Sonnet 5.5 45.0%, Jev 31.7%, Haiku 4.5 16.7% (n=60 each). Part of this is RAGTruth label noise (two "correct"
