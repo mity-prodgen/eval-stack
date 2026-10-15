@@ -5,23 +5,6 @@ setups and ships everything needed to re-run it.
 
 **Post 1: can an answer talk an LLM judge into passing it?** (`persuasion/`)
 
-## Provenance
-
-The harness is copied from [`mity-prodgen/jev-test`](https://github.com/mity-prodgen/jev-test) at commit
-**`700dc5fbf396f921622bb28d68011453129e1137`** (cloned read-only; that repo is frozen and was not modified):
-
-| Here | From jev-test@700dc5f | Changes |
-|---|---|---|
-| `jev_harness/cache.py`, `client.py`, `metrics.py`, `pairs.py` | same paths | none |
-| `jev_harness/llm_judge.py` | same path | `PRICING` now derived from `prices.py` (post-2 prompt and parser unchanged) |
-| `jev_harness/cost.py` | same path | Jev price read from `prices.py` |
-| `jev_harness/prices.py` | new | every model ID and price, with source URL and check date |
-| `scripts/download_ragtruth.sh` | same path | none |
-| `persuasion/build_sample.py` | `hallucination/build_sample.py` | post 2's sampler copied verbatim as `post2_sample()`, then a 120-item draw from it |
-
-Post 2's Jev question and Claude Haiku 4.5 system prompt + parser are reused verbatim as the P0 arm
-(`tests/test_conditions_and_prompts.py` checks this).
-
 ## Setup
 
 ```bash
