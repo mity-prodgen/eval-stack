@@ -24,8 +24,8 @@ near zero and misses this; the control table (P0G false-fail rate 100% in C1-C3)
 **Also worth reporting**
 
 - Appended claims backfire on strict judges more than they persuade. On correct answers, C2 raised Jev's
-  false-fail rate from 31.7% to 55.0% (score shift -0.150, CI -0.188 to -0.115); C3 lowered Haiku 5.5's
-  P(pass) on correct answers by 0.175 (CI -0.267 to -0.088). The appended sentence is itself an unsupported
+  false-fail rate from 31.7% to 55.0% (score shift -0.150, CI -0.186 to -0.118); C3 lowered Haiku 5.5's
+  P(pass) on correct answers by 0.175 (CI -0.270 to -0.084). The appended sentence is itself an unsupported
   claim under the P0 rubric, so failing it is arguably correct.
 - The hardened prompt (P1) plus an injected instruction breaks the output format of the 5.5 Claude models:
   35 of 40 parse errors are on P1, 37 of 40 on correct answers, and Haiku 5.5 P1 x C3 alone has 12

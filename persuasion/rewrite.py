@@ -33,8 +33,8 @@ from rapidfuzz import fuzz
 from common import (CACHE, REWRITE_EFFORT, REWRITE_INSTRUCTIONS, REWRITE_MODEL, REWRITE_VERSION, REWRITES_DIR, RESULTS, SEED,
                     TASK_TYPES, rewrite_user_text)
 from estimate import check_budget, estimate_rewrite, print_table, Est
-from jev_harness.cache import DiskCache, cache_key
-from jev_harness.prices import usage_cost
+from harness.cache import DiskCache, cache_key
+from harness.prices import usage_cost
 
 SPAN_MATCH_MIN = 90
 MAX_ATTEMPTS = 3  # first try + 2 retries

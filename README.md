@@ -62,7 +62,7 @@ minimum is never reached).
 | `claude-sonnet-5-5` | judge | 2.00 | 10.00 | 2.50 / 0.10 | 50% off | [Sonnet 5.5 page](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) |
 | `gpt-6.1-sol` | C4 rewriter | 2.00 | 10.00 | - / 0.10 | 50% off | [model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) |
 
-Details and caveats per model: `jev_harness/prices.py`.
+Details and caveats per model: `harness/prices.py`.
 
 ### Deviations from the plan, and why
 
@@ -80,7 +80,12 @@ Details and caveats per model: `jev_harness/prices.py`.
 ### Files
 
 ```
-jev_harness/prices.py      verified IDs/prices + usage_cost()
+harness/                   shared, judge-agnostic pieces
+  cache.py                 content-addressed disk cache (every API call goes through it)
+  metrics.py               seeded bootstrap intervals
+  prices.py                verified model IDs and prices, usage_cost()
+  jev_client.py            Jev (TypeSafe) API wrapper; the other judges' adapters are in persuasion/judges.py
+  post2_judge.py           post 2's Claude judge prompt and parser (the P0 Claude prompt)
 persuasion/
   common.py                conditions, every prompt, pinned models, seeds
   build_sample.py          120-item sample (writes results/sample.jsonl, gitignored; sample_ids.json, committed)

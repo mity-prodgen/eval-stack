@@ -29,7 +29,7 @@ from dataclasses import dataclass
 import tiktoken
 
 from common import HAIKU55_MODEL, HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, REWRITE_MODEL, SONNET_MODEL, passage_text
-from jev_harness.prices import price
+from harness.prices import price
 
 _CL100K = tiktoken.get_encoding("cl100k_base")
 _O200K = tiktoken.get_encoding("o200k_base")

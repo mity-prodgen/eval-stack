@@ -34,7 +34,7 @@ def test_jev_p0_is_post2_question_verbatim():
 
 
 def test_claude_p0_is_post2_prompt_and_p1_only_adds_hardening():
-    from jev_harness.llm_judge import JUDGE_SYSTEM_PROMPT
+    from harness.post2_judge import JUDGE_SYSTEM_PROMPT
     assert common.CLAUDE_P0_SYSTEM == JUDGE_SYSTEM_PROMPT
     assert common.CLAUDE_P1_SYSTEM.replace(common._HARDENING_PARAGRAPH, "") == JUDGE_SYSTEM_PROMPT
 

@@ -28,7 +28,7 @@ from typing import Iterable
 
 from common import (ARMS, CLAUDE_JUDGES, CONDITION_LABELS, CONDITIONS, JUDGE_MODELS, JUDGES, PASS_THRESHOLD, RESULTS, RESULTS_MD,
                     ROOT, SEED)
-from jev_harness.metrics import bootstrap_ci
+from harness.metrics import bootstrap_ci
 
 VALID = "ok"
 N_BOOT = 2000
@@ -321,6 +321,12 @@ def write_md(m: dict, checks: dict, figs: list[Path], items: dict, path: Path, p
     path.write_text("\n".join(L))
 
 
+def ordered_items(rows: list[dict], sample: dict[str, dict]) -> dict[str, dict]:
+    """Items in sorted id order: the bootstrap resamples in this order, and set order changes with
+    PYTHONHASHSEED, which would make the CIs differ between runs."""
+    return {i: sample[i] for i in sorted({r["item_id"] for r in rows})}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--pilot", action="store_true")
@@ -329,7 +335,7 @@ def main() -> None:
     stem = "judgments_pilot" if args.pilot else "judgments"
     rows = [json.loads(l) for l in (RESULTS / f"{stem}.jsonl").open()]
     sample = {json.loads(l)["response_id"]: json.loads(l) for l in (RESULTS / "sample.jsonl").open()}
-    items = {i: sample[i] for i in {r["item_id"] for r in rows}}
+    items = ordered_items(rows, sample)
     m, vt = compute(rows, items)
     checks = harness_checks(rows, vt, args.post2_results, items)
     fig_dir = RESULTS if args.pilot else ROOT / "persuasion" / "figures"  # full-run figures are committed

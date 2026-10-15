@@ -1,8 +1,8 @@
 """Verified model IDs and prices, one place, each with its source and check date.
 
 Every number here was read from the vendor's own docs on the date in
-`checked`; nothing is copied from the task prompt. cost.py (dry-run estimates)
-and the judge clients (actual cost from logged usage) both read from here, so
+`checked`; nothing is copied from the task prompt. persuasion/estimate.py (dry-run
+estimates) and the judge clients (actual cost from logged usage) both read from here, so
 an estimate and a bill can never use different rates.
 
 All prices are USD per million tokens.
@@ -128,7 +128,7 @@ def price(model: str) -> ModelPrice:
     try:
         return MODELS[model]
     except KeyError:
-        raise KeyError(f"no verified price for {model!r}; add it to jev_harness/prices.py with a source") from None
+        raise KeyError(f"no verified price for {model!r}; add it to harness/prices.py with a source") from None
 
 
 def usage_cost(

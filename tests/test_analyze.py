@@ -72,3 +72,11 @@ def test_cost_per_1000_reports_batch_at_standard_rate_too():
     m, _ = compute(rs, {"w1": {"hallucinated": True}})
     c = m["cost_per_1000"]["haiku"]
     assert c["standard_rate"] == pytest.approx(2 * c["paid"])
+
+
+
+def test_items_are_ordered_by_id_not_set_order():
+    from analyze import ordered_items
+    rows = [{"item_id": i} for i in ("b10", "a2", "c1", "a2")]
+    sample = {i: {"id": i} for i in ("a2", "b10", "c1", "zz")}
+    assert list(ordered_items(rows, sample)) == ["a2", "b10", "c1"]

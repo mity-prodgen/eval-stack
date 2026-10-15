@@ -6,7 +6,7 @@ import httpx2 as httpx
 import pytest
 
 from common import HAIKU55_MODEL, HAIKU_MODEL, JEV_MODEL, LUNA_MODEL, SONNET_MODEL
-from jev_harness.cache import DiskCache
+from harness.cache import DiskCache
 from judges import (Call, build_claude, build_jev, build_luna, parse_claude, parse_jev, parse_luna,
                     run_claude_batch, run_claude_sync, run_luna)
 
@@ -100,7 +100,7 @@ def test_cost_uses_requested_model_not_response_model_string():
 
 
 def test_haiku55_long_prompt_tier():
-    from jev_harness.prices import usage_cost
+    from harness.prices import usage_cost
     assert usage_cost(HAIKU55_MODEL, 100_000) == pytest.approx(0.01)
     assert usage_cost(HAIKU55_MODEL, 100_001) == pytest.approx(100_001 * 0.50 / 1e6)
 

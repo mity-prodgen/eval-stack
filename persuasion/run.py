@@ -30,7 +30,7 @@ from pathlib import Path
 from common import (ARMS, CACHE, CLAUDE_JUDGES, CONDITIONS, JUDGE_MODELS, JUDGES, RESULTS, SEED, TASK_TYPES, apply_condition)
 from estimate import Est, check_budget, estimate_call, print_table
 from judges import (BUILDERS, Call, run_claude_batch, run_claude_sync, run_jev, run_luna)
-from jev_harness.cache import DiskCache
+from harness.cache import DiskCache
 from rewrite import FROZEN
 
 N_PILOT = 5

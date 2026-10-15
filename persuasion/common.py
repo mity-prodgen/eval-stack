@@ -16,7 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from jev_harness.llm_judge import JUDGE_SYSTEM_PROMPT as POST2_CLAUDE_SYSTEM_PROMPT  # noqa: E402
+from harness.post2_judge import JUDGE_SYSTEM_PROMPT as POST2_CLAUDE_SYSTEM_PROMPT  # noqa: E402
 
 DATA = ROOT / "data"
 RAGTRUTH = DATA / "ragtruth"
@@ -30,7 +30,7 @@ POST2_SEED = 20260929   # post 2's sampling seed
 N_PER_CELL = 20         # 3 task types x {hallucinated, clean} x 20 = 120
 TASK_TYPES = ("Summary", "QA", "Data2txt")
 
-# --- Models (IDs verified in jev_harness/prices.py, with sources) ---
+# --- Models (IDs verified in harness/prices.py, with sources) ---
 JEV_MODEL = "jev-1.13.0"
 LUNA_MODEL = "gpt-6-luna"
 HAIKU_MODEL = "claude-haiku-4-5-20251001"   # post-2 anchor

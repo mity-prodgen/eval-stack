@@ -6,13 +6,13 @@ Every judge's result is normalised to one record shape:
     p_pass     P(answer passes) in [0, 1], or None
     p_guard    P(guard question true) in [0, 1], or None (guard requests / P0G only)
     usage      {"input", "output", "cache_write", "cache_read"} tokens from the API's own usage field
-    cost_usd   from jev_harness.prices and the logged usage
+    cost_usd   from harness.prices and the logged usage
     raw        the full response body (always logged)
 
 Refusals and parse errors are records like any other - nothing is dropped here; analysis
 counts them per judge/arm/condition. Only status "ok"/"refusal"/"parse_error" results are
 cached (an api_error is transient by assumption and is retried on the next run, the same rule
-jev_harness.cache.DiskCache already applies via result["ok"]).
+harness.cache.DiskCache already applies via result["ok"]).
 
 Builders are pure functions so tests can check request shapes without any network.
 """
@@ -30,9 +30,9 @@ from typing import Any, Callable
 
 from common import (CLAUDE_MAX_TOKENS, CLAUDE_SETTINGS, JEV_MODEL, LUNA_MODEL, claude_system,
                     jev_questions, jev_state, judge_user_text, luna_questions, p_from_verdict, passage_text)
-from jev_harness.cache import DiskCache, cache_key
-from jev_harness.llm_judge import _parse_judgment as parse_post2_judgment
-from jev_harness.prices import usage_cost
+from harness.cache import DiskCache, cache_key
+from harness.post2_judge import parse_judgment as parse_post2_judgment
+from harness.prices import usage_cost
 
 
 @dataclass
@@ -93,7 +93,7 @@ def parse_jev(raw: dict[str, Any] | None, arm: str) -> dict[str, Any]:
 
 
 def run_jev(calls: list[Call], cache: DiskCache, max_workers: int = 8) -> dict[str, dict]:
-    from jev_harness.client import JevClient
+    from harness.jev_client import JevClient
 
     local = threading.local()
     clients: list[JevClient] = []
