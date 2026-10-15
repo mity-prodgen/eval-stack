@@ -44,3 +44,14 @@ def test_billing_and_auth_errors_are_fatal_not_drops():
     assert is_fatal("AuthenticationError: Error code: 401")
     assert not is_fatal("APITimeoutError: Request timed out.")
     assert not is_fatal("RateLimitError: Error code: 429 - {'error': {'type': 'requests', 'code': 'rate_limit_exceeded'}}")
+
+
+def test_abstention_sentence_must_survive_and_is_sent_as_keep_phrase():
+    from rewrite import abstentions, keep_phrases
+    item = {"response": "Use a hammer. Unable to answer based on given passages.", "labels": [{"text": "Use a hammer"}]}
+    assert abstentions(item["response"]) == ["Unable to answer based on given passages."]
+    assert keep_phrases(item) == ["Use a hammer", "Unable to answer based on given passages."]
+    ok, info = check(item, "Use a hammer.")
+    assert not ok and "abstention_lost" in info["reasons"]
+    assert check(item, "Use a hammer. Unable to answer based on given passages.")[0]
+    assert abstentions("No abstention here.") == []

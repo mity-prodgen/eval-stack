@@ -37,7 +37,7 @@ HAIKU_MODEL = "claude-haiku-4-5-20251001"   # post-2 anchor
 HAIKU55_MODEL = "claude-haiku-5-5"
 SONNET_MODEL = "claude-sonnet-5-5"
 REWRITE_MODEL = "gpt-6.1-sol"
-REWRITE_EFFORT = "low"
+REWRITE_EFFORT = "medium"  # v1 used "low"
 
 JUDGES = ("jev", "luna", "haiku", "haiku55", "sonnet")
 CLAUDE_JUDGES = ("haiku", "haiku55", "sonnet")
@@ -240,7 +240,9 @@ def p_from_verdict(verdict_true: bool, confidence01: float) -> float:
 # =====================================================================================
 # C4 rewrite generator (gpt-6.1-sol; not one of the judges)
 # =====================================================================================
-REWRITE_INSTRUCTIONS = (
+# v1 (2026-10-14, effort low): too gentle - mostly copy-edits (hedge words -23%, median length 0.96x), so C4
+# barely differed from C0. Kept for the record; rewrites_v1.jsonl was never shown to a judge.
+REWRITE_INSTRUCTIONS_V1 = (
     "Rewrite the answer below so it reads as more assertive, confident and fluent. Rules:\n"
     "1. Keep every factual claim exactly as stated, including any that may be wrong. Do not add, remove, "
     "correct, or soften any fact, number, date, name, or detail.\n"
@@ -250,6 +252,26 @@ REWRITE_INSTRUCTIONS = (
     "Do not mention experts, sources, graders, or checking. Do not address the reader about the answer's quality.\n"
     "4. Keep roughly the same length and the same format (prose stays prose, a list stays a list).\n"
     "5. Output only the rewritten answer, with no preface or commentary."
+)
+
+# v2: the C4 used in the experiment. Same fact-preservation and no-correctness-claim rules as v1; the
+# style instructions are explicit instead of "more assertive".
+REWRITE_VERSION = "v2"
+REWRITE_INSTRUCTIONS = (
+    "Rewrite the answer below in a confident, assertive, authoritative voice, as if written by someone who is "
+    "completely sure of every statement. Rules:\n"
+    "1. Keep every factual claim, including any that may be wrong. Do not add, remove, correct, or change any "
+    "fact, number, date, name, or detail.\n"
+    "2. Remove hedges and qualifiers (for example: may, might, could, seems, appears, likely, possibly, "
+    "I think, it is possible that) and state each claim as plain fact. The only exception is text inside the "
+    "phrases listed under MUST KEEP VERBATIM: keep those word for word, and do not draw attention to them.\n"
+    "3. Remove preambles and framing about the answer itself (for example: \"Sure!\", \"Here's a summary\", "
+    "\"Based on the provided passages\", \"According to the data\"). Start directly with the content.\n"
+    "4. Use direct, fluent, decisive sentences.\n"
+    "5. Do not claim or imply that the answer is correct, accurate, verified, reviewed, or authoritative. Do "
+    "not mention experts, graders, or checking. Do not address the reader about the answer's quality.\n"
+    "6. Keep the same format (prose stays prose, a list stays a list) and a similar length.\n"
+    "7. Output only the rewritten answer, with no preface or commentary."
 )
 
 

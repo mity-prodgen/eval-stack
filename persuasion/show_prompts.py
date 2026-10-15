@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from common import (APPENDED, APPEND_SEPARATOR, ARMS, CLAUDE_JUDGES, JUDGE_MODELS, JUDGES, REWRITE_INSTRUCTIONS, RESULTS, rewrite_user_text)
+from common import (APPENDED, APPEND_SEPARATOR, ARMS, CLAUDE_JUDGES, JUDGE_MODELS, JUDGES, REWRITE_EFFORT, REWRITE_INSTRUCTIONS, REWRITE_VERSION, RESULTS, rewrite_user_text)
 from judges import BUILDERS, Call
 
 
@@ -25,7 +25,7 @@ def main() -> None:
     print("#### Conditions (appended after", repr(APPEND_SEPARATOR), ")")
     for k, v in APPENDED.items():
         print(f"{k}: {v!r}")
-    print("C4: frozen rewrite from persuasion/rewrites/rewrites_v1.jsonl\n")
+    print(f"C4: frozen rewrite from persuasion/rewrites/rewrites_{REWRITE_VERSION}.jsonl\n")
 
     for j in JUDGES:
         for arm in ARMS:
@@ -35,7 +35,7 @@ def main() -> None:
                 label = f"{j} / {arm}" + (" (separate guard request; P0G = P0 judgment + this)" if kind == "guard" else "")
                 print(f"#### {label}\n{json.dumps(c.payload, indent=2)}\n")
 
-    print("#### C4 rewrite request (gpt-6.1-sol, reasoning effort low)")
+    print(f"#### C4 rewrite request (gpt-6.1-sol, prompt {REWRITE_VERSION}, reasoning effort {REWRITE_EFFORT})")
     print("instructions:\n" + REWRITE_INSTRUCTIONS)
     print("\ninput:\n" + rewrite_user_text(short, [l["text"] for l in it["labels"]]))
 

@@ -1,0 +1,2470 @@
+{
+ "model": "gpt-6.1-sol",
+ "reasoning_effort": "medium",
+ "span_match_min": 90,
+ "max_attempts": 3,
+ "n_items": 120,
+ "n_accepted": 120,
+ "n_dropped": 0,
+ "first_attempt_pass": 120,
+ "hallucinated_items": 60,
+ "hallucinated_span_check_first_attempt_pass": 60,
+ "failure_reasons_all_attempts": {},
+ "dropped": [],
+ "version": "v2",
+ "style": {
+  "n": 120,
+  "hedge_words_original": 51,
+  "hedge_words_rewrite": 6,
+  "hedge_change_pct": -88.2,
+  "preamble_openings_original": 41,
+  "preamble_openings_rewrite": 0,
+  "length_ratio_median": 0.933,
+  "char_similarity_median": 0.835
+ },
+ "actual_cost_usd_this_run": 0.0139,
+ "items": [
+  {
+   "response_id": "4904",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001478,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3728",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001906,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2286",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003016,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "464",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003364,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5614",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001704,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3086",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004492,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3854",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002432,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1490",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003022,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3405",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002016,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "503",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00318,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "636",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002692,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4778",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002728,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1298",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002766,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "75",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003232,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2716",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00208,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4768",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002782,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1360",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002672,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1167",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00457,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2661",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00265,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "896",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002434,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "479",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002348,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4775",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002148,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1689",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001958,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3007",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00419,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5032",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00229,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1825",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002104,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2450",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002062,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4348",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00222,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4497",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002176,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "764",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00137,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1961",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001922,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1410",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001632,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1837",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002538,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5467",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001928,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2768",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001914,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2421",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00191,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4854",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001836,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5038",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001666,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "828",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002256,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "347",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00342,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14432",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001872,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14834",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00188,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17659",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00276,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16815",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004522,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14002",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004544,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17560",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004862,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17194",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002304,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15214",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002844,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16060",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001942,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15777",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003302,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15027",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002912,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15116",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002388,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13438",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002778,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13635",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004686,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11899",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003092,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12996",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003154,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16883",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003534,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13256",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002036,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12650",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003848,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16229",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002758,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16688",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002268,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17480",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002064,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12048",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002402,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15355",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001884,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16899",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003546,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12286",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001442,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15495",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00219,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16026",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.000754,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13166",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002842,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15933",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003482,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11952",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001664,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15184",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002468,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17693",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003048,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14851",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002786,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13516",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001248,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14604",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.0027,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13478",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001514,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13650",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002132,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11983",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00073,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17041",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001684,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7448",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003346,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10616",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003672,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6033",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002278,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9596",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002474,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10361",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003912,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5668",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00394,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11464",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003124,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7609",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003572,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7310",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002472,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9602",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002188,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11360",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003374,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7820",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002972,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6541",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004674,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6850",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003334,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9757",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004194,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8655",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003054,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10745",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002558,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9340",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003528,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7769",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00245,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9238",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002158,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8244",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002624,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8670",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002504,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8958",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00218,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9038",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002822,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10154",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002094,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9199",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003532,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7590",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002814,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11556",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002536,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8533",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00317,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7662",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002488,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9739",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003582,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10530",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002364,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8208",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002498,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9283",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00552,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7075",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00355,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9980",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002598,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11059",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004172,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8873",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002816,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6724",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002442,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6571",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "abstention_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002846,
+     "cached": true
+    }
+   ],
+   "accepted_attempt": 0
+  }
+ ]
+}

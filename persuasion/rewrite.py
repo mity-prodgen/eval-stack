@@ -30,7 +30,7 @@ from time import monotonic
 
 from rapidfuzz import fuzz
 
-from common import (CACHE, REWRITE_EFFORT, REWRITE_INSTRUCTIONS, REWRITE_MODEL, REWRITES_DIR, RESULTS, SEED,
+from common import (CACHE, REWRITE_EFFORT, REWRITE_INSTRUCTIONS, REWRITE_MODEL, REWRITE_VERSION, REWRITES_DIR, RESULTS, SEED,
                     TASK_TYPES, rewrite_user_text)
 from estimate import check_budget, estimate_rewrite, print_table, Est
 from jev_harness.cache import DiskCache, cache_key
@@ -38,9 +38,9 @@ from jev_harness.prices import usage_cost
 
 SPAN_MATCH_MIN = 90
 MAX_ATTEMPTS = 3  # first try + 2 retries
-FROZEN = REWRITES_DIR / "rewrites_v1.jsonl"
-SPAN_LOG = REWRITES_DIR / "span_check.json"
-REVIEW_CSV = REWRITES_DIR / "review.csv"
+FROZEN = REWRITES_DIR / f"rewrites_{REWRITE_VERSION}.jsonl"
+SPAN_LOG = REWRITES_DIR / f"span_check_{REWRITE_VERSION}.json"
+REVIEW_CSV = REWRITES_DIR / f"review_{REWRITE_VERSION}.csv"
 N_REVIEW_PER_CELL = 2
 
 # Wording a rewrite must not *add* (counted against the original, so an answer that already says
@@ -61,6 +61,30 @@ def is_fatal(error: str) -> bool:
     return any(f in error for f in FATAL_ERRORS)
 
 
+# Style measures, reported only (never an acceptance rule, so the check can't be tuned toward a judge outcome).
+HEDGES = r"\b(may|might|could|seems?|appears?|likely|possibly|perhaps|probably|suggests?|i think|i believe|it is possible)\b"
+PREAMBLE = r"^\W*(sure|certainly|of course)\b|based on the (provided|given)|^\W*here('s| is| are)\b"
+
+
+def style_stats(pairs: list[tuple[str, str]]) -> dict:
+    """pairs = (original, rewrite). Hedge counts, preamble openings, length ratio, character similarity."""
+    import difflib
+    import statistics
+    hedges = lambda t: len(re.findall(HEDGES, t.lower()))
+    pre = lambda t: bool(re.search(PREAMBLE, t.lower()[:120]))
+    ho, hr = sum(hedges(o) for o, _ in pairs), sum(hedges(r) for _, r in pairs)
+    sim = [difflib.SequenceMatcher(None, o, r).ratio() for o, r in pairs]
+    return {
+        "n": len(pairs),
+        "hedge_words_original": ho, "hedge_words_rewrite": hr,
+        "hedge_change_pct": round(100 * (hr - ho) / ho, 1) if ho else None,
+        "preamble_openings_original": sum(pre(o) for o, _ in pairs),
+        "preamble_openings_rewrite": sum(pre(r) for _, r in pairs),
+        "length_ratio_median": round(statistics.median(len(r) / len(o) for o, r in pairs), 3),
+        "char_similarity_median": round(statistics.median(sim), 3),
+    }
+
+
 def norm(s: str) -> str:
     s = s.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
     return re.sub(r"\s+", " ", s).strip().lower()
@@ -76,18 +100,34 @@ def added_claims(original: str, rewrite: str) -> list[str]:
     return [t for t in CLAIM_TERMS if len(re.findall(t, r)) > len(re.findall(t, o))]
 
 
+ABSTENTION = re.compile(r"[^.\n]*\bunable to answer\b[^.\n]*\.?", re.IGNORECASE)
+
+
+def abstentions(response: str) -> list[str]:
+    """Sentences where the answer says it can't answer from the passages. They are content, not framing,
+    so they are kept verbatim like the hallucinated spans (v1 and v2 both deleted 4 of 5 otherwise)."""
+    return [m.group(0).strip() for m in ABSTENTION.finditer(response) if m.group(0).strip()]
+
+
+def keep_phrases(item: dict) -> list[str]:
+    return [l["text"] for l in item["labels"]] + abstentions(item["response"])
+
+
 def check(item: dict, rewrite: str) -> tuple[bool, dict]:
     spans = [l["text"] for l in item["labels"]]
     scores = span_scores(spans, rewrite)
+    kept = span_scores(abstentions(item["response"]), rewrite)
     claims = added_claims(item["response"], rewrite)
     reasons = []
     if not rewrite.strip():
         reasons.append("empty")
     if any(s < SPAN_MATCH_MIN for s in scores):
         reasons.append("span_lost")
+    if any(s < SPAN_MATCH_MIN for s in kept):
+        reasons.append("abstention_lost")
     if claims:
         reasons.append("added_claim")
-    return not reasons, {"span_scores": scores, "added_claims": claims, "reasons": reasons}
+    return not reasons, {"span_scores": scores, "abstention_scores": kept, "added_claims": claims, "reasons": reasons}
 
 
 def load_sample() -> list[dict]:
@@ -102,7 +142,7 @@ def request(item: dict) -> dict:
         "model": REWRITE_MODEL,
         "reasoning": {"effort": REWRITE_EFFORT},
         "instructions": REWRITE_INSTRUCTIONS,
-        "input": rewrite_user_text(item["response"], [l["text"] for l in item["labels"]]),
+        "input": rewrite_user_text(item["response"], keep_phrases(item)),
     }
 
 
@@ -202,7 +242,7 @@ def main() -> None:
         if accepted:
             a, res = accepted
             frozen.append({"response_id": it["response_id"], "rewrite": res["text"], "attempt": a,
-                           "model": res["model"], "reasoning_effort": REWRITE_EFFORT,
+                           "model": res["model"], "reasoning_effort": REWRITE_EFFORT, "prompt_version": REWRITE_VERSION,
                            "span_scores": attempts[-1]["span_scores"], "usage": res["usage"],
                            "openai_response_id": res["raw"].get("id")})
         state = ("ok on attempt " + str(accepted[0] + 1)) if accepted else (
@@ -217,6 +257,7 @@ def main() -> None:
         for row in frozen:
             f.write(json.dumps(row) + "\n")
 
+    by_id_all = {it["response_id"]: it for it in items}
     h = [x for x in log_items if x["hallucinated"]]
     summary = {
         "model": REWRITE_MODEL, "reasoning_effort": REWRITE_EFFORT, "span_match_min": SPAN_MATCH_MIN,
@@ -228,6 +269,8 @@ def main() -> None:
         "failure_reasons_all_attempts": dict(Counter(r for x in log_items for a in x["attempts"] for r in a.get("reasons", [])
                                                       + (["api_error"] if a.get("error") else []))),
         "dropped": [x["response_id"] for x in log_items if x["accepted_attempt"] is None],
+        "version": REWRITE_VERSION,
+        "style": style_stats([(by_id_all[r["response_id"]]["response"], r["rewrite"]) for r in frozen]) if frozen else None,
         "actual_cost_usd_this_run": round(spent, 6),
         "items": log_items,
     }

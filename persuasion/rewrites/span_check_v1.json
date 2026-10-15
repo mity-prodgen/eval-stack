@@ -1,0 +1,2341 @@
+{
+ "model": "gpt-6.1-sol",
+ "reasoning_effort": "low",
+ "span_match_min": 90,
+ "max_attempts": 3,
+ "n_items": 120,
+ "n_accepted": 120,
+ "n_dropped": 0,
+ "first_attempt_pass": 120,
+ "hallucinated_items": 60,
+ "hallucinated_span_check_first_attempt_pass": 60,
+ "failure_reasons_all_attempts": {},
+ "dropped": [],
+ "actual_cost_usd_this_run": 0.279834,
+ "items": [
+  {
+   "response_id": "4904",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001256,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3728",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001664,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2286",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001964,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "464",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002112,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5614",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001552,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3086",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00294,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3854",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00174,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1490",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00277,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3405",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001794,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "503",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002338,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "636",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00251,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4778",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001956,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1298",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001564,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "75",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00297,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2716",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001988,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4768",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00154,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1360",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00224,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1167",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004458,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2661",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001948,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "896",
+   "hallucinated": true,
+   "task_type": "Summary",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001922,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "479",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001836,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4775",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001786,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1689",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001706,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "3007",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003488,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5032",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001598,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1825",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001882,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2450",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00157,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4348",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001568,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4497",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001354,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "764",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001148,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1961",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00134,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1410",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.0014,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "1837",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002316,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5467",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001686,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2768",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001722,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "2421",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001728,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "4854",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001664,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5038",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001524,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "828",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001324,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "347",
+   "hallucinated": false,
+   "task_type": "Summary",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001898,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14432",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00169,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14834",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001808,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17659",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001938,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16815",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004562,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14002",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003662,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17560",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00346,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17194",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002042,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15214",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002912,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16060",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00188,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15777",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00321,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15027",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002792,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15116",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001936,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13438",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002136,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13635",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004014,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11899",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00226,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12996",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002452,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16883",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002892,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13256",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001934,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12650",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002976,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16229",
+   "hallucinated": true,
+   "task_type": "QA",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002586,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16688",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001466,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17480",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001792,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12048",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00219,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15355",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001762,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16899",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003472,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "12286",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00104,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15495",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002096,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "16026",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.000562,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13166",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00161,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15933",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00347,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11952",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001432,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "15184",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002396,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17693",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003126,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14851",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002664,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13516",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001146,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "14604",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002438,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13478",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001292,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "13650",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00195,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11983",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001026,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "17041",
+   "hallucinated": false,
+   "task_type": "QA",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001552,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7448",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003084,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10616",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00345,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6033",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002126,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9596",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002322,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10361",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00367,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "5668",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002898,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11464",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003042,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7609",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00331,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7310",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00227,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9602",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001496,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11360",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003112,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7820",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00214,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6541",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003922,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6850",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 4,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002562,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9757",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004032,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8655",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 2,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002952,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10745",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002316,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9340",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 3,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0,
+      100.0,
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003556,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7769",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002228,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9238",
+   "hallucinated": true,
+   "task_type": "Data2txt",
+   "n_spans": 1,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [
+      100.0
+     ],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002096,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8244",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002412,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8670",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002272,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8958",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001968,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9038",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00263,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10154",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.001912,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9199",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00338,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7590",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002652,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11556",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002344,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8533",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002998,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7662",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002246,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9739",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00341,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "10530",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002242,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8208",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002236,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9283",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.004178,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "7075",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.003398,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "9980",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002276,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "11059",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00395,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "8873",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002204,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6724",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.00245,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  },
+  {
+   "response_id": "6571",
+   "hallucinated": false,
+   "task_type": "Data2txt",
+   "n_spans": 0,
+   "attempts": [
+    {
+     "attempt": 0,
+     "ok": true,
+     "span_scores": [],
+     "added_claims": [],
+     "reasons": [],
+     "cost_usd": 0.002704,
+     "cached": false
+    }
+   ],
+   "accepted_attempt": 0
+  }
+ ],
+ "version": "v1",
+ "style": {
+  "n": 120,
+  "hedge_words_original": 51,
+  "hedge_words_rewrite": 32,
+  "hedge_change_pct": -37.3,
+  "preamble_openings_original": 41,
+  "preamble_openings_rewrite": 17,
+  "length_ratio_median": 0.961,
+  "char_similarity_median": 0.703
+ },
+ "note": "Superseded by v2 before any judge saw C4: rewrites were too gentle (see style)."
+}
