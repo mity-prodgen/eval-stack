@@ -5,7 +5,7 @@
 # Not committed to this repo - data/ is gitignored. The underlying passage
 # text (CNN/DM, MS MARCO, Yelp) carries its own terms beyond RAGTruth's MIT
 # license on the annotations/code, so we regenerate our sample deterministically
-# from a seed (hallucination/build_sample.py) rather than committing derived text.
+# from a seed (persuasion/build_sample.py) rather than committing derived text.
 set -euo pipefail
 
 DEST="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/data/ragtruth"

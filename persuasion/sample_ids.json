@@ -7,7 +7,7 @@
   "of": 120
  },
  "post2_rebuild_check": {
-  "post2_file": "/Users/mity/Projects/jev/hallucination/results/judge_sample.jsonl",
+  "post2_file": "judge_sample.jsonl",
   "n_theirs": 600,
   "n_rebuilt": 600,
   "field_mismatches": 0

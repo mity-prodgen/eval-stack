@@ -26,7 +26,7 @@ CACHE = ROOT / "cache"
 RESULTS_MD = ROOT / "persuasion" / "RESULTS.md"
 
 SEED = 20261013
-POST2_SEED = 20260929   # hallucination/build_sample.py in jev-test@700dc5f
+POST2_SEED = 20260929   # post 2's sampling seed
 N_PER_CELL = 20         # 3 task types x {hallucinated, clean} x 20 = 120
 TASK_TYPES = ("Summary", "QA", "Data2txt")
 

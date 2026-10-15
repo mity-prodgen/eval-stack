@@ -2,7 +2,7 @@
 
 Provider-agnostic by design (LLM_JUDGE_PROVIDER / LLM_JUDGE_MODEL env vars),
 but only the "anthropic" backend is implemented - add an adapter here for a
-second provider without touching call sites in hallucination/run_judge_batch.py.
+second provider without touching its call sites.
 
 Uses a plain-text-prompted JSON response rather than the Messages API's
 output_config structured-output feature, since this harness hasn't verified

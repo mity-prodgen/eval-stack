@@ -24,9 +24,8 @@ _ENCODING = tiktoken.get_encoding("cl100k_base")
 JEV_USD_PER_MTOK_INPUT = MODELS["jev-1.13.0"].input
 JEV_USD_PER_MTOK_OUTPUT = MODELS["jev-1.13.0"].output
 
-# Jev input tokens / tiktoken estimate, measured: 1.36 (post 2, JSON states), 1.05 (post 3 test 1, SQuAD prose),
-# about 1.6 (post 3 test 2, one SciFact document per request: biomedical text plus a fixed per-request overhead)
-# and about 1.1 for 20 documents in one request. Dry-run estimates are therefore good to roughly +/-30%.
+# Jev input tokens / tiktoken estimate, measured 1.36 on post 2's JSON states. It varies with the text
+# (about 1.05 to 1.6 on other content), so dry-run estimates are good to roughly +/-30%.
 JEV_TOKEN_FACTOR = 1.36
 
 

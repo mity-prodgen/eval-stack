@@ -3,14 +3,14 @@
 
 Stratified 3 task types (Summary/QA/Data2txt, same as post 2) x 2 classes x 20, fixed seed.
 Items are drawn from post 2's 600-case sample, which is first rebuilt here with post 2's own
-code and seed (jev-test@700dc5f, hallucination/build_sample.py) so the two posts share items.
+code and seed so the two posts share items.
 If a post-2 judge_sample.jsonl is given with --post2-sample, the rebuild is checked against it
 item by item, and the overlap is reported.
 
 Writes persuasion/results/sample.jsonl (gitignored, holds passage text) and
 persuasion/sample_ids.json (committed: ids and stats only).
 
-    python persuasion/build_sample.py [--post2-sample ../jev/hallucination/results/judge_sample.jsonl]
+    python persuasion/build_sample.py [--post2-sample PATH/TO/post2/judge_sample.jsonl]
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ def load_ragtruth() -> tuple[list[dict], dict[str, dict]]:
 
 
 def post2_sample(responses: list[dict], sources: dict[str, dict]) -> list[dict]:
-    """Copy of build_cases() from jev-test@700dc5f hallucination/build_sample.py (same seed, same order)."""
+    """Post 2's sampler, copied verbatim (same seed, same order)."""
     by_cell: dict[tuple[str, bool], list[dict]] = {}
     for r in responses:
         if r.get("quality") != "good":
@@ -115,7 +115,7 @@ def main() -> None:
         theirs = [json.loads(line) for line in args.post2_sample.open()]
         keys = ("case_id", "response_id", "response", "labels", "hallucinated", "task_type")
         mismatches = sum(1 for a, b in zip(p2, theirs) if any(a[k] != b[k] for k in keys))
-        check = {"post2_file": str(args.post2_sample), "n_theirs": len(theirs), "n_rebuilt": len(p2),
+        check = {"post2_file": args.post2_sample.name, "n_theirs": len(theirs), "n_rebuilt": len(p2),
                  "field_mismatches": mismatches + abs(len(p2) - len(theirs))}
         print(f"post-2 rebuild vs {args.post2_sample}: {check['field_mismatches']} mismatching items of {len(theirs)}")
         if check["field_mismatches"]:

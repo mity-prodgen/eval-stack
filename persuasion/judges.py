@@ -7,7 +7,7 @@ Every judge's result is normalised to one record shape:
     p_guard    P(guard question true) in [0, 1], or None (guard requests / P0G only)
     usage      {"input", "output", "cache_write", "cache_read"} tokens from the API's own usage field
     cost_usd   from jev_harness.prices and the logged usage
-    raw        the full response body (always logged, as in jev-test)
+    raw        the full response body (always logged)
 
 Refusals and parse errors are records like any other - nothing is dropped here; analysis
 counts them per judge/arm/condition. Only status "ok"/"refusal"/"parse_error" results are

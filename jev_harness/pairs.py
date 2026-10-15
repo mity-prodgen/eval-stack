@@ -1,4 +1,4 @@
-"""Cached, threaded Jev requests for pair-scoring experiments (post 3).
+"""Cached, threaded Jev requests.
 
 Every request goes through DiskCache, so a rerun never re-calls the API. A
 cache hit returns the latency that was measured on the original call.

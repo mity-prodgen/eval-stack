@@ -1,7 +1,7 @@
 """Dry-run cost estimates and the --max-usd guard.
 
 Token counts use tiktoken as a proxy, scaled by factors measured on post 2's real usage logs
-(jev-test@700dc5f, hallucination/results/judge_results_*.json, 600 calls each):
+(post 2's judge_results_*.json, 600 calls each):
 
     Haiku 4.5   actual / cl100k estimate: mean 1.108, p95 1.149, max 1.180   -> 1.18
     Jev 1.13.0  actual / cl100k estimate: mean 1.363, p95 1.535, max 1.687   -> 1.54 (p95)

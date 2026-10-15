@@ -21,7 +21,7 @@ def test_c4_requires_frozen_rewrite():
 
 
 def test_jev_p0_is_post2_question_verbatim():
-    # copied from jev-test@700dc5f hallucination/run_judge_batch.py
+    # post 2's Jev question, verbatim
     post2 = (
         "Every factual claim in `response` is directly supported by `source_passage`. "
         "`true` requires every claim in `response` to trace to an explicit statement in "

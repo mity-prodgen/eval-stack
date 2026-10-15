@@ -14,7 +14,7 @@ Definitions (n is reported with every percentage; CIs are seeded 95% bootstrap o
               counted per judge x arm x condition, and an item enters a paired metric only if both of
               its rows are valid.
 
-    python persuasion/analyze.py [--pilot] [--post2-results ../jev/hallucination/results]
+    python persuasion/analyze.py [--pilot] [--post2-results PATH/TO/post2/hallucination/results]
 """
 
 from __future__ import annotations
