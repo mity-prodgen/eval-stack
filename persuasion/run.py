@@ -15,6 +15,10 @@ Before any API call the estimated cost of every *uncached* request in the plan i
     python persuasion/run.py --pilot --live          # 5 items x 5 conditions x every arm, Claude sync
     python persuasion/run.py --live                  # full run
     python persuasion/run.py --live --judge jev --arm P0
+    python persuasion/run.py --condition C0 --repeat 1   # noise baseline: an independent re-run of C0
+
+--repeat K (K >= 1) folds K into every cache key, so the same requests are sent again as fresh calls
+instead of being served from the cache. K = 0 (default) is the original run.
 """
 
 from __future__ import annotations
@@ -30,7 +34,7 @@ from pathlib import Path
 from common import (ARMS, CACHE, CLAUDE_JUDGES, CONDITIONS, JUDGE_MODELS, JUDGES, RESULTS, SEED, TASK_TYPES, apply_condition)
 from estimate import Est, check_budget, estimate_call, print_table
 from judges import (BUILDERS, Call, run_claude_batch, run_claude_sync, run_jev, run_luna)
-from harness.cache import DiskCache
+from harness.cache import DiskCache, cache_key
 from rewrite import FROZEN
 
 N_PILOT = 5
@@ -93,6 +97,14 @@ def plan(items, judges, arms, conditions, rewrites, c4_proxy: bool) -> tuple[lis
     if c4_proxy and "C4" in conditions and not rewrites:
         notes.append("C4 rewrites not generated yet: original answers used as a length proxy for C4 in this estimate")
     return calls, notes
+
+
+def with_repeat(calls: list[Call], repeat: int) -> list[Call]:
+    """Repeat 0 keeps the original keys (the cached post-1 run); repeat K >= 1 gets its own keys."""
+    if repeat:
+        for c in calls:
+            c.key = cache_key(c.key, "repeat", repeat)
+    return calls
 
 
 def estimate_plan(calls: list[Call], cache: DiskCache, claude_batch: bool, only_uncached: bool) -> tuple[float, list]:
@@ -177,6 +189,7 @@ def main() -> None:
     ap.add_argument("--arm", nargs="+", choices=ARMS, default=list(ARMS))
     ap.add_argument("--condition", nargs="+", choices=CONDITIONS, default=list(CONDITIONS))
     ap.add_argument("--limit", type=int, default=None, help="first N sample items")
+    ap.add_argument("--repeat", type=int, default=0, help="independent re-run index (0 = original run)")
     ap.add_argument("--claude-mode", choices=["batch", "sync"], default=None,
                     help="default: sync for --pilot, batch otherwise")
     args = ap.parse_args()
@@ -186,10 +199,11 @@ def main() -> None:
     items = pilot_items(sample) if args.pilot else sample[: args.limit] if args.limit else sample
     rewrites = load_rewrites()
     calls, notes = plan(items, args.judge, args.arm, args.condition, rewrites, c4_proxy=not args.live)
+    calls = with_repeat(calls, args.repeat)
     cache = DiskCache(CACHE, "persuasion")
 
     total_all, rows_all = estimate_plan(calls, cache, claude_mode == "batch", only_uncached=False)
-    print_table(rows_all, f"Estimate, whole plan ({len(items)} items, Claude {claude_mode})")
+    print_table(rows_all, f"Estimate, whole plan ({len(items)} items, Claude {claude_mode}, repeat {args.repeat})")
     total_new, rows_new = estimate_plan(calls, cache, claude_mode == "batch", only_uncached=True)
     print()
     print_table(rows_new, "Estimate, uncached requests only (what --live would spend)")
@@ -208,6 +222,8 @@ def main() -> None:
     results = execute(calls, cache, claude_mode)
     rows = rows_for(calls, results, {i["response_id"]: i for i in sample})
     stem = "judgments_pilot" if args.pilot else "judgments"
+    if args.repeat:
+        stem += f"_repeat{args.repeat}"
     write_rows(rows, stem)
 
     actual = defaultdict(float)
