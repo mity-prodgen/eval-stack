@@ -113,7 +113,7 @@ scripts/download_paws.sh                          # PAWS test split (HF copy, pi
 | External check | PAWS-Wiki labeled_final test, 300 pairs (150/150), seed `20261021`, ids in `pairs/paws_sample_ids.json` |
 | Embeddings | text-embedding-3-small, text-embedding-3-large, Cohere embed-v4.0, Voyage voyage-4, gemini-embedding-2; local all-MiniLM-L6-v2, BGE-M3 (dense), redis/langcache-embed-v1 (RedisVL's default vectorizer), HF revisions pinned |
 | Thresholds | cosine 0.50-0.99, step 0.01 (task range 0.80-0.99; extended down because several library defaults sit below 0.80) |
-| Arms | A0 embedding only at 0.90 (RedisVL default) · A1 highest threshold keeping >= 80% of A0's control hits, chosen out of fold (2-fold) · A2 A0 + slot guard (`slots.py`, committed before the pairs existed) · A3 A0 + Jev / GPT-6 Luna "Do these two queries need the same answer?", serve if P(yes) >= 0.5 |
+| Arms | A0 embedding only at 0.90 (RedisVL default) · A1 highest threshold keeping >= 80% of A0's control hits, chosen out of fold (2-fold) · A2 A0 + slot guard (`slots.py`, committed before the pairs existed) · A3 A0 + Jev 1.13.0 / Jev 1.14.0 / GPT-6 Luna "Do these two queries need the same answer?", serve if P(yes) >= 0.5 |
 
 ### Verified embedding models and prices (USD per 1M input tokens, checked 2026-10-19)
 
@@ -124,7 +124,8 @@ scripts/download_paws.sh                          # PAWS test split (HF copy, pi
 | `embed-v4.0` | 0.12 **unverified** | [Cohere models](https://docs.cohere.com/docs/cohere-embed) | cohere.com/pricing shows no per-token rate; 0.12 is the third-party/Bedrock listing |
 | `voyage-4` | 0.06 | [Voyage pricing](https://docs.voyageai.com/docs/pricing) | "general-purpose"; first 200M tokens free |
 | `gemini-embedding-2` | 0.20 | [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) | a list of strings returns ONE aggregated embedding: each text goes in its own `Content` |
-| `jev-1.13.0`, `gpt-6-luna` | 0.042, 0.10 | as post 1, re-checked 2026-10-19 | `jev-latest` still aliases 1.13.0 (1.14.0 is `jev-preview`) |
+| `jev-1.13.0`, `gpt-6-luna` | 0.042, 0.10 | as post 1, re-checked 2026-10-19 | |
+| `jev-1.14.0` | 0.042 | [docs.typesafe.ai/models](https://docs.typesafe.ai/models), checked 2026-10-20 | `jev-preview` since 2026-10-14; `jev-latest` moves to it about a week later ([release post](https://typesafe.ai/blog/jev-1-14)) |
 
 ### Library default thresholds (from installed source, checked 2026-10-19; `tests/test_semcache.py` re-checks them)
 

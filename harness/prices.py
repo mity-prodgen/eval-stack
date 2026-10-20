@@ -45,6 +45,16 @@ MODELS: dict[str, ModelPrice] = {
         notes="$42 per billion input tokens, output free. jev-latest and jev-preview both alias jev-1.13.0; "
         "we pin the versioned ID.",
     ),
+    "jev-1.14.0": ModelPrice(
+        model_id="jev-1.14.0",
+        display="Jev 1.14.0 (TypeSafe)",
+        input=0.042,
+        output=0.0,
+        source="https://docs.typesafe.ai/models",
+        checked="2026-10-20",
+        notes="Released 2026-10-14 as jev-preview; jev-latest moves to it about a week later "
+        "(https://typesafe.ai/blog/jev-1-14). Same price as 1.13.0. Pinned versioned ID.",
+    ),
     # --- OpenAI ---
     "gpt-6-luna": ModelPrice(
         model_id="gpt-6-luna",

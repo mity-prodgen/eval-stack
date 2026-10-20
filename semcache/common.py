@@ -104,10 +104,12 @@ DEFAULT_COSINE = 0.90   # "the default threshold" for A0/A2/A3: RedisVL's, the l
 A1_KEEP = 0.80          # A1: highest threshold that keeps >= 80% of A0's control hits (chosen out of fold)
 A3_PASS = 0.5           # serve if P(yes) >= 0.5
 
-JEV_MODEL = "jev-1.13.0"
+# Both Jev versions: 1.13.0 is post 1's judge and still `jev-latest`; 1.14.0 (`jev-preview` since 2026-10-14)
+# becomes `jev-latest` about a week later (typesafe.ai/blog/jev-1-14), so re-runs will default to it. Pinned IDs.
+JEV_MODELS = {"jev113": "jev-1.13.0", "jev114": "jev-1.14.0"}
 LUNA_MODEL = "gpt-6-luna"
-DECIDERS = ("jev", "luna")
-DECIDER_MODELS = {"jev": JEV_MODEL, "luna": LUNA_MODEL}
+DECIDERS = ("jev113", "jev114", "luna")
+DECIDER_MODELS = {**JEV_MODELS, "luna": LUNA_MODEL}
 
 # Kept generic on purpose: no list of slot types, so the deciders are not primed toward the traps we wrote.
 A3_QUESTION = "Do these two queries need the same answer?"

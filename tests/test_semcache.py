@@ -61,7 +61,9 @@ PAIR = {"id": "x", "cached": "Fare from DXB to LHR", "new": "Fare from LHR to DX
 
 
 def test_a3_request_shapes():
-    jev, luna = decide.plan([PAIR], ["jev", "luna"])
+    jev, jev114, luna = decide.plan([PAIR], ["jev113", "jev114", "luna"])
+    assert jev.model == "jev-1.13.0" and jev114.model == "jev-1.14.0"
+    assert jev.payload == jev114.payload and jev.key != jev114.key
     assert jev.payload["state"] == {"cached_query": PAIR["cached"], "new_query": PAIR["new"]}
     assert jev.payload["questions"]["same_answer"]["type"] == "noul"
     assert luna.payload["model"] == "gpt-6-luna" and luna.payload["questions"][0]["type"] == "predicate"
@@ -70,9 +72,10 @@ def test_a3_request_shapes():
 
 
 def test_a3_parsers():
-    ok = decide.parse_jev({"model": "jev-1.13.0", "answers": {"same_answer": {"noul": 0.2}}, "usage": {"input_tokens": 100}})
+    ok = decide.parse_jev({"model": "jev-1.14.0", "answers": {"same_answer": {"noul": 0.2}}, "usage": {"input_tokens": 100}},
+                          "jev-1.14.0")
     assert ok["status"] == "ok" and ok["p_yes"] == 0.2 and ok["cost_usd"] > 0
-    assert decide.parse_jev({"answers": {}})["status"] == "parse_error"
+    assert decide.parse_jev({"answers": {}}, "jev-1.13.0")["status"] == "parse_error"
     luna = decide.parse_luna({"answers": [{"name": "same_answer", "type": "predicate", "probability": 0.9}],
                               "usage": {"input_tokens": 50}})
     assert luna["status"] == "ok" and luna["p_yes"] == 0.9
@@ -136,8 +139,8 @@ def test_estimates():
     for e in EMBEDDERS:
         if e.provider != "local":
             assert estimate.estimate_embed(e, texts).usd > 0
-    est = estimate.estimate_decisions(decide.plan([PAIR], ["jev", "luna"]))
-    assert est["jev"].usd > 0 and est["luna"].usd > 0
+    est = estimate.estimate_decisions(decide.plan([PAIR], ["jev113", "jev114", "luna"]))
+    assert est["jev113"].usd > 0 and est["jev114"].usd > 0 and est["luna"].usd > 0
 
 
 def test_live_run_over_cap_aborts_before_any_call(monkeypatch, tmp_path):

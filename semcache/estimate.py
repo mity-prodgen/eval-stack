@@ -6,7 +6,8 @@ errs high because the estimate gates --max-usd:
   OpenAI embeddings   x1.05  (same tokenizer; small margin)
   Cohere, Voyage,     x1.30  (own tokenizers, not public in a form we can run offline; no calibration yet -
   Gemini                      the smoke test gives one)
-  Jev                 x1.54  (p95 of actual/cl100k on post 2's logs, persuasion/estimate.py)
+  Jev 1.13 / 1.14     x1.54  (p95 of actual/cl100k on post 2's logs for 1.13, persuasion/estimate.py; 1.14
+                              assumed the same tokenizer until the smoke test measures it)
   Luna                x1.20  on o200k_base, input billed once per question (one question here)
 
 The Voyage free allowance (200M tokens) and Gemini batch discount are ignored, so hosted estimates are
@@ -62,7 +63,7 @@ def estimate_embed(e: Embedder, texts: list[str]) -> Est:
 
 
 def decision_tokens(d) -> int:
-    if d.decider == "jev":
+    if d.decider.startswith("jev"):
         return round(len(_CL100K.encode(json.dumps(d.payload["state"]) + json.dumps(d.payload["questions"]))) * JEV_FACTOR)
     q = d.payload["questions"]
     return round(len(_O200K.encode(d.payload["input"] + json.dumps(q))) * LUNA_FACTOR) * len(q)

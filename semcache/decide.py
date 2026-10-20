@@ -16,7 +16,7 @@ from typing import Any
 from harness.cache import DiskCache, cache_key
 from harness.prices import usage_cost
 
-from .common import DECIDER_MODELS, JEV_A3, JEV_MODEL, LUNA_MODEL, jev_state, luna_input, luna_questions
+from .common import DECIDER_MODELS, JEV_A3, LUNA_MODEL, jev_state, luna_input, luna_questions
 
 
 @dataclass
@@ -31,7 +31,7 @@ class Decision:
 
 
 def build(d: Decision) -> Decision:
-    if d.decider == "jev":
+    if d.decider.startswith("jev"):
         d.payload = {"state": jev_state(d.cached, d.new), "questions": JEV_A3}
         d.key = cache_key("a3-jev", d.model, d.payload)
     elif d.decider == "luna":
@@ -51,10 +51,10 @@ def _result(status, p_yes=None, input_tokens=None, cost=None, raw=None, error=No
             "cost_usd": cost, "raw": raw, "error": error, "model": model, "latency_ms": latency_ms}
 
 
-def parse_jev(raw: dict) -> dict:
+def parse_jev(raw: dict, model: str) -> dict:
     p = ((raw.get("answers") or {}).get("same_answer") or {}).get("noul")
     tok = (raw.get("usage") or {}).get("input_tokens")
-    cost = usage_cost(JEV_MODEL, tok) if tok else None
+    cost = usage_cost(model, tok) if tok else None
     if p is None:
         return _result("parse_error", input_tokens=tok, cost=cost, raw=raw, error="no noul for same_answer",
                        model=raw.get("model"))
@@ -78,13 +78,15 @@ def run(calls: list[Decision], cache: DiskCache, max_workers: int = 8, luna_clie
     jev_local = threading.local()
     jev_clients, lock = [], threading.Lock()
 
-    def jev():
+    def jev(model: str):
+        """One client per thread and Jev version (the model is fixed per client)."""
         from harness.jev_client import JevClient
-        c = getattr(jev_local, "c", None)
+        by_model = jev_local.__dict__.setdefault("by_model", {})
+        c = by_model.get(model)
         if c is None:
-            c = JevClient(model=JEV_MODEL, max_retries=6, timeout=120.0)
+            c = JevClient(model=model, max_retries=6, timeout=120.0)
             c.__enter__()
-            jev_local.c = c
+            by_model[model] = c
             with lock:
                 jev_clients.append(c)
         return c
@@ -96,11 +98,11 @@ def run(calls: list[Decision], cache: DiskCache, max_workers: int = 8, luna_clie
     def one(d: Decision) -> tuple[str, dict]:
         def do() -> dict:
             start = monotonic()
-            if d.decider == "jev":
-                r = jev().ask(d.payload["state"], d.payload["questions"])
+            if d.decider.startswith("jev"):
+                r = jev(d.model).ask(d.payload["state"], d.payload["questions"])
                 if not r.ok:
                     return _result("api_error", error=r.error, latency_ms=r.latency_ms)
-                out = parse_jev(r.raw_response)
+                out = parse_jev(r.raw_response, d.model)
             else:
                 try:
                     out = parse_luna(luna_client.decisions.create(**d.payload).model_dump())

@@ -20,7 +20,7 @@ def main() -> None:
     for e in EMBEDDERS:
         print(f"- {e.name}: {e.provider} {e.model_id}{' @ ' + e.revision if e.revision else ''} | {e.settings}")
     print(f"  (gemini text sent = {GEMINI_SIMILARITY_PREFIX!r} + query, each text in its own Content)")
-    for d in plan([EXAMPLE], ["jev", "luna"]):
+    for d in plan([EXAMPLE], ["jev113", "jev114", "luna"]):
         print(f"\n=== A3 {d.decider} ({d.model}) request body ===")
         print(json.dumps(d.payload, indent=2, ensure_ascii=False))
 
