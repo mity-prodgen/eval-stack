@@ -173,3 +173,33 @@ def test_library_defaults_match_installed_source():
     from gptcache.similarity_evaluation.distance import SearchDistanceEvaluation
     assert inspect.signature(SearchDistanceEvaluation.__init__).parameters["max_distance"].default == 4.0
     assert {d.cosine for d in DEFAULTS} == {0.9, 0.8, 0.7, 0.6, None, 0.2}
+
+
+# ---------------------------------------------------------------- outside-model generator
+def test_generator_prompts_never_show_authored_pairs_or_guard_aliases():
+    from semcache import generate_pairs as gp
+    from semcache.slots import ENTITIES
+    jobs = gp.plan(["How do I locate my card?", "My transfer failed"])
+    text = " ".join(j["prompt"] + gp.SYSTEM for j in jobs)
+    for r in build_pairs.authored_rows():
+        assert r["cached"] not in text and r["new"] not in text
+    # spec examples come from the task wording; no alias table beyond them leaks in
+    leaked = {a for al in ENTITIES.values() for a in al if len(a) > 3 and f" {a} " in f" {text.lower()} "}
+    assert leaked <= {"visa", "mastercard"}, leaked
+    assert {j["gen"] for j in jobs} == {"sol", "sonnet"} and len(jobs) == 2 * (7 + 4) + 2
+
+
+def test_generator_parsing():
+    from semcache import generate_pairs as gp
+    trap = {"gen": "sol", "job": "trap", "slot": "direction"}
+    rows, bad = gp.to_pairs(trap, 'x {"pairs": [{"domain": "developer tools", "cached": "Move repo A to B", '
+                                  '"new": "Move repo B to A"}, {"domain": "space", "cached": "abc", "new": "abd"}]} y')
+    assert rows == [{"cached": "Move repo A to B", "new": "Move repo B to A", "label": "different",
+                     "slot_type": "direction", "domain": "dev-tools", "source": "llm:gpt-6.1-sol"}]
+    assert bad == ["bad_domain:space"]
+    assert gp.to_pairs(trap, "no json here")[1][0].startswith("parse_error")
+    bank = {"gen": "sonnet", "job": "banking77", "queries": ["Where is my card?"]}
+    rows, bad = gp.to_pairs(bank, '{"items": [{"n": 1, "trap": "Where is my new card?", "trap_kind": "colour", '
+                                  '"same": "Where can I find my card?"}]}')
+    assert bad == ["bad_trap"] and rows[0]["label"] == "same" and rows[0]["cached"] == "Where is my card?"
+    assert rows[0]["source"] == "banking77+llm:claude-sonnet-5-5"

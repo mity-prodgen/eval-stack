@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Build and freeze semcache/pairs/pairs.jsonl: trap pairs (label "different") and control pairs ("same").
 
-Two sources, both frozen in the repo:
+Sources, all frozen in the repo:
   template      the TRAPS / CONTROLS tables below, expanded and sampled with SEED
   handwritten   semcache/pairs/handwritten.jsonl, written by Claude Opus 5.5 (claude-opus-5-5) in the authoring
                 session on 2026-10-19 - the "LLM" half of "templates plus an LLM". No API call made them, so
                 they can't be regenerated; they're committed as-is.
+  generated     semcache/pairs/generated.jsonl from semcache/generate_pairs.py: gpt-6.1-sol and Claude Sonnet 5.5
+                writing from the slot-type spec alone, plus BANKING77 real queries they edit (ids g000+).
 
 Then: drop exact duplicates (case/space/punctuation-insensitive) and near-duplicates (rapidfuzz token_set_ratio
 >= 95 on both sides against a kept pair of the same label), keep at most PER_SLOT_TRAPS traps per slot type
@@ -30,6 +32,8 @@ from collections import Counter, defaultdict
 from rapidfuzz import fuzz
 
 from .common import HANDWRITTEN, N_REVIEW, PAIRS, PAIRS_DIR, SEED
+
+GENERATED = PAIRS_DIR / "generated.jsonl"
 
 SLOT_TYPES = ("class", "direction", "negation", "version", "date_time", "number", "entity")
 PER_SLOT_TRAPS = 29          # 7 x 29 = 203
@@ -193,7 +197,7 @@ def dedupe(rows: list[dict]) -> tuple[list[dict], Counter]:
     return kept, dropped
 
 
-def build() -> tuple[list[dict], dict]:
+def _authored() -> tuple[list[dict], Counter, dict]:
     rng = random.Random(SEED)
     hand = [json.loads(l) for l in HANDWRITTEN.open()] if HANDWRITTEN.exists() else []
     for h in hand:
@@ -214,17 +218,37 @@ def build() -> tuple[list[dict], dict]:
     controls = controls[:N_CONTROLS]
 
     rows, dropped = dedupe(traps + controls)  # final pass across everything
-    for i, r in enumerate(rows):
+    return rows, dropped, {"template_traps": len(t_traps), "template_controls": len(t_controls),
+                           "handwritten": len(hand)}
+
+
+def authored_rows() -> list[dict]:
+    """Templates + handwritten (ids p000+), before ids are assigned. generate_pairs dedupes against these."""
+    return _authored()[0]
+
+
+def source_group(r: dict) -> str:
+    """authored | gpt-6.1-sol | claude-sonnet-5-5 (BANKING77-seeded pairs count with their generator)."""
+    return r["source"].split("llm:")[1] if "llm:" in r["source"] else "authored"
+
+
+def build() -> tuple[list[dict], dict]:
+    authored, dropped, candidates = _authored()
+    for i, r in enumerate(authored):
         r["id"] = f"p{i:03d}"
-    rows = [{k: r[k] for k in ("id", "cached", "new", "label", "slot_type", "domain", "source")} for r in rows]
+    generated = [json.loads(l) for l in GENERATED.open()] if GENERATED.exists() else []
+    for i, r in enumerate(generated):
+        r["id"] = f"g{i:03d}"
+    rows = [{k: r[k] for k in ("id", "cached", "new", "label", "slot_type", "domain", "source")}
+            for r in authored + generated]
     stats = {
         "n": len(rows), "by_label": Counter(r["label"] for r in rows),
         "traps_by_slot": Counter(r["slot_type"] for r in rows if r["label"] == "different"),
         "controls_by_slot": Counter(r["slot_type"] for r in rows if r["label"] == "same"),
         "by_domain_label": Counter(f"{r['domain']}|{r['label']}" for r in rows),
         "by_source_label": Counter(f"{r['source']}|{r['label']}" for r in rows),
-        "candidates": {"template_traps": len(t_traps), "template_controls": len(t_controls),
-                       "handwritten": len(hand)},
+        "by_group_label": Counter(f"{source_group(r)}|{r['label']}" for r in rows),
+        "candidates": {**candidates, "generated_kept": len(generated)},
         "dropped_final_pass": dropped,
     }
     return rows, stats
@@ -235,7 +259,13 @@ def _sha(path) -> str:
 
 
 def write_review(rows: list[dict]) -> None:
-    pick = random.Random(SEED + 1).sample(rows, N_REVIEW)
+    """N_REVIEW rows, split evenly across source groups (authored, each generator model)."""
+    rng = random.Random(SEED + 1)
+    groups = sorted({source_group(r) for r in rows})
+    pick = []
+    for k, g in enumerate(groups):
+        n = N_REVIEW // len(groups) + (1 if k < N_REVIEW % len(groups) else 0)
+        pick += rng.sample([r for r in rows if source_group(r) == g], n)
     with (PAIRS_DIR / "review.csv").open("w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["id", "label", "slot_type", "domain", "source", "cached_query", "new_query",
@@ -260,7 +290,7 @@ def main() -> None:
     (PAIRS_DIR / "stats.json").write_text(json.dumps(stats, indent=1, default=dict))
     (PAIRS_DIR / "MANIFEST.json").write_text(json.dumps(
         {"pairs.jsonl": _sha(PAIRS), "handwritten.jsonl": _sha(HANDWRITTEN) if HANDWRITTEN.exists() else None,
-         "seed": SEED}, indent=1))
+         "generated.jsonl": _sha(GENERATED) if GENERATED.exists() else None, "seed": SEED}, indent=1))
     print(json.dumps(stats, indent=1, default=dict))
 
 
