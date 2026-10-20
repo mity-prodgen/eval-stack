@@ -1,0 +1,289 @@
+{"cached": "Can I bring two cabin bags in Business?", "new": "Can I bring two cabin bags in Economy?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "How early does boarding start for First Class passengers?", "new": "How early does boarding start for Economy passengers?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Do Premium Economy seats recline into a flat bed?", "new": "Do Business Class seats recline into a flat bed?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "What's the refund policy for an Economy Saver ticket?", "new": "What's the refund policy for a Business Saver ticket?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Is chauffeur drive included when I fly First Class?", "new": "Is chauffeur drive included when I fly Business Class?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "How many free checked bags do I get in Premium Economy on a US route?", "new": "How many free checked bags do I get in Economy on a US route?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Which lounge can I use at Heathrow with an Economy ticket and Gold status?", "new": "Which lounge can I use at Heathrow with a Business ticket and Gold status?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "How much is the upgrade from Economy to Premium Economy on EK 3?", "new": "How much is the upgrade from Premium Economy to Business on EK 3?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Do I get priority boarding in Premium Economy?", "new": "Do I get priority boarding in Business Class?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Is there an onboard bar in Business Class on the A380?", "new": "Is there an onboard bar in Economy on the A380?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Can I select my seat for free in Economy?", "new": "Can I select my seat for free in Premium Economy?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "What amenity kit do First Class passengers get?", "new": "What amenity kit do Business Class passengers get?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "What is the cancellation fee for a Premium Economy Flex fare?", "new": "What is the cancellation fee for an Economy Flex fare?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "Can infants get a bassinet seat in Business?", "new": "Can infants get a bassinet seat in Economy?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "How many tier points does a Business Class flight to New York earn?", "new": "How many tier points does an Economy flight to New York earn?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "What's the checked bag weight limit in First Class?", "new": "What's the checked bag weight limit in Premium Economy?", "label": "different", "slot_type": "class", "domain": "airline"}
+{"cached": "How long is the flight from Dubai to Toronto?", "new": "How long is the flight from Toronto to Dubai?", "label": "different", "slot_type": "direction", "domain": "airline"}
+{"cached": "What documents do I need to travel from India to the UAE?", "new": "What documents do I need to travel from the UAE to India?", "label": "different", "slot_type": "direction", "domain": "airline"}
+{"cached": "What's the earliest flight from MAN to DXB tomorrow?", "new": "What's the earliest flight from DXB to MAN tomorrow?", "label": "different", "slot_type": "direction", "domain": "airline"}
+{"cached": "When does the last train leave from the airport to the city centre?", "new": "When does the last train leave from the city centre to the airport?", "label": "different", "slot_type": "direction", "domain": "airline"}
+{"cached": "What's the fastest way from Terminal 1 to Terminal 3 at Dubai airport?", "new": "What's the fastest way from Terminal 3 to Terminal 1 at Dubai airport?", "label": "different", "slot_type": "direction", "domain": "airline"}
+{"cached": "Do I pay a fee to move money from my credit card to my checking account?", "new": "Do I pay a fee to move money from my checking account to my credit card?", "label": "different", "slot_type": "direction", "domain": "banking"}
+{"cached": "How do I transfer points from Marriott Bonvoy to Emirates Skywards?", "new": "How do I transfer points from Emirates Skywards to Marriott Bonvoy?", "label": "different", "slot_type": "direction", "domain": "banking"}
+{"cached": "What's the cheapest way to send money from the UK to India?", "new": "What's the cheapest way to send money from India to the UK?", "label": "different", "slot_type": "direction", "domain": "banking"}
+{"cached": "Convert 50 GBP to EUR", "new": "Convert 50 EUR to GBP", "label": "different", "slot_type": "direction", "domain": "banking"}
+{"cached": "How do I move a repository from GitHub to GitLab?", "new": "How do I move a repository from GitLab to GitHub?", "label": "different", "slot_type": "direction", "domain": "dev-tools"}
+{"cached": "How do I convert a Python dict to a JSON string?", "new": "How do I convert a JSON string to a Python dict?", "label": "different", "slot_type": "direction", "domain": "dev-tools"}
+{"cached": "How do I cast an int to a string in Go?", "new": "How do I cast a string to an int in Go?", "label": "different", "slot_type": "direction", "domain": "dev-tools"}
+{"cached": "How do I copy files from my laptop to a remote server with scp?", "new": "How do I copy files from a remote server to my laptop with scp?", "label": "different", "slot_type": "direction", "domain": "dev-tools"}
+{"cached": "How do I merge the develop branch into main?", "new": "How do I merge main into the develop branch?", "label": "different", "slot_type": "direction", "domain": "dev-tools"}
+{"cached": "How do I downgrade from Pro to Basic?", "new": "How do I upgrade from Basic to Pro?", "label": "different", "slot_type": "direction", "domain": "support"}
+{"cached": "How do I export my contacts from Outlook to Gmail?", "new": "How do I export my contacts from Gmail to Outlook?", "label": "different", "slot_type": "direction", "domain": "support"}
+{"cached": "Which fruits can I bring into Australia?", "new": "Which fruits can't I bring into Australia?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "Which airports have a lounge for Gold members?", "new": "Which airports don't have a lounge for Gold members?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "Can I get a refund if I cancel within 24 hours?", "new": "Can I get a refund if I don't cancel within 24 hours?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "What happens if my visa is approved before my flight?", "new": "What happens if my visa is not approved before my flight?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "Which seats come with extra legroom?", "new": "Which seats don't come with extra legroom?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "How do I claim compensation if my bag arrived damaged?", "new": "How do I claim compensation if my bag never arrived?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "Can I change my booking online?", "new": "Why can't I change my booking online?", "label": "different", "slot_type": "negation", "domain": "airline"}
+{"cached": "Which countries can I use my debit card in?", "new": "Which countries can't I use my debit card in?", "label": "different", "slot_type": "negation", "domain": "banking"}
+{"cached": "Which transactions count toward the cashback offer?", "new": "Which transactions don't count toward the cashback offer?", "label": "different", "slot_type": "negation", "domain": "banking"}
+{"cached": "What fees apply if I keep a minimum balance?", "new": "What fees apply if I don't keep a minimum balance?", "label": "different", "slot_type": "negation", "domain": "banking"}
+{"cached": "Which merchants accept contactless payments?", "new": "Which merchants don't accept contactless payments?", "label": "different", "slot_type": "negation", "domain": "banking"}
+{"cached": "Which accounts earn interest?", "new": "Which accounts don't earn interest?", "label": "different", "slot_type": "negation", "domain": "banking"}
+{"cached": "Why does my Docker container exit immediately?", "new": "Why doesn't my Docker container exit?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "Which Python versions does this library support?", "new": "Which Python versions does this library not support?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "Which tests run on every pull request?", "new": "Which tests don't run on every pull request?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "How do I make Git track a file?", "new": "How do I make Git not track a file?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "How do I run a script with sudo?", "new": "How do I run a script without sudo?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "Which API endpoints require authentication?", "new": "Which API endpoints don't require authentication?", "label": "different", "slot_type": "negation", "domain": "dev-tools"}
+{"cached": "Which browsers support the web app?", "new": "Which browsers don't support the web app?", "label": "different", "slot_type": "negation", "domain": "support"}
+{"cached": "Why am I being charged for the add-on?", "new": "Why am I not being charged for the add-on?", "label": "different", "slot_type": "negation", "domain": "support"}
+{"cached": "Which orders can be returned after 30 days?", "new": "Which orders cannot be returned after 30 days?", "label": "different", "slot_type": "negation", "domain": "support"}
+{"cached": "Which plans include phone support?", "new": "Which plans don't include phone support?", "label": "different", "slot_type": "negation", "domain": "support"}
+{"cached": "Does TensorFlow support Python 3.13?", "new": "Does TensorFlow support Python 3.12?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "How do I enable the experimental JIT in Python 3.13?", "new": "How do I enable the experimental JIT in Python 3.12?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "What is the latest patch release of Node 20?", "new": "What is the latest patch release of Node 22?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "When was Postgres 16 released?", "new": "When was Postgres 17 released?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "What Java version does Spring Boot 3 require?", "new": "What Java version does Spring Boot 2 require?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Which Kubernetes APIs were removed in 1.25?", "new": "Which Kubernetes APIs were removed in 1.26?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "How do I migrate from Angular 16 to 17?", "new": "How do I migrate from Angular 17 to 18?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Changelog for Terraform 1.6", "new": "Changelog for Terraform 1.7", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Does Xcode 16 support an iOS 12 deployment target?", "new": "Does Xcode 15 support an iOS 12 deployment target?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Is Ubuntu 22.04 still getting security updates?", "new": "Is Ubuntu 20.04 still getting security updates?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "What is the max request size on API v3?", "new": "What is the max request size on API v2?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "What new syntax did Python 3.10 add?", "new": "What new syntax did Python 3.8 add?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Is YJIT on by default in Ruby 3.3?", "new": "Is YJIT on by default in Ruby 3.2?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Breaking changes in Django 5.1", "new": "Breaking changes in Django 5.2", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Which TLS versions does SDK 2.4 support?", "new": "Which TLS versions does SDK 1.9 support?", "label": "different", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "What is the minimum Android version for app 6.0?", "new": "What is the minimum Android version for app 5.0?", "label": "different", "slot_type": "version", "domain": "support"}
+{"cached": "When does support for Windows 10 end?", "new": "When does support for Windows 11 end?", "label": "different", "slot_type": "version", "domain": "support"}
+{"cached": "Release notes for iOS 18.1", "new": "Release notes for iOS 18.2", "label": "different", "slot_type": "version", "domain": "support"}
+{"cached": "Is flight QR 1 delayed today?", "new": "Is flight QR 1 delayed tomorrow?", "label": "different", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Are there seats left on the 7:45am airport shuttle?", "new": "Are there seats left on the 7:45pm airport shuttle?", "label": "different", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Is there a flight from DXB to CMB before 6am?", "new": "Is there a flight from DXB to CMB before 6pm?", "label": "different", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Any award seats from DXB to SIN on 14 February?", "new": "Any award seats from DXB to SIN on 15 February?", "label": "different", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Is the 11:30pm flight to Muscat still on schedule?", "new": "Is the 11:30am flight to Muscat still on schedule?", "label": "different", "slot_type": "date_time", "domain": "airline"}
+{"cached": "How much did I spend on groceries in September?", "new": "How much did I spend on groceries in October?", "label": "different", "slot_type": "date_time", "domain": "banking"}
+{"cached": "Download my bank statement for March 2026", "new": "Download my bank statement for April 2026", "label": "different", "slot_type": "date_time", "domain": "banking"}
+{"cached": "What was the closing price of AAPL on Oct 10?", "new": "What was the closing price of AAPL on Oct 11?", "label": "different", "slot_type": "date_time", "domain": "banking"}
+{"cached": "What's my credit card payment due date for November?", "new": "What's my credit card payment due date for December?", "label": "different", "slot_type": "date_time", "domain": "banking"}
+{"cached": "What was the exchange rate when my payment cleared on 1 August?", "new": "What was the exchange rate when my payment cleared on 2 August?", "label": "different", "slot_type": "date_time", "domain": "banking"}
+{"cached": "Who is on call this weekend?", "new": "Who is on call next weekend?", "label": "different", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "Why did the nightly build fail on 12 October?", "new": "Why did the nightly build fail on 13 October?", "label": "different", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "Show error logs from 14:00 to 15:00", "new": "Show error logs from 16:00 to 17:00", "label": "different", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "Did the 9:00 cron job run?", "new": "Did the 21:00 cron job run?", "label": "different", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "Which incidents were opened last month?", "new": "Which incidents were opened this month?", "label": "different", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "How many orders did we get yesterday?", "new": "How many orders did we get today?", "label": "different", "slot_type": "date_time", "domain": "support"}
+{"cached": "What's the status of my order placed on 2 October?", "new": "What's the status of my order placed on 20 October?", "label": "different", "slot_type": "date_time", "domain": "support"}
+{"cached": "Can I withdraw 1,000 AED from an ATM in one go?", "new": "Can I withdraw 10,000 AED from an ATM in one go?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "What's the interest on a 12 month fixed deposit?", "new": "What's the interest on a 24 month fixed deposit?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "What's the cashback on a $200 purchase?", "new": "What's the cashback on a $2,000 purchase?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "How many reward points do I get for spending 500 dollars?", "new": "How many reward points do I get for spending 5,000 dollars?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "What's the overdraft fee if I go $50 overdrawn?", "new": "What's the overdraft fee if I go $500 overdrawn?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "Can I carry 3 laptops in my hand luggage?", "new": "Can I carry 1 laptop in my hand luggage?", "label": "different", "slot_type": "number", "domain": "airline"}
+{"cached": "How much does a seat for a 2 year old cost?", "new": "How much does a seat for a 12 year old cost?", "label": "different", "slot_type": "number", "domain": "airline"}
+{"cached": "What's the total fare for 4 passengers from DXB to LHR?", "new": "What's the total fare for 2 passengers from DXB to LHR?", "label": "different", "slot_type": "number", "domain": "airline"}
+{"cached": "Do I pay an oversize fee for a 158 cm bag?", "new": "Do I pay an oversize fee for a 200 cm bag?", "label": "different", "slot_type": "number", "domain": "airline"}
+{"cached": "How long does a 50 GB backup take to restore?", "new": "How long does a 500 GB backup take to restore?", "label": "different", "slot_type": "number", "domain": "dev-tools"}
+{"cached": "How much RAM do I need to run a 7B model locally?", "new": "How much RAM do I need to run a 70B model locally?", "label": "different", "slot_type": "number", "domain": "dev-tools"}
+{"cached": "Why is my Lambda timing out after 3 seconds?", "new": "Why is my Lambda timing out after 15 minutes?", "label": "different", "slot_type": "number", "domain": "dev-tools"}
+{"cached": "Is 8 GB enough RAM for Docker Desktop?", "new": "Is 4 GB enough RAM for Docker Desktop?", "label": "different", "slot_type": "number", "domain": "dev-tools"}
+{"cached": "Can I upload a 30 MB attachment?", "new": "Can I upload a 300 MB attachment?", "label": "different", "slot_type": "number", "domain": "support"}
+{"cached": "Can I get a refund 10 days after purchase?", "new": "Can I get a refund 40 days after purchase?", "label": "different", "slot_type": "number", "domain": "support"}
+{"cached": "How much does the Pro plan cost for 3 months?", "new": "How much does the Pro plan cost for 12 months?", "label": "different", "slot_type": "number", "domain": "support"}
+{"cached": "What happens after 3 failed login attempts?", "new": "What happens after 10 failed login attempts?", "label": "different", "slot_type": "number", "domain": "support"}
+{"cached": "How do I link my Revolut card to Apple Pay?", "new": "How do I link my Revolut card to Google Pay?", "label": "different", "slot_type": "entity", "domain": "banking"}
+{"cached": "What's the wire transfer cut-off time at Chase?", "new": "What's the wire transfer cut-off time at Wells Fargo?", "label": "different", "slot_type": "entity", "domain": "banking"}
+{"cached": "Do Zelle payments have a daily limit?", "new": "Do Venmo payments have a daily limit?", "label": "different", "slot_type": "entity", "domain": "banking"}
+{"cached": "What's the SWIFT code for HSBC UAE?", "new": "What's the SWIFT code for Barclays UAE?", "label": "different", "slot_type": "entity", "domain": "banking"}
+{"cached": "What's the PayPal fee for receiving money?", "new": "What's the Wise fee for receiving money?", "label": "different", "slot_type": "entity", "domain": "banking"}
+{"cached": "What are the check-in times for flydubai at Terminal 2?", "new": "What are the check-in times for Emirates at Terminal 2?", "label": "different", "slot_type": "entity", "domain": "airline"}
+{"cached": "What's the baggage allowance on Turkish Airlines to Istanbul?", "new": "What's the baggage allowance on Lufthansa to Istanbul?", "label": "different", "slot_type": "entity", "domain": "airline"}
+{"cached": "Can I earn Skywards miles on Qantas flights?", "new": "Can I earn Skywards miles on Etihad flights?", "label": "different", "slot_type": "entity", "domain": "airline"}
+{"cached": "How do I set environment variables in Vercel?", "new": "How do I set environment variables in Heroku?", "label": "different", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "How do I run tests in GitHub Actions?", "new": "How do I run tests in CircleCI?", "label": "different", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "How do I install pnpm with Homebrew?", "new": "How do I install yarn with Homebrew?", "label": "different", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "How do I uninstall Docker on Ubuntu?", "new": "How do I uninstall Docker on Windows?", "label": "different", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "How do I set up 2FA with Google Authenticator?", "new": "How do I set up 2FA with Authy?", "label": "different", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "How do I share my screen in Zoom?", "new": "How do I share my screen in Microsoft Teams?", "label": "different", "slot_type": "entity", "domain": "support"}
+{"cached": "How do I enable dark mode on Android?", "new": "How do I enable dark mode on iPhone?", "label": "different", "slot_type": "entity", "domain": "support"}
+{"cached": "Flights from Dubai to London tomorrow", "new": "DXB to LHR flights tomorrow", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Fare from Bombay to Delhi", "new": "Fare from Mumbai to New Delhi", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Is there a nonstop from NYC to Paris?", "new": "Is there a nonstop flight from New York to Paris?", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Flights from Bengaluru to Singapore next week", "new": "BLR to SIN flights next week", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Dubai to Heathrow fares in December", "new": "DXB-LHR fares in December", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Exchange rate dollars to dirhams", "new": "USD to AED rate", "label": "same", "slot_type": "direction", "domain": "banking"}
+{"cached": "Exchange rate EUR→USD", "new": "euro to dollar exchange rate", "label": "same", "slot_type": "direction", "domain": "banking"}
+{"cached": "biz class baggage allowance", "new": "business class baggage allowance", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Premium economy seat width on the 777", "new": "premium eco seat width on the 777", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Coach fare to Chicago", "new": "Economy fare to Chicago", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Does a J fare include lounge access?", "new": "Does a business fare include lounge access?", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Where is the first-class lounge in Dubai?", "new": "Where is the First Class lounge in Dubai?", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Does numpy support 3.12?", "new": "Does numpy support Python 3.12?", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Install Node.js v20 on a Mac", "new": "Install Node 20 on a Mac", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "PY 3.11 type hint changes", "new": "Python 3.11 type hint changes", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "python3.12 install on Debian", "new": "How to install Python 3.12 on Debian", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Upgrade guide for Postgres 16", "new": "Upgrade guide for PostgreSQL 16", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Is Docker Desktop supported on macOS Sonoma?", "new": "Is Docker Desktop supported on macOS 14?", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Default Python on Ubuntu Noble", "new": "Default Python on Ubuntu 24.04", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "When is py3.8 end of life?", "new": "End of life date for Python 3.8", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Do you support Win 11?", "new": "Do you support Windows 11?", "label": "same", "slot_type": "version", "domain": "support"}
+{"cached": "Send $2.5k to the UK", "new": "Send 2,500 USD to the UK", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "Transfer 1 million rupees to my father", "new": "Transfer 10 lakh rupees to my father", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "Wire 500 quid to my sister", "new": "Wire £500 to my sister", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "What's the fee on a 5 grand transfer?", "new": "What's the fee on a $5,000 transfer?", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "Can I bring a 20kg suitcase?", "new": "Can I bring a twenty kilo suitcase?", "label": "same", "slot_type": "number", "domain": "airline"}
+{"cached": "Is my 6 in the evening flight to Doha on time?", "new": "Is my 6pm flight to Doha on time?", "label": "same", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Departing on the 3rd of March", "new": "Departing March 3", "label": "same", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Is the 0900 flight to Riyadh on time?", "new": "Is the 9am flight to Riyadh on time?", "label": "same", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Centurion lounge access with Amex Platinum", "new": "Centurion lounge access with American Express Platinum", "label": "same", "slot_type": "entity", "domain": "banking"}
+{"cached": "How do I pay with my MasterCard?", "new": "How do I pay with my Mastercard?", "label": "same", "slot_type": "entity", "domain": "banking"}
+{"cached": "Can I use Gpay at checkout?", "new": "Can I use Google Pay at checkout?", "label": "same", "slot_type": "entity", "domain": "banking"}
+{"cached": "What's the SWIFT code for my branch?", "new": "Which BIC should I give for an international transfer?", "label": "same", "slot_type": "entity", "domain": "banking"}
+{"cached": "k8s pod keeps restarting", "new": "Kubernetes pod keeps restarting", "label": "same", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "Help with 2-factor auth", "new": "Help with two-factor authentication", "label": "same", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "Is Heathrow T5 used by BA?", "new": "Does British Airways fly from Heathrow Terminal 5?", "label": "same", "slot_type": "entity", "domain": "airline"}
+{"cached": "I can't log in", "new": "I'm unable to log in", "label": "same", "slot_type": "negation", "domain": "support"}
+{"cached": "My payment didn't go through", "new": "My payment failed", "label": "same", "slot_type": "negation", "domain": "support"}
+{"cached": "The app won't open", "new": "The app fails to open", "label": "same", "slot_type": "negation", "domain": "support"}
+{"cached": "Why isn't my refund here yet?", "new": "Why hasn't my refund arrived yet?", "label": "same", "slot_type": "negation", "domain": "support"}
+{"cached": "Without a passport can I fly domestically?", "new": "Can I fly domestically with no passport?", "label": "same", "slot_type": "negation", "domain": "airline"}
+{"cached": "How do I add a checked bag to my booking?", "new": "What's the way to add a checked bag after booking?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Can I change the name on my ticket?", "new": "Is it possible to change the passenger name on my ticket?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "What is the hand luggage size limit?", "new": "How big can my carry-on bag be?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How early should I arrive at the airport for an international flight?", "new": "How long before an international flight should I get to the airport?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Can I bring my dog on board?", "new": "Are dogs allowed in the cabin?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I request a wheelchair at the airport?", "new": "How can I book wheelchair assistance for my trip?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "When does online check-in open?", "new": "How many hours before departure can I check in online?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "My bag didn't arrive, what do I do?", "new": "What should I do if my luggage didn't show up?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I get a receipt for my flight?", "new": "Where can I download the invoice for my ticket?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Can I pick my seat for free?", "new": "Is seat selection free of charge?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I join the frequent flyer program?", "new": "How can I sign up for the loyalty programme?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Do you serve vegetarian meals?", "new": "Can I order a vegetarian meal on my flight?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "What's the policy for travelling while pregnant?", "new": "Can I fly when I'm pregnant?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I claim missing miles?", "new": "My miles weren't credited, how do I claim them?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Can I take a power bank on the plane?", "new": "Are power banks allowed on board?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I cancel my booking and get a refund?", "new": "I want to cancel my flight and get my money back", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Is there wifi on board?", "new": "Do your planes have internet access?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "What is the baggage allowance for infants?", "new": "How much luggage can a baby travel with?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Can unaccompanied minors fly with you?", "new": "Do you allow children to travel alone?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I change my flight date?", "new": "I need to move my flight to a different day", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "What's the 24-hour cancellation policy?", "new": "Can I cancel for free within 24 hours of booking?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I travel with golf clubs?", "new": "What's the process for flying with my golf bag?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "Where is the Emirates lounge in Dubai Terminal 3?", "new": "How do I find the Emirates lounge at DXB Terminal 3?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "What aircraft operates EK 1?", "new": "Which plane type is used on flight EK1?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I add my passport details to my booking?", "new": "Where do I enter my passport information for my trip?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I reset my online banking password?", "new": "I forgot my internet banking password, how do I change it?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I freeze my card?", "new": "Can I temporarily block my card?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "What's my account number?", "new": "Where can I find my account number?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I set up a standing order?", "new": "How can I create a recurring payment?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How long does an international transfer take?", "new": "How many days does it take to send money abroad?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I dispute a transaction?", "new": "I want to raise a dispute on a card payment", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I order a new chequebook?", "new": "Can I request a new checkbook online?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "What's the daily ATM withdrawal limit?", "new": "How much cash can I take out from an ATM per day?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I update my address?", "new": "I moved house, how do I change my address with the bank?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I activate my new card?", "new": "What are the steps to activate a card I just received?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "Why was my card declined?", "new": "What could cause my card payment to be declined?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I close my savings account?", "new": "I want to shut down my savings account", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "Can I increase my credit limit?", "new": "How do I request a higher credit limit?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I add a payee?", "new": "How can I add a new beneficiary?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "Where can I see my credit score?", "new": "How do I check my credit score in the app?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "Is there a fee for using my card abroad?", "new": "Do you charge for card payments overseas?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I report a lost card?", "new": "I lost my card, what should I do?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I enable notifications for every transaction?", "new": "Can I get an alert each time my card is used?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I download my statement?", "new": "Where can I get a PDF of my bank statement?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I open a joint account?", "new": "Can two people open an account together?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I cancel a direct debit?", "new": "How can I stop a direct debit?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "What is the minimum balance for a savings account?", "new": "How much do I need to keep in my savings account to avoid fees?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "Can I deposit a cheque using the app?", "new": "How do I deposit a check with my phone?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I set a PIN for my new card?", "new": "How can I choose the PIN on my new card?", "label": "same", "slot_type": "paraphrase", "domain": "banking"}
+{"cached": "How do I create a virtual environment in Python?", "new": "How do I set up a Python venv?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I undo the last git commit?", "new": "How can I undo my most recent commit in git?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I delete a local branch in git?", "new": "Command to remove a git branch locally", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I list running Docker containers?", "new": "Which command shows the containers that are currently running in Docker?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I fix 'permission denied' when running npm install -g?", "new": "npm install -g fails with EACCES permission denied, how to fix?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I squash commits?", "new": "How can I combine several commits into one?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I read a CSV file with pandas?", "new": "Load a CSV into a pandas DataFrame", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I check which Python version is installed?", "new": "Command to see my Python version", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I set an environment variable in bash?", "new": "How to export an env var in a bash shell", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I resolve a merge conflict?", "new": "What are the steps to fix a git merge conflict?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I send an HTTP GET request in Python?", "new": "Make a GET request with Python", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I see the logs of a Kubernetes pod?", "new": "kubectl command to view pod logs", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I generate an SSH key?", "new": "What's the command to create a new SSH key pair?", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I rename a column in pandas?", "new": "Change a DataFrame column name in pandas", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I remove node_modules from git tracking?", "new": "Stop tracking node_modules in my git repo", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I install a specific version of a package with pip?", "new": "pip install a particular package version", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I free up disk space used by Docker?", "new": "Clean up unused Docker images and volumes", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "What does 'detached HEAD' mean in git?", "new": "Explain detached HEAD state in git", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I run a single test with pytest?", "new": "Run just one test function using pytest", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I change the default branch on GitHub?", "new": "Set a different default branch in a GitHub repo", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I kill the process using port 3000?", "new": "Free up port 3000 that's already in use", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I format JSON in the terminal?", "new": "Pretty-print JSON from the command line", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I add a pre-commit hook?", "new": "Set up a git pre-commit hook", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I upgrade all pip packages?", "new": "Update every installed Python package with pip", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I parse command-line arguments in Python?", "new": "Read CLI arguments in a Python script", "label": "same", "slot_type": "paraphrase", "domain": "dev-tools"}
+{"cached": "How do I cancel my subscription?", "new": "I want to stop my subscription", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I change my email address?", "new": "Can I update the email on my account?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Where can I find my invoices?", "new": "How do I download past invoices?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I delete my account?", "new": "I want to permanently remove my account", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I reset my password?", "new": "I forgot my password", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I contact customer support?", "new": "What's the best way to reach your support team?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Can I get a refund?", "new": "Do you offer refunds?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I enable two-factor authentication?", "new": "How can I turn on 2FA?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I export my data?", "new": "Can I download all my data?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I add a team member?", "new": "How can I invite a colleague to my workspace?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "What payment methods do you accept?", "new": "Which ways can I pay?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I change my plan?", "new": "Can I switch to a different plan?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Why was I charged twice?", "new": "I see a double charge on my card", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I update my billing details?", "new": "Where do I change my card on file?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Is there a student discount?", "new": "Do you offer discounts for students?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I unsubscribe from marketing emails?", "new": "Stop sending me promotional emails", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I change the language of the app?", "new": "Where do I change the app language?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Is my data encrypted?", "new": "Do you encrypt the data I store with you?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I track my order?", "new": "Where can I see the status of my order?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I return an item?", "new": "What's the process to send back a product?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How long does shipping take?", "new": "What are your delivery times?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Can I change my username?", "new": "Is it possible to edit my username?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I log out of all devices?", "new": "Sign me out everywhere", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Do you have an API?", "new": "Is there a developer API I can use?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Where can I see my usage this month?", "new": "How do I check how much I've used this billing period?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "Can I bring 2 bottles of wine in checked luggage?", "new": "Can I bring 6 bottles of wine in checked luggage?", "label": "different", "slot_type": "number", "domain": "airline"}
+{"cached": "What's the transfer fee for sending $100 to Mexico?", "new": "What's the transfer fee for sending $10,000 to Mexico?", "label": "different", "slot_type": "number", "domain": "banking"}
+{"cached": "Is the 7am bus to the airport running?", "new": "Is the 07:00 airport bus running?", "label": "same", "slot_type": "date_time", "domain": "airline"}
+{"cached": "What's the status of my 18:30 flight to Bahrain?", "new": "Is my 6:30pm flight to Bahrain on time?", "label": "same", "slot_type": "date_time", "domain": "airline"}
+{"cached": "Transactions from last Friday", "new": "Show what I spent last Friday", "label": "same", "slot_type": "date_time", "domain": "banking"}
+{"cached": "Exchange rate on 31 Dec 2025", "new": "What was the exchange rate on December 31, 2025?", "label": "same", "slot_type": "date_time", "domain": "banking"}
+{"cached": "Who's on call on Saturday?", "new": "Which engineer is on call this Saturday?", "label": "same", "slot_type": "date_time", "domain": "dev-tools"}
+{"cached": "Is support available at midnight?", "new": "Can I reach support at 12am?", "label": "same", "slot_type": "date_time", "domain": "support"}
+{"cached": "How do I send 1,500 euros to Germany?", "new": "How do I send €1,500 to Germany?", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "ATM limit for withdrawing AED 5,000", "new": "Can I withdraw 5000 dirhams at an ATM?", "label": "same", "slot_type": "number", "domain": "banking"}
+{"cached": "Can I upload a 2 GB video?", "new": "Can I upload a 2GB video?", "label": "same", "slot_type": "number", "domain": "support"}
+{"cached": "Price for 25 seats on the Business plan", "new": "How much is the Business plan for 25 users?", "label": "same", "slot_type": "number", "domain": "support"}
+{"cached": "Does Premium Economy include lounge access?", "new": "Is lounge access part of the premium economy fare?", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Business class check-in counters at DXB", "new": "Where do I check in for business at Dubai airport?", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Economy Flex refund rules", "new": "Refund rules for an economy flex ticket", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "First class chauffeur service", "new": "Do First Class passengers get a chauffeur?", "label": "same", "slot_type": "class", "domain": "airline"}
+{"cached": "Train from the airport to downtown Dubai", "new": "How do I get from DXB to downtown Dubai by metro?", "label": "same", "slot_type": "direction", "domain": "airline"}
+{"cached": "Transfer from my savings to my checking account", "new": "Move money from savings to checking", "label": "same", "slot_type": "direction", "domain": "banking"}
+{"cached": "Add my Visa card to Apple Pay", "new": "How do I put my Visa on Apple Pay?", "label": "same", "slot_type": "entity", "domain": "banking"}
+{"cached": "Does Emirates allow pets in the cabin?", "new": "Can I bring my pet in the cabin on Emirates?", "label": "same", "slot_type": "entity", "domain": "airline"}
+{"cached": "Install Docker on Ubuntu", "new": "How do I set up Docker on an Ubuntu machine?", "label": "same", "slot_type": "entity", "domain": "dev-tools"}
+{"cached": "Is React 19 stable?", "new": "Has React 19 had a stable release?", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Upgrade a Django 4.2 project to 5.0", "new": "How do I migrate from Django 4.2 to 5.0?", "label": "same", "slot_type": "version", "domain": "dev-tools"}
+{"cached": "Why can't I see my statement?", "new": "Why is my statement not showing?", "label": "same", "slot_type": "negation", "domain": "banking"}
+{"cached": "My card isn't working abroad", "new": "My card does not work overseas", "label": "same", "slot_type": "negation", "domain": "banking"}
+{"cached": "What are your opening hours?", "new": "When are you open?", "label": "same", "slot_type": "paraphrase", "domain": "support"}
+{"cached": "How do I change my seat?", "new": "Can I switch to a different seat after booking?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}
+{"cached": "How do I print my boarding pass?", "new": "Where can I get a printable boarding pass?", "label": "same", "slot_type": "paraphrase", "domain": "airline"}

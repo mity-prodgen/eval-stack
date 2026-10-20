@@ -1,0 +1,48 @@
+{
+ "n": 403,
+ "by_label": {
+  "different": 203,
+  "same": 200
+ },
+ "traps_by_slot": {
+  "class": 29,
+  "direction": 29,
+  "negation": 29,
+  "version": 29,
+  "date_time": 29,
+  "number": 29,
+  "entity": 29
+ },
+ "controls_by_slot": {
+  "direction": 17,
+  "class": 13,
+  "version": 16,
+  "number": 15,
+  "date_time": 13,
+  "entity": 15,
+  "negation": 10,
+  "paraphrase": 101
+ },
+ "by_domain_label": {
+  "airline|different": 71,
+  "banking|different": 43,
+  "dev-tools|different": 58,
+  "support|different": 31,
+  "airline|same": 68,
+  "banking|same": 50,
+  "dev-tools|same": 47,
+  "support|same": 35
+ },
+ "by_source_label": {
+  "handwritten|different": 123,
+  "template|different": 80,
+  "handwritten|same": 163,
+  "template|same": 37
+ },
+ "candidates": {
+  "template_traps": 95,
+  "template_controls": 42,
+  "handwritten": 289
+ },
+ "dropped_final_pass": {}
+}

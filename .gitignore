@@ -8,4 +8,5 @@ data/
 cache/
 persuasion/results/
 .DS_Store
-claude-code-prompt-post1.md
+prompts/
+semcache/results/

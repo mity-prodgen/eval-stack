@@ -8,7 +8,7 @@ KEY_PATTERNS = [r"sk-ant-[A-Za-z0-9_-]{20,}", r"sk-proj-[A-Za-z0-9_-]{20,}", r"s
 
 def test_env_and_data_are_gitignored():
     ignored = (ROOT / ".gitignore").read_text().split()
-    for entry in (".env", "data/", "cache/", "persuasion/results/"):
+    for entry in (".env", "data/", "cache/", "persuasion/results/", "semcache/results/"):
         assert entry in ignored
 
 

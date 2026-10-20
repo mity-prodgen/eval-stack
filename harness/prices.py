@@ -115,6 +115,60 @@ MODELS: dict[str, ModelPrice] = {
         "so temperature 0 is impossible on this model. thinking 'disabled' returns 400; lowest setting is "
         "{'type': 'between_tools'} (no up-front thinking; tool-free requests return text only).",
     ),
+    # --- Embedding models (semcache/, checked 2026-10-19). Input-only pricing. ---
+    "text-embedding-3-small": ModelPrice(
+        model_id="text-embedding-3-small",
+        display="OpenAI text-embedding-3-small",
+        input=0.02,
+        output=0.0,
+        source="https://developers.openai.com/api/docs/pricing",
+        checked="2026-10-19",
+        notes="1536 dims by default. Pricing page lists no batch price for embeddings, so none is assumed.",
+    ),
+    "text-embedding-3-large": ModelPrice(
+        model_id="text-embedding-3-large",
+        display="OpenAI text-embedding-3-large",
+        input=0.13,
+        output=0.0,
+        source="https://developers.openai.com/api/docs/pricing",
+        checked="2026-10-19",
+        notes="3072 dims by default.",
+    ),
+    "embed-v4.0": ModelPrice(
+        model_id="embed-v4.0",
+        display="Cohere Embed v4",
+        input=0.12,
+        output=0.0,
+        source="https://docs.cohere.com/docs/cohere-embed (model); price NOT on cohere.com/pricing",
+        checked="2026-10-19",
+        notes="UNVERIFIED PRICE. cohere.com/pricing lists only Model Vault hourly rates (Embed 5) and no per-token "
+        "rate for embed-v4.0; $0.12/M is the rate third-party trackers and the Bedrock/Azure listings show. Used "
+        "for estimates only; actual cost = billed_units.input_tokens x this rate. 1536 dims by default. Newer "
+        "embed-v5.0-pro / embed-v5.0-fast exist; the task names v4.",
+    ),
+    "voyage-4": ModelPrice(
+        model_id="voyage-4",
+        display="Voyage 4",
+        input=0.06,
+        output=0.0,
+        source="https://docs.voyageai.com/docs/pricing",
+        checked="2026-10-19",
+        notes="'Optimized for general-purpose and multilingual retrieval quality' (docs.voyageai.com/docs/embeddings). "
+        "First 200M tokens free per account, so the bill is likely $0; the estimate ignores the allowance. "
+        "1024 dims by default.",
+    ),
+    "gemini-embedding-2": ModelPrice(
+        model_id="gemini-embedding-2",
+        display="Gemini Embedding 2",
+        input=0.20,
+        output=0.0,
+        batch_discount=0.5,
+        source="https://ai.google.dev/gemini-api/docs/pricing",
+        checked="2026-10-19",
+        notes="Paid tier text input; free-tier data is used to improve Google products, so run on the paid tier. "
+        "Stable model code per ai.google.dev/gemini-api/docs/models/gemini-embedding-2. No task_type; similarity "
+        "uses the documented prefix 'task: sentence similarity | query: '. 3072 dims by default.",
+    ),
 }
 
 

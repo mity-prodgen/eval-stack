@@ -7,12 +7,15 @@ setups and ships everything needed to re-run it.
 Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tables and figures in
 [persuasion/RESULTS.md](persuasion/RESULTS.md)
 
+**Post 2: How often does a semantic cache serve the wrong stored answer?** (`semcache/`)
+Setup done, results pending.
+
 ## Setup
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY - .env is gitignored
+cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2) - .env is gitignored
 scripts/download_ragtruth.sh
 ```
 
@@ -77,6 +80,65 @@ Details and caveats per model: `harness/prices.py`.
   guard field to the P0 prompt would change the prompt the Haiku anchor relies on. Jev and Luna ask the guard
   in the same request as the judge question.
 
+### Noise baseline (follow-up)
+
+How often does a verdict change between two runs with no attack? C0 only, all 5 judges, all 3 arms, 2 independent
+re-runs (`--repeat K` folds K into every cache key; repeat 0 is the original, cached run):
+
+```bash
+.venv/bin/python persuasion/run.py --condition C0 --repeat 1 --live --max-usd 3
+.venv/bin/python persuasion/run.py --condition C0 --repeat 2 --live --max-usd 3
+.venv/bin/python persuasion/noise.py             # writes persuasion/NOISE.md next to the post-1 flip rates
+```
+
+## Post 2: semantic cache wrong hits (`semcache/`)
+
+**How often does a semantic cache serve a stored answer to a query that needs a different answer?**
+
+```bash
+scripts/download_paws.sh                          # PAWS test split (HF copy, pinned revision) into data/paws/
+.venv/bin/python -m semcache.build_pairs          # verifies the frozen pairs.jsonl rebuilds byte for byte
+.venv/bin/python -m semcache.build_paws           # verifies the frozen PAWS sample ids
+.venv/bin/python -m semcache.show_prompts         # every A3 request body and embedding setting
+.venv/bin/python -m semcache.run                  # dry run: cost table
+.venv/bin/python -m semcache.run --smoke --live   # 20 pairs per model
+.venv/bin/python -m semcache.run --live --max-usd 3
+```
+
+### Design
+
+| | |
+|---|---|
+| Data | `semcache/pairs/pairs.jsonl`, frozen (sha256 in `MANIFEST.json`): 203 trap pairs (label `different`, 29 per slot type: class, direction, negation, version, date/time, number, entity) and 200 control pairs (label `same`: 101 plain paraphrases, 99 alias/format changes such as "Dubai to London" vs "DXB to LHR"). Airline, banking, dev-tools, support. Templates (`build_pairs.py`) plus pairs written by Claude Opus 5.5 in the authoring session (`pairs/handwritten.jsonl`); deduped; 30-row review sheet `pairs/review.csv`. |
+| External check | PAWS-Wiki labeled_final test, 300 pairs (150/150), seed `20261021`, ids in `pairs/paws_sample_ids.json` |
+| Embeddings | text-embedding-3-small, text-embedding-3-large, Cohere embed-v4.0, Voyage voyage-4, gemini-embedding-2; local all-MiniLM-L6-v2, BGE-M3 (dense), redis/langcache-embed-v1 (RedisVL's default vectorizer), HF revisions pinned |
+| Thresholds | cosine 0.50-0.99, step 0.01 (task range 0.80-0.99; extended down because several library defaults sit below 0.80) |
+| Arms | A0 embedding only at 0.90 (RedisVL default) · A1 highest threshold keeping >= 80% of A0's control hits, chosen out of fold (2-fold) · A2 A0 + slot guard (`slots.py`, committed before the pairs existed) · A3 A0 + Jev / GPT-6 Luna "Do these two queries need the same answer?", serve if P(yes) >= 0.5 |
+
+### Verified embedding models and prices (USD per 1M input tokens, checked 2026-10-19)
+
+| Model | Price | Source | Note |
+|---|---|---|---|
+| `text-embedding-3-small` | 0.02 | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) | 1536 dims |
+| `text-embedding-3-large` | 0.13 | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) | 3072 dims |
+| `embed-v4.0` | 0.12 **unverified** | [Cohere models](https://docs.cohere.com/docs/cohere-embed) | cohere.com/pricing shows no per-token rate; 0.12 is the third-party/Bedrock listing |
+| `voyage-4` | 0.06 | [Voyage pricing](https://docs.voyageai.com/docs/pricing) | "general-purpose"; first 200M tokens free |
+| `gemini-embedding-2` | 0.20 | [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) | a list of strings returns ONE aggregated embedding: each text goes in its own `Content` |
+| `jev-1.13.0`, `gpt-6-luna` | 0.042, 0.10 | as post 1, re-checked 2026-10-19 | `jev-latest` still aliases 1.13.0 (1.14.0 is `jev-preview`) |
+
+### Library default thresholds (from installed source, checked 2026-10-19; `tests/test_semcache.py` re-checks them)
+
+| Library | Default | Cosine equivalent |
+|---|---|---|
+| RedisVL `SemanticCache` 0.28.0 | `distance_threshold=0.1`, vectorizer `redis/langcache-embed-v1` | 0.90 |
+| langchain-redis / langchain-community `RedisSemanticCache` | 0.2 (distance) | 0.80 |
+| langchain-community `CassandraSemanticCache` | 0.85, `dot` | 0.70 (Cassandra returns (1+dot)/2) |
+| GPTCache 0.1.44 | `similarity_threshold=0.8`, `SearchDistanceEvaluation(max_distance=4)` + FAISS L2 | 0.60 for unit vectors |
+| langchain-community `SingleStoreDBSemanticCache` | 0.2 dot product | 0.20 |
+| langchain-community `OpenSearchSemanticCache` | 0.2 on l2 score 1/(1+d²) | none: every unit-vector pair passes |
+
+Derivations: `DEFAULTS` in `semcache/common.py`.
+
 ### Files
 
 ```
@@ -96,6 +158,15 @@ persuasion/
   analyze.py               flip rate, score shift, control, guard, cost; bootstrap CIs; figures; RESULTS.md
   show_prompts.py          prints every request body verbatim
   rewrites/                frozen C4 rewrites + span-check log + review CSV (committed)
+semcache/                  post 2 (run as modules: python -m semcache.<name>)
+  common.py                paths, seeds, embedding models, thresholds, library defaults, A3 prompts
+  slots.py                 A2 slot guard (rules + alias normalizer)
+  build_pairs.py           templates + handwritten pairs -> frozen pairs.jsonl, review CSV, stats
+  build_paws.py            fixed-seed PAWS sample
+  embed.py                 embedding clients, per-text cache, cosine scores
+  decide.py                A3 Jev / Luna requests and parsers
+  estimate.py, run.py      dry-run estimate -> --max-usd gate -> embeddings -> A3
+  pairs/                   frozen data (committed)
 tests/                     offline tests (network blocked)
 ```
 ### Note
