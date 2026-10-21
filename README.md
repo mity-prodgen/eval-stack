@@ -8,7 +8,7 @@ Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tab
 [persuasion/RESULTS.md](persuasion/RESULTS.md)
 
 **Post 2: How often does a semantic cache serve the wrong stored answer?** (`semcache/`)
-Tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md).
+Report: [results page](https://claude.ai/artifact/4mqrwg5iaa3hFA5hpZDmKs) · tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md).
 
 ## Setup
 
