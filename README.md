@@ -107,6 +107,7 @@ scripts/download_banking77.sh                     # BANKING77 test split (pinned
 .venv/bin/python -m semcache.run                  # dry run: cost table
 .venv/bin/python -m semcache.run --smoke --live   # 20 pairs per model
 .venv/bin/python -m semcache.run --live --max-usd 3
+.venv/bin/python -m semcache.simulate            # full-cache simulation, offline (from cached embeddings)
 .venv/bin/python -m semcache.analyze             # metrics, CIs, figures, RESULTS.md
 ```
 

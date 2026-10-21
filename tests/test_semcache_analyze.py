@@ -146,3 +146,16 @@ def test_run_merges_scores_and_decisions_across_runs(tmp_path):
     run._write_rows(path, later)
     final = run._load_rows(path, ("embedder", "pair_id"))
     assert set(final) == {("minilm", "p1"), ("gemini-2", "p1")} and final[("minilm", "p1")]["cosine"] == 0.6
+
+
+# ---------------------------------------------------------------- full-cache simulation outcomes
+def test_simulation_outcomes():
+    from semcache.simulate import outcome
+    store = ["Fare from DXB to LHR", "Is wifi free?", "What is new in Python 3.12?"]
+    p = {"cached": "Fare from DXB to LHR", "new": "Fare from LHR to DXB"}
+    assert outcome(p, store, 0, 0.95, 0.90) == "partner"
+    assert outcome(p, store, 1, 0.95, 0.90) == "other"
+    assert outcome(p, store, 0, 0.85, 0.90) == "miss"
+    assert outcome(p, store, 0, 0.95, 0.90, use_guard=True) == "miss"   # guard sees the direction swap
+    exact = {"cached": "What is new in Python 3.11?", "new": "What is new in Python 3.12?"}
+    assert outcome(exact, store, 0, 0.5, 0.90) == "identical"            # exact text stored: correct hit
