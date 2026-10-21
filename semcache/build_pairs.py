@@ -42,6 +42,11 @@ N_CONTROLS = 200
 TEMPLATE_CONTROLS = 70
 NEAR_DUP = 95
 
+# Pairs removed after the human label review (pairs/review.csv), before any results existed. Ids are not reused.
+EXCLUDED = {
+    "p041": "review 2026-10-20: label marked wrong (one scp answer covers both copy directions)",
+}
+
 # ------------------------------------------------------------------------------------------- trap templates
 # (slot_type, domain, template, [(value_a, value_b), ...]); a template with {a} and {b} gets a pair of tuples.
 TRAPS: list[tuple[str, str, str, list]] = [
@@ -240,7 +245,7 @@ def build() -> tuple[list[dict], dict]:
     for i, r in enumerate(generated):
         r["id"] = f"g{i:03d}"
     rows = [{k: r[k] for k in ("id", "cached", "new", "label", "slot_type", "domain", "source")}
-            for r in authored + generated]
+            for r in authored + generated if r["id"] not in EXCLUDED]
     stats = {
         "n": len(rows), "by_label": Counter(r["label"] for r in rows),
         "traps_by_slot": Counter(r["slot_type"] for r in rows if r["label"] == "different"),
@@ -250,6 +255,7 @@ def build() -> tuple[list[dict], dict]:
         "by_group_label": Counter(f"{source_group(r)}|{r['label']}" for r in rows),
         "candidates": {**candidates, "generated_kept": len(generated)},
         "dropped_final_pass": dropped,
+        "excluded_after_review": EXCLUDED,
     }
     return rows, stats
 
@@ -286,7 +292,8 @@ def main() -> None:
         return
     PAIRS_DIR.mkdir(parents=True, exist_ok=True)
     PAIRS.write_text(text)
-    write_review(rows)
+    if not (PAIRS_DIR / "review.csv").exists():  # never redraw a sheet that may hold the reviewer's answers
+        write_review(rows)
     (PAIRS_DIR / "stats.json").write_text(json.dumps(stats, indent=1, default=dict))
     (PAIRS_DIR / "MANIFEST.json").write_text(json.dumps(
         {"pairs.jsonl": _sha(PAIRS), "handwritten.jsonl": _sha(HANDWRITTEN) if HANDWRITTEN.exists() else None,

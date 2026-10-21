@@ -213,3 +213,14 @@ def test_generator_parsing():
                                   '"same": "Where can I find my card?"}]}')
     assert bad == ["bad_trap"] and rows[0]["label"] == "same" and rows[0]["cached"] == "Where is my card?"
     assert rows[0]["source"] == "banking77+llm:claude-sonnet-5-5"
+
+
+def test_excluded_pairs_are_gone_and_review_answers_kept():
+    import csv
+    ids = {json.loads(l)["id"] for l in PAIRS.open()}
+    assert not ids & set(build_pairs.EXCLUDED)
+    rows = list(csv.DictReader((PAIRS_DIR / "review.csv").open()))
+    col = next(c for c in rows[0] if c.startswith("label_ok"))
+    answers = [r[col].strip().lower() for r in rows]
+    assert all(a in ("y", "n") for a in answers)
+    assert {r["id"] for r in rows if r[col].strip().lower() == "n"} <= set(build_pairs.EXCLUDED)
