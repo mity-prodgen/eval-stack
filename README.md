@@ -1,7 +1,7 @@
 # What breaks your eval stack
 
-Code for the public test series **"What breaks your eval stack"**. Each post will ask one question about LLM-as-judge
-setups and ships everything needed to re-run it.
+Code for the public test series **"What breaks your eval stack"**. Each post asks one question about a piece of an
+LLM stack that quietly goes wrong (judges, caches, ...) and ships everything needed to re-run it.
 
 **Post 1: Can an answer talk an LLM judge into passing it?** (`persuasion/`)
 Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tables and figures in
@@ -100,16 +100,32 @@ Results: [persuasion/NOISE.md](persuasion/NOISE.md) (run 2026-10-20, $1.94 for b
 ```bash
 scripts/download_paws.sh                          # PAWS test split (HF copy, pinned revision) into data/paws/
 scripts/download_banking77.sh                     # BANKING77 test split (pinned commit) into data/banking77/
-.venv/bin/python -m semcache.generate_pairs       # outside-model pairs: dry run (frozen in pairs/generated.jsonl)
-.venv/bin/python -m semcache.build_pairs          # verifies the frozen pairs.jsonl rebuilds byte for byte
-.venv/bin/python -m semcache.build_paws           # verifies the frozen PAWS sample ids
+
+# the pair set is frozen in semcache/pairs/; these verify it rebuilds, they don't change it
+.venv/bin/python -m semcache.build_pairs          # pairs.jsonl rebuilds byte for byte
+.venv/bin/python -m semcache.build_paws           # PAWS sample ids match
 .venv/bin/python -m semcache.show_prompts         # every A3 request body and embedding setting
-.venv/bin/python -m semcache.run                  # dry run: cost table
-.venv/bin/python -m semcache.run --smoke --live   # 20 pairs per model
+.venv/bin/python -m pytest -q                     # offline
+
+# everything below is a dry run unless you pass --live
+.venv/bin/python -m semcache.generate_pairs       # outside-model pairs (refuses to overwrite the frozen set)
+.venv/bin/python -m semcache.run                  # cost table for the whole plan
+.venv/bin/python -m semcache.run --smoke          # 20 pairs per model
+
+set -a && source .env && set +a
+.venv/bin/python -m semcache.run --smoke --live
 .venv/bin/python -m semcache.run --live --max-usd 3
-.venv/bin/python -m semcache.simulate            # full-cache simulation, offline (from cached embeddings)
-.venv/bin/python -m semcache.analyze             # metrics, CIs, figures, RESULTS.md
+.venv/bin/python -m semcache.simulate             # full-cache simulation, offline from cached embeddings
+.venv/bin/python -m semcache.analyze              # metrics, CIs, figures, RESULTS.md
 ```
+
+`--max-usd` (default 3) aborts **before any call** if the estimate for the not-yet-cached requests is higher. Every
+embedding is cached per text and every decision per pair (`cache/semcache/`), so reruns and re-analysis cost nothing,
+and `run.py` merges results across runs, so one model can be added later. The local models need no API key, so
+`--embedder minilm bge-m3 langcache-v1 --no-decide` runs with none. The full run cost about $0.46 (outside-model pairs
+$0.38, A3 $0.06, embeddings about $0.02). Free or trial keys work for Cohere, Voyage and Gemini; a Voyage account
+without a payment method is limited to 3 requests a minute, which `embed.py` paces for, and Gemini's free tier
+allows 1,000 embedding requests a day (the full run needs about 2,000).
 
 ### Design
 
@@ -118,8 +134,10 @@ scripts/download_banking77.sh                     # BANKING77 test split (pinned
 | Data | `semcache/pairs/pairs.jsonl`, frozen (sha256 in `MANIFEST.json`): 769 pairs, 409 traps (label `different`; class, direction, negation, version, date/time, number, entity) and 360 controls (label `same`). Three source groups, reported separately: **authored** (ids `p…`, 202 traps / 200 controls: templates in `build_pairs.py` plus pairs written by Claude Opus 5.5 in the authoring session, `pairs/handwritten.jsonl`; the same author wrote the slot guard), **gpt-6.1-sol** and **claude-sonnet-5-5** (ids `g…`, about 104 / 80 each: written from the slot-type spec alone, never shown `slots.py` or authored pairs, including edits of 40 real BANKING77 queries, `generate_pairs.py`). Airline, banking, dev-tools, support. 30-row human review `pairs/review.csv` (10 per source group): 29/30 labels confirmed (Wilson 95% CI 83-99%); the one rejected pair (p041) was removed before any results, see `EXCLUDED` in `build_pairs.py`. |
 | External check | PAWS-Wiki labeled_final test, 300 pairs (150/150), seed `20261021`, ids in `pairs/paws_sample_ids.json` |
 | Embeddings | text-embedding-3-small, text-embedding-3-large, Cohere embed-v4.0, Voyage voyage-4, gemini-embedding-2; local all-MiniLM-L6-v2, BGE-M3 (dense), redis/langcache-embed-v1 (RedisVL's default vectorizer), HF revisions pinned |
+| Embedding settings | Cohere `input_type="search_query"` on both sides (a cache compares query to query); Voyage `input_type=None`; Gemini the documented similarity prefix `task: sentence similarity \| query: `; OpenAI default dimensions; local models through sentence-transformers. Cosine on unit vectors for all. |
 | Thresholds | cosine 0.50-0.99, step 0.01 (task range 0.80-0.99; extended down because several library defaults sit below 0.80) |
 | Arms | A0 embedding only at 0.90 (RedisVL default) · A1 highest threshold keeping >= 80% of A0's control hits, chosen out of fold (2-fold) · A2 A0 + slot guard (`slots.py`, committed before the pairs existed) · A3 A0 + Jev 1.13.0 / Jev 1.14.0 / GPT-6 Luna "Do these two queries need the same answer?", serve if P(yes) >= 0.5 |
+| Full-cache simulation | every new query searched against all 721 stored queries, nearest served; unlabelled hits reported as a range (`simulate.py`) |
 
 ### Verified embedding models and prices (USD per 1M input tokens, checked 2026-10-19)
 
@@ -132,6 +150,31 @@ scripts/download_banking77.sh                     # BANKING77 test split (pinned
 | `gemini-embedding-2` | 0.20 | [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) | a list of strings returns ONE aggregated embedding: each text goes in its own `Content` |
 | `jev-1.13.0`, `gpt-6-luna` | 0.042, 0.10 | as post 1, re-checked 2026-10-19 | |
 | `jev-1.14.0` | 0.042 | [docs.typesafe.ai/models](https://docs.typesafe.ai/models), checked 2026-10-20 | `jev-preview` since 2026-10-14; `jev-latest` moves to it about a week later ([release post](https://typesafe.ai/blog/jev-1-14)) |
+
+### Deviations from the plan, and why
+
+- **Folder `semcache/`, not `cache/`.** `cache/` is the gitignored API response cache, and `data/` is gitignored
+  too, so `cache/data/pairs.jsonl` could never have been committed.
+- **The "LLM" half of the data has two parts.** Claude Opus 5.5 wrote pairs in the authoring session with no API
+  call, so the data existed before any live call. Because the same author wrote the slot guard, gpt-6.1-sol and
+  Claude Sonnet 5.5 then wrote 367 more pairs from the spec alone, frozen before any results; every result is
+  reported per source group.
+- **One pair removed after the human review** (p041, label marked wrong), before any results. Ids were not reused.
+- **Threshold sweep extended to 0.50.** Most library defaults sit below 0.80 in cosine terms; the charts still
+  focus on 0.80-0.99.
+- **A1 reads "keeps 80% of control hits" as 80% of A0's hits at 0.90**, and picks the threshold on the other half
+  of the pairs so no pair tunes its own threshold.
+- **A3 runs on every pair that passes 0.90 on at least one model**, so one set of decisions serves all eight models.
+  Its question lists no slot types, so the deciders are not primed toward the traps.
+- **Jev 1.14.0 added next to 1.13.0.** It became `jev-preview` on 2026-10-14 and `jev-latest` a week later, so
+  re-runs default to it.
+- **Model versions.** "Current Voyage general model" = `voyage-4` (Voyage calls it general-purpose; `-large` is the
+  higher tier). Gemini = `gemini-embedding-2` (`-001` is the older text-only model). Cohere stays on `embed-v4.0` as
+  the task named, although `embed-v5.0` exists. RedisVL's default vectorizer is `redis/langcache-embed-v1`, already
+  in the list.
+- **PAWS from the Hugging Face copy.** Google's storage link returned 403 on 2026-10-19.
+- **Full-cache simulation added.** The plan compares each query with one stored query; the simulation checks
+  whether a full cache changes the result (it barely does).
 
 ### Library default thresholds (from installed source, checked 2026-10-19; `tests/test_semcache.py` re-checks them)
 
@@ -167,18 +210,27 @@ persuasion/
   rewrites/                frozen C4 rewrites + span-check log + review CSV (committed)
 semcache/                  post 2 (run as modules: python -m semcache.<name>)
   common.py                paths, seeds, embedding models, thresholds, library defaults, A3 prompts
-  slots.py                 A2 slot guard (rules + alias normalizer)
-  build_pairs.py           templates + handwritten pairs -> frozen pairs.jsonl, review CSV, stats
+  slots.py                 A2 slot guard (rules + alias normalizer), committed before the pairs
+  build_pairs.py           templates + handwritten + generated pairs -> frozen pairs.jsonl, review CSV, stats
+  generate_pairs.py        outside-model pairs (gpt-6.1-sol, Claude Sonnet 5.5, BANKING77 edits)
   build_paws.py            fixed-seed PAWS sample
-  embed.py                 embedding clients, per-text cache, cosine scores
+  embed.py                 embedding clients, per-text cache, pacing and rate-limit retry, cosine scores
   decide.py                A3 Jev / Luna requests and parsers
-  estimate.py, run.py      dry-run estimate -> --max-usd gate -> embeddings -> A3
-  pairs/                   frozen data (committed)
+  estimate.py, run.py      dry-run estimate -> --max-usd gate -> embeddings -> A3 (results merge across runs)
+  simulate.py              full-cache simulation, offline
+  analyze.py               rates, AUC, arms, source groups, PAWS, defaults, costs; bootstrap CIs; figures; RESULTS.md
+  show_prompts.py          prints every A3 request body and embedding setting
+  findings.md              top findings (hand-written after the run, pasted into RESULTS.md)
+  pairs/                   frozen data, human review sheets, PAWS ids (committed)
+  figures/                 RESULTS.md figures (committed)
+  results/                 scores, decisions, usage logs (gitignored)
+scripts/                   dataset downloads (RAGTruth, PAWS, BANKING77), each pinned
 tests/                     offline tests (network blocked)
 ```
-### Note
-- RAGTruth (MIT) passage text is not committed (`data/`, `persuasion/results/` are gitignored); the sample rebuilds deterministically from the seed. 
+### Notes
+- RAGTruth (MIT) passage text is not committed (`data/`, `persuasion/results/`, `semcache/results/` are gitignored); the post 1 sample rebuilds deterministically from the seed. 
 - The frozen C4 rewrites are committed because they can't be regenerated byte for byte: they hold restyled RAGTruth response text, not passages.
+- Post 2's pairs are committed for the same reason: model-written text can't be regenerated byte for byte.
 
 ## License
 
