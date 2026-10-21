@@ -8,7 +8,7 @@ Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tab
 [persuasion/RESULTS.md](persuasion/RESULTS.md)
 
 **Post 2: How often does a semantic cache serve the wrong stored answer?** (`semcache/`)
-Setup done, results pending.
+Tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md) (7 of 8 embedding models; gemini-embedding-2 pending quota).
 
 ## Setup
 
@@ -107,6 +107,7 @@ scripts/download_banking77.sh                     # BANKING77 test split (pinned
 .venv/bin/python -m semcache.run                  # dry run: cost table
 .venv/bin/python -m semcache.run --smoke --live   # 20 pairs per model
 .venv/bin/python -m semcache.run --live --max-usd 3
+.venv/bin/python -m semcache.analyze             # metrics, CIs, figures, RESULTS.md
 ```
 
 ### Design

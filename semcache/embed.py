@@ -24,6 +24,10 @@ from harness.prices import usage_cost
 from .common import CACHE, GEMINI_SIMILARITY_PREFIX, RESULTS, Embedder
 
 BATCH = {"openai": 256, "cohere": 96, "voyage": 128, "gemini": 50, "local": 64}
+# Seconds between requests. Voyage accounts without a payment method get 3 requests / 10K tokens per minute
+# (free tokens still apply); a 128-text batch is ~2.7K tokens, so one request every 21 s stays under both.
+PACE = {"voyage": 21.0}
+RATE_LIMIT_RETRIES = 5
 SETTINGS_VERSION = 1  # bump if a request setting changes, so old vectors are not reused
 
 
@@ -105,8 +109,18 @@ def embed_texts(e: Embedder, texts: list[str], cache: DiskCache, log: Callable[[
     RESULTS.mkdir(parents=True, exist_ok=True)
     for i in range(0, len(todo), BATCH[e.provider]):
         chunk = todo[i: i + BATCH[e.provider]]
+        if i and e.provider in PACE:
+            time.sleep(PACE[e.provider])
         t0 = time.monotonic()
-        vecs, billed, meta = call(e, chunk)
+        for attempt in range(RATE_LIMIT_RETRIES + 1):
+            try:
+                vecs, billed, meta = call(e, chunk)
+                break
+            except Exception as err:  # noqa: BLE001 - only rate limits are retried; anything else propagates
+                if "RateLimit" not in type(err).__name__ and "429" not in str(err)[:200] or attempt == RATE_LIMIT_RETRIES:
+                    raise
+                log(f"  [{e.name}] rate limited, waiting 60s (retry {attempt + 1}/{RATE_LIMIT_RETRIES})")
+                time.sleep(60)
         if len(vecs) != len(chunk):
             raise RuntimeError(f"{e.name}: {len(vecs)} vectors for {len(chunk)} texts - refusing to cache")
         ms = (time.monotonic() - t0) * 1000

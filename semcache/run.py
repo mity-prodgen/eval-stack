@@ -51,6 +51,16 @@ def smoke_pairs(pairs: list[dict], n: int = N_SMOKE) -> list[dict]:
     return pick
 
 
+def _load_rows(path, key: tuple[str, str]) -> dict:
+    if not path.exists():
+        return {}
+    return {(r[key[0]], r[key[1]]): r for r in map(json.loads, path.open())}
+
+
+def _write_rows(path, rows: dict) -> None:
+    path.write_text("".join(json.dumps(r) + "\n" for _, r in sorted(rows.items())))
+
+
 def texts_of(pairs: list[dict]) -> list[str]:
     return list(dict.fromkeys(t for p in pairs for t in (p["cached"], p["new"])))
 
@@ -113,10 +123,12 @@ def main() -> None:
     for e in embedders:
         print(f"[{e.name}] embedding {len(texts)} texts ...", flush=True)
         scores[e.name] = cosine_scores(e, pairs, cache)
-    with (RESULTS / f"scores_{stem}.jsonl").open("w") as f:
-        for p in pairs:
-            for name, s in scores.items():
-                f.write(json.dumps({"pair_id": p["id"], "embedder": name, "cosine": s[p["id"]]}) + "\n")
+    # merge with earlier runs, so a model added later (e.g. after a quota reset) does not erase the others
+    rows = _load_rows(RESULTS / f"scores_{stem}.jsonl", ("embedder", "pair_id"))
+    for p in pairs:
+        for name, s in scores.items():
+            rows[(name, p["id"])] = {"pair_id": p["id"], "embedder": name, "cosine": s[p["id"]]}
+    _write_rows(RESULTS / f"scores_{stem}.jsonl", rows)
 
     if deciders:
         passing = {p["id"] for p in pairs if any(s[p["id"]] >= DEFAULT_COSINE for s in scores.values())}
@@ -124,13 +136,14 @@ def main() -> None:
         print(f"A3: {len(passing)}/{len(pairs)} pairs pass A0 at cosine >= {DEFAULT_COSINE} on some model; "
               f"{len(todo)} decisions ...", flush=True)
         res = run_decisions(todo, cache)
-        with (RESULTS / f"decisions_{stem}.jsonl").open("w") as f:
-            for d in todo:
-                r = res[d.key]
-                f.write(json.dumps({"pair_id": d.pair_id, "decider": d.decider, "model": d.model, "status": r["status"],
-                                    "p_yes": r["p_yes"], "input_tokens": r["input_tokens"], "cost_usd": r["cost_usd"],
-                                    "cached": r["cached"], "error": r["error"], "api_model": r["model"],
-                                    "latency_ms": r["latency_ms"]}) + "\n")
+        rows = _load_rows(RESULTS / f"decisions_{stem}.jsonl", ("decider", "pair_id"))
+        for d in todo:
+            r = res[d.key]
+            rows[(d.decider, d.pair_id)] = {"pair_id": d.pair_id, "decider": d.decider, "model": d.model,
+                                            "status": r["status"], "p_yes": r["p_yes"], "input_tokens": r["input_tokens"],
+                                            "cost_usd": r["cost_usd"], "cached": r["cached"], "error": r["error"],
+                                            "api_model": r["model"], "latency_ms": r["latency_ms"]}
+        _write_rows(RESULTS / f"decisions_{stem}.jsonl", rows)
         status = defaultdict(lambda: defaultdict(int))
         for d in todo:
             status[d.decider][res[d.key]["status"]] += 1
