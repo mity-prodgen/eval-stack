@@ -91,6 +91,8 @@ re-runs (`--repeat K` folds K into every cache key; repeat 0 is the original, ca
 .venv/bin/python persuasion/noise.py             # writes persuasion/NOISE.md next to the post-1 flip rates
 ```
 
+Results: [persuasion/NOISE.md](persuasion/NOISE.md) (run 2026-10-20, $1.94 for both re-runs).
+
 ## Post 2: semantic cache wrong hits (`semcache/`)
 
 **How often does a semantic cache serve a stored answer to a query that needs a different answer?**

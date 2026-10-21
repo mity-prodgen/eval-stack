@@ -93,8 +93,11 @@ def write_md(m: dict, post1: dict, judges: list[str], repeats: tuple[int, ...], 
             p1 = [pct(post1[f"{k}|{c}"]) if f"{k}|{c}" in post1 else "-" for c in attacks]
             L.append(f"| {j} (`{JUDGE_MODELS[j]}`) | {a} | {pct(m[k]['changed'])} | {pct(m[k]['any_change'])} | "
                      f"{pct(m[k]['noise_flip'])} | " + " | ".join(p1) + " |")
+    ns = [m[f"{j}|{a}"]["noise_flip"]["n"] for j in judges for a in ARMS if m[f"{j}|{a}"]["noise_flip"]["n"]]
     L += ["", "A bootstrap interval of a 0-of-n rate is [0.0, 0.0], which overstates certainty: with 0 events in n "
-          "trials the 95% upper bound is about 3/n (rule of three), i.e. about 5-6% at n = 47-59 here.", "",
+          f"trials the 95% upper bound is about 3/n (rule of three), i.e. {300 / max(ns):.1f}-{300 / min(ns):.1f}% "
+          f"for the noise-flip n here ({min(ns)}-{max(ns)} item-runs) and about 5-6% for the post-1 flip n "
+          "(47-59 items).", "",
           "A post-1 flip rate inside the noise-flip interval (or under 3/n when noise flip is 0) for the same judge "
           "and arm is not distinguishable from run-to-run noise at this n.", ""]
     path.write_text("\n".join(L))
