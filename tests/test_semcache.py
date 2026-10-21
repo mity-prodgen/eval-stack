@@ -23,8 +23,15 @@ def test_frozen_pairs_match_manifest_and_rebuild():
 
 
 def test_pairs_shape_and_balance():
-    rows = [json.loads(l) for l in PAIRS.open()]
-    assert len({r["id"] for r in rows}) == len(rows)
+    all_rows = [json.loads(l) for l in PAIRS.open()]
+    assert len({r["id"] for r in all_rows}) == len(all_rows)
+    # every source group has both labels; the authored set keeps its balance
+    groups = {build_pairs.source_group(r) for r in all_rows}
+    assert groups == {"authored", "gpt-6.1-sol", "claude-sonnet-5-5"}
+    for g in groups:
+        gl = [r["label"] for r in all_rows if build_pairs.source_group(r) == g]
+        assert gl.count("different") >= 80 and gl.count("same") >= 60, g
+    rows = [r for r in all_rows if r["id"].startswith("p")]
     traps = [r for r in rows if r["label"] == "different"]
     controls = [r for r in rows if r["label"] == "same"]
     assert 190 <= len(traps) <= 210 and 190 <= len(controls) <= 210
@@ -35,8 +42,11 @@ def test_pairs_shape_and_balance():
 
 
 def test_review_csv_has_30_rows():
-    lines = (PAIRS_DIR / "review.csv").read_text().strip().splitlines()
-    assert len(lines) == 31
+    import csv
+    rows = list(csv.DictReader((PAIRS_DIR / "review.csv").open()))
+    assert len(rows) == 30
+    groups = [build_pairs.source_group(r) for r in rows]
+    assert {g: groups.count(g) for g in set(groups)} == {"authored": 10, "gpt-6.1-sol": 10, "claude-sonnet-5-5": 10}
 
 
 def test_paws_ids_frozen_and_balanced():

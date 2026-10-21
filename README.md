@@ -15,7 +15,7 @@ Setup done, results pending.
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2) - .env is gitignored
+cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2; free/trial keys are enough) - .env is gitignored
 scripts/download_ragtruth.sh
 ```
 
@@ -99,6 +99,8 @@ Results: [persuasion/NOISE.md](persuasion/NOISE.md) (run 2026-10-20, $1.94 for b
 
 ```bash
 scripts/download_paws.sh                          # PAWS test split (HF copy, pinned revision) into data/paws/
+scripts/download_banking77.sh                     # BANKING77 test split (pinned commit) into data/banking77/
+.venv/bin/python -m semcache.generate_pairs       # outside-model pairs: dry run (frozen in pairs/generated.jsonl)
 .venv/bin/python -m semcache.build_pairs          # verifies the frozen pairs.jsonl rebuilds byte for byte
 .venv/bin/python -m semcache.build_paws           # verifies the frozen PAWS sample ids
 .venv/bin/python -m semcache.show_prompts         # every A3 request body and embedding setting
@@ -111,7 +113,7 @@ scripts/download_paws.sh                          # PAWS test split (HF copy, pi
 
 | | |
 |---|---|
-| Data | `semcache/pairs/pairs.jsonl`, frozen (sha256 in `MANIFEST.json`): 203 trap pairs (label `different`, 29 per slot type: class, direction, negation, version, date/time, number, entity) and 200 control pairs (label `same`: 101 plain paraphrases, 99 alias/format changes such as "Dubai to London" vs "DXB to LHR"). Airline, banking, dev-tools, support. Templates (`build_pairs.py`) plus pairs written by Claude Opus 5.5 in the authoring session (`pairs/handwritten.jsonl`); deduped; 30-row review sheet `pairs/review.csv`. |
+| Data | `semcache/pairs/pairs.jsonl`, frozen (sha256 in `MANIFEST.json`): 770 pairs, 410 traps (label `different`; class, direction, negation, version, date/time, number, entity) and 360 controls (label `same`). Three source groups, reported separately: **authored** (ids `p…`, 203 traps / 200 controls: templates in `build_pairs.py` plus pairs written by Claude Opus 5.5 in the authoring session, `pairs/handwritten.jsonl`; the same author wrote the slot guard), **gpt-6.1-sol** and **claude-sonnet-5-5** (ids `g…`, about 104 / 80 each: written from the slot-type spec alone, never shown `slots.py` or authored pairs, including edits of 40 real BANKING77 queries, `generate_pairs.py`). Airline, banking, dev-tools, support. 30-row review sheet `pairs/review.csv`, 10 per source group. |
 | External check | PAWS-Wiki labeled_final test, 300 pairs (150/150), seed `20261021`, ids in `pairs/paws_sample_ids.json` |
 | Embeddings | text-embedding-3-small, text-embedding-3-large, Cohere embed-v4.0, Voyage voyage-4, gemini-embedding-2; local all-MiniLM-L6-v2, BGE-M3 (dense), redis/langcache-embed-v1 (RedisVL's default vectorizer), HF revisions pinned |
 | Thresholds | cosine 0.50-0.99, step 0.01 (task range 0.80-0.99; extended down because several library defaults sit below 0.80) |

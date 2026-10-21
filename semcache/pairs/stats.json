@@ -1,17 +1,17 @@
 {
- "n": 403,
+ "n": 770,
  "by_label": {
-  "different": 203,
-  "same": 200
+  "different": 410,
+  "same": 360
  },
  "traps_by_slot": {
-  "class": 29,
-  "direction": 29,
-  "negation": 29,
-  "version": 29,
-  "date_time": 29,
-  "number": 29,
-  "entity": 29
+  "class": 67,
+  "direction": 61,
+  "negation": 54,
+  "version": 53,
+  "date_time": 55,
+  "number": 54,
+  "entity": 66
  },
  "controls_by_slot": {
   "direction": 17,
@@ -21,28 +21,46 @@
   "date_time": 13,
   "entity": 15,
   "negation": 10,
-  "paraphrase": 101
+  "paraphrase": 197,
+  "format": 64
  },
  "by_domain_label": {
-  "airline|different": 71,
-  "banking|different": 43,
-  "dev-tools|different": 58,
-  "support|different": 31,
-  "airline|same": 68,
-  "banking|same": 50,
-  "dev-tools|same": 47,
-  "support|same": 35
+  "airline|different": 131,
+  "banking|different": 118,
+  "dev-tools|different": 94,
+  "support|different": 67,
+  "airline|same": 98,
+  "banking|same": 120,
+  "dev-tools|same": 77,
+  "support|same": 65
  },
  "by_source_label": {
   "handwritten|different": 123,
   "template|different": 80,
   "handwritten|same": 163,
-  "template|same": 37
+  "template|same": 37,
+  "llm:gpt-6.1-sol|different": 84,
+  "llm:gpt-6.1-sol|same": 60,
+  "llm:claude-sonnet-5-5|different": 83,
+  "llm:claude-sonnet-5-5|same": 60,
+  "banking77+llm:gpt-6.1-sol|different": 20,
+  "banking77+llm:gpt-6.1-sol|same": 20,
+  "banking77+llm:claude-sonnet-5-5|different": 20,
+  "banking77+llm:claude-sonnet-5-5|same": 20
+ },
+ "by_group_label": {
+  "authored|different": 203,
+  "authored|same": 200,
+  "gpt-6.1-sol|different": 104,
+  "gpt-6.1-sol|same": 80,
+  "claude-sonnet-5-5|different": 103,
+  "claude-sonnet-5-5|same": 80
  },
  "candidates": {
   "template_traps": 95,
   "template_controls": 42,
-  "handwritten": 289
+  "handwritten": 289,
+  "generated_kept": 367
  },
  "dropped_final_pass": {}
 }
