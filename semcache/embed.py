@@ -40,6 +40,9 @@ def _unpack(s: str) -> np.ndarray:
 
 
 # ----------------------------------------------------------------------------------- providers
+_CLIENTS: dict[str, object] = {}
+
+
 def _openai(e: Embedder, texts: list[str]) -> tuple[list[list[float]], int | None, dict]:
     from openai import OpenAI
     r = OpenAI(max_retries=4, timeout=60.0).embeddings.create(model=e.model_id, input=texts)
@@ -65,7 +68,10 @@ def _gemini(e: Embedder, texts: list[str]) -> tuple[list[list[float]], int | Non
     from google import genai
     from google.genai import types
     contents = [types.Content(parts=[types.Part(text=GEMINI_SIMILARITY_PREFIX + t)]) for t in texts]
-    r = genai.Client().models.embed_content(model=e.model_id, contents=contents)
+    # keep the client referenced: an inline genai.Client() is garbage-collected mid-call, which closes its
+    # HTTP client ("Cannot send a request, as the client has been closed")
+    client = _CLIENTS.setdefault("gemini", genai.Client())
+    r = client.models.embed_content(model=e.model_id, contents=contents)
     # the response carries no token count; cost is estimated from the text (see estimate.py)
     return [x.values for x in r.embeddings], None, {}
 
