@@ -292,11 +292,17 @@ def main() -> None:
     authored = authored_rows()
     kept, dropped = dedupe(authored + rows)
     new = kept[len(authored):] if kept[: len(authored)] == authored else [r for r in kept if r not in authored]
-    GENERATED.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in new))
+    failed = [t for t, v in problems.items() if any(str(x).startswith(("api_error", "BadRequest", "APIError")) or
+                                                    "Error" in str(x)[:40] for x in v)]
+    out = GENERATED if not failed else RESULTS / "generated_partial.jsonl"
+    out.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in new))
     summary = {"requests": len(jobs), "candidates": len(rows), "kept": len(new), "dropped": dict(dropped),
                "problems": problems, "actual_usd_this_run": round(spent, 4)}
     (RESULTS / "generate_summary.json").write_text(json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
+    if failed:
+        raise SystemExit(f"{len(failed)} requests failed ({', '.join(failed)}); NOT frozen. Partial pairs in {out}. "
+                         "Successful responses are cached, so a re-run only retries the failed ones.")
     print(f"wrote {GENERATED}; now run: python -m semcache.build_pairs --refreeze")
 
 
