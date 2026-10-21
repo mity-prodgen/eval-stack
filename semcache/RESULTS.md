@@ -6,7 +6,7 @@ Main set: 409 traps (need a different answer) and 360 controls (need the same an
 
 ## Top findings
 
-1. **At RedisVL's default threshold (cosine 0.90), an embedding-only cache served 31-70% of the queries that needed a different answer on 7 of 8 models, and only 32-57% of the true paraphrases.** For 5 of 8 models, cosine scored the one-detail traps *above* real rewordings (AUC 0.29-0.45, CIs below 0.5); voyage-4 (0.54), the cache-tuned langcache-embed-v1 (0.56) and gemini-embedding-2 (0.67) beat chance. gemini-embedding-2 shows the other half of the problem: its scores sit on a higher scale, so at 0.90 it served 89% of traps and 97% of paraphrases - one default threshold does not carry across models. Swapped direction is the worst case (77-92% served on 7 of 8 models; 37% on langcache-v1); swapped brand or provider the mildest (2-14%, except 55% on gemini-embedding-2). Raising the threshold does not fix it: A1 (the highest threshold keeping 80% of control hits, chosen out of fold) blocked 7-33% of wrong hits while losing 9-17% of control hits. Library defaults at or below LangChain's 0.80 served 70-100% of traps. Searching a full cache (all 721 stored queries, nearest one served) instead of one stored query moved the wrong-hit rates by at most 2 points on 7 of 8 models (9 on gemini-embedding-2): a trap's nearest neighbour is almost always its own one-detail-different partner.
+1. **At RedisVL's default threshold (cosine 0.90), an embedding-only cache served 31-70% of the queries that needed a different answer on 7 of 8 models, and only 32-57% of the true paraphrases.** For 5 of 8 models, cosine scored the one-detail traps *above* real rewordings (AUC 0.29-0.45, CIs below 0.5); voyage-4 (0.54), the cache-tuned langcache-embed-v1 (0.56) and gemini-embedding-2 (0.67) beat chance. gemini-embedding-2 shows the other half of the problem: its scores sit on a higher scale, so at 0.90 it served 89% of traps and 97% of paraphrases - one default threshold does not carry across models. Swapped direction is the worst case (77-92% served on 7 of 8 models; 37% on langcache-v1); swapped brand or provider the mildest (2-14%, except 55% on gemini-embedding-2). Raising the threshold does not fix it: A1 (the highest threshold keeping 80% of control hits, chosen out of fold) blocked 7-33% of wrong hits while losing 9-17% of control hits. Library defaults at or below LangChain's 0.80 served 70-100% of traps. Searching a full cache (all 721 stored queries, nearest one served) instead of one stored query barely changed this: with 30 of the new matches labelled by hand, the wrong-hit rate moved by under 1 point on 7 of 8 models and fell 3 points on gemini-embedding-2, because a trap's nearest neighbour is almost always its own one-detail-different partner; right hits rose 1-3 points.
 2. **A yes/no decision-model check on top (A3) blocked 93-99% of the wrong hits and gave up 0-5% of the control hits, for about $0.006-0.026 per 1,000 lookups.** Jev 1.13, Jev 1.14 and GPT-6 Luna were within noise of each other on traps (they accept 3.0-4.6% of the traps they see; CIs overlap); Jev 1.14 turned away slightly more paraphrases (5.4% vs 2.0-3.4%; intervals overlap). It is not a complete fix: on PAWS word-swap pairs (where "Missouri ... America" becomes "America ... Missouri"), the deciders still let 21-25% of non-paraphrases through and turned away 4-10% of real paraphrases.
 3. **The rule-based slot guard (A2) looked much better on its own author's data.** On its own it caught 92% [88, 96] of traps on the pairs written by the same author (Claude Opus 5.5, before the pairs existed), but 71% [62, 81] on pairs written by gpt-6.1-sol and Claude Sonnet 5.5, and missed most direction traps (37% caught overall). It also blocked 14% of controls: 40% of number-format changes and 20% of other format aliases. On PAWS it blocked 5-6% of wrong hits. Hypotheses: direction traps did score above 0.95 on most models (7 of 8 medians 0.956-0.996; langcache-v1 0.875); negation traps did not (only all-MiniLM-L6-v2 and BGE-M3 had medians above 0.95). The guard did block most traps and did lose hits on aliases, but how many it blocks depends on who wrote the traps.
 
@@ -262,40 +262,42 @@ H2: the slot guard blocks most traps but loses hits on aliases: see the slot-gua
 
 Every pair's new query is looked up against all 721 distinct stored queries; the nearest is served if it clears the threshold. A hit on the pair's own partner carries the pair's label; a hit on any other stored query is unlabelled, so the trap wrong-hit rate is a range: low = partner hits only, high = every unlabelled hit counted as wrong. An exact-text match counts as correct. Many unlabelled hits read as correct matches (e.g. a Business Class trap finding another Business Class query), so the true rate sits near the low end.
 
-| Model | Arm | t | traps served, single pair | traps wrong, full cache (low - high) | controls served correctly, single pair | full cache |
-|---|---|---|---|---|---|---|
-| oai-3-small | A0 | 0.90 | 57.9% | 57.2% - 58.2% | 32.2% | 32.2% |
-| oai-3-small | A0 | 0.95 | 33.5% | 33.5% - 33.7% | 16.7% | 16.9% |
-| oai-3-small | A2 | 0.90 | 8.8% | 8.8% - 9.3% | 26.7% | 26.7% |
-| oai-3-small | A2 | 0.95 | 6.8% | 6.8% - 6.8% | 13.9% | 14.2% |
-| oai-3-large | A0 | 0.90 | 46.5% | 46.0% - 47.2% | 34.7% | 34.7% |
-| oai-3-large | A0 | 0.95 | 21.0% | 21.0% - 21.3% | 18.9% | 19.2% |
-| oai-3-large | A2 | 0.90 | 7.1% | 7.1% - 7.1% | 29.2% | 29.2% |
-| oai-3-large | A2 | 0.95 | 3.9% | 3.9% - 3.9% | 15.0% | 15.3% |
-| cohere-v4 | A0 | 0.90 | 44.5% | 43.5% - 45.0% | 38.1% | 37.8% |
-| cohere-v4 | A0 | 0.95 | 19.1% | 18.8% - 19.3% | 19.4% | 19.7% |
-| cohere-v4 | A2 | 0.90 | 7.1% | 7.1% - 8.1% | 33.1% | 32.8% |
-| cohere-v4 | A2 | 0.95 | 5.4% | 5.4% - 5.4% | 17.2% | 17.5% |
-| voyage-4 | A0 | 0.90 | 47.7% | 46.7% - 48.7% | 57.5% | 56.7% |
-| voyage-4 | A0 | 0.95 | 21.5% | 21.3% - 21.5% | 30.0% | 30.0% |
-| voyage-4 | A2 | 0.90 | 8.6% | 8.6% - 10.0% | 48.3% | 47.8% |
-| voyage-4 | A2 | 0.95 | 6.4% | 6.4% - 6.6% | 25.0% | 25.0% |
-| gemini-2 | A0 | 0.90 | 88.5% | 80.2% - 89.2% | 97.2% | 91.4% |
-| gemini-2 | A0 | 0.95 | 48.7% | 46.7% - 49.6% | 73.1% | 70.8% |
-| gemini-2 | A2 | 0.90 | 13.4% | 12.5% - 16.1% | 83.3% | 77.8% |
-| gemini-2 | A2 | 0.95 | 7.3% | 7.3% - 8.6% | 61.9% | 59.7% |
-| minilm | A0 | 0.90 | 68.9% | 67.0% - 68.9% | 36.1% | 35.8% |
-| minilm | A0 | 0.95 | 52.6% | 52.1% - 52.8% | 19.7% | 19.7% |
-| minilm | A2 | 0.90 | 8.3% | 8.3% - 8.8% | 30.0% | 29.7% |
-| minilm | A2 | 0.95 | 7.6% | 7.6% - 7.6% | 16.7% | 16.7% |
-| bge-m3 | A0 | 0.90 | 69.7% | 67.0% - 70.2% | 55.0% | 53.1% |
-| bge-m3 | A0 | 0.95 | 41.1% | 40.3% - 41.3% | 28.3% | 27.8% |
-| bge-m3 | A2 | 0.90 | 11.7% | 11.5% - 13.2% | 47.2% | 45.3% |
-| bge-m3 | A2 | 0.95 | 8.3% | 8.3% - 9.0% | 24.2% | 23.6% |
-| langcache-v1 | A0 | 0.90 | 30.6% | 29.1% - 30.8% | 42.2% | 42.2% |
-| langcache-v1 | A0 | 0.95 | 11.7% | 11.2% - 11.7% | 18.9% | 19.2% |
-| langcache-v1 | A2 | 0.90 | 5.6% | 5.6% - 6.4% | 35.8% | 35.8% |
-| langcache-v1 | A2 | 0.95 | 1.5% | 1.5% - 1.5% | 16.1% | 16.4% |
+Human labels on 30 sampled unlabelled hits at 0.90 (`pairs/review_sim.csv`): for trap lookups, 6/15 served a right answer (9 wrong); for control lookups, 14/15 served a right answer. The estimate column applies those shares to every model's unlabelled hits at 0.90 (pooled sample, so it assumes the share is the same across models).
+
+| Model | Arm | t | traps served, single pair | traps wrong, full cache (low - high) | estimate | controls served correctly, single pair | full cache (labelled) | estimate |
+|---|---|---|---|---|---|---|---|---|
+| oai-3-small | A0 | 0.90 | 57.9% | 57.2% - 58.2% | 57.8% | 32.2% | 32.2% | 33.5% |
+| oai-3-small | A0 | 0.95 | 33.5% | 33.5% - 33.7% | - | 16.7% | 16.9% | - |
+| oai-3-small | A2 | 0.90 | 8.8% | 8.8% - 9.3% | 9.1% | 26.7% | 26.7% | 27.7% |
+| oai-3-small | A2 | 0.95 | 6.8% | 6.8% - 6.8% | - | 13.9% | 14.2% | - |
+| oai-3-large | A0 | 0.90 | 46.5% | 46.0% - 47.2% | 46.7% | 34.7% | 34.7% | 36.3% |
+| oai-3-large | A0 | 0.95 | 21.0% | 21.0% - 21.3% | - | 18.9% | 19.2% | - |
+| oai-3-large | A2 | 0.90 | 7.1% | 7.1% - 7.1% | 7.1% | 29.2% | 29.2% | 30.5% |
+| oai-3-large | A2 | 0.95 | 3.9% | 3.9% - 3.9% | - | 15.0% | 15.3% | - |
+| cohere-v4 | A0 | 0.90 | 44.5% | 43.5% - 45.0% | 44.4% | 38.1% | 37.8% | 39.6% |
+| cohere-v4 | A0 | 0.95 | 19.1% | 18.8% - 19.3% | - | 19.4% | 19.7% | - |
+| cohere-v4 | A2 | 0.90 | 7.1% | 7.1% - 8.1% | 7.7% | 33.1% | 32.8% | 34.3% |
+| cohere-v4 | A2 | 0.95 | 5.4% | 5.4% - 5.4% | - | 17.2% | 17.5% | - |
+| voyage-4 | A0 | 0.90 | 47.7% | 46.7% - 48.7% | 47.9% | 57.5% | 56.7% | 59.3% |
+| voyage-4 | A0 | 0.95 | 21.5% | 21.3% - 21.5% | - | 30.0% | 30.0% | - |
+| voyage-4 | A2 | 0.90 | 8.6% | 8.6% - 10.0% | 9.4% | 48.3% | 47.8% | 49.9% |
+| voyage-4 | A2 | 0.95 | 6.4% | 6.4% - 6.6% | - | 25.0% | 25.0% | - |
+| gemini-2 | A0 | 0.90 | 88.5% | 80.2% - 89.2% | 85.6% | 97.2% | 91.4% | 97.9% |
+| gemini-2 | A0 | 0.95 | 48.7% | 46.7% - 49.6% | - | 73.1% | 70.8% | - |
+| gemini-2 | A2 | 0.90 | 13.4% | 12.5% - 16.1% | 14.7% | 83.3% | 77.8% | 83.2% |
+| gemini-2 | A2 | 0.95 | 7.3% | 7.3% - 8.6% | - | 61.9% | 59.7% | - |
+| minilm | A0 | 0.90 | 68.9% | 67.0% - 68.9% | 68.2% | 36.1% | 35.8% | 37.9% |
+| minilm | A0 | 0.95 | 52.6% | 52.1% - 52.8% | - | 19.7% | 19.7% | - |
+| minilm | A2 | 0.90 | 8.3% | 8.3% - 8.8% | 8.6% | 30.0% | 29.7% | 31.3% |
+| minilm | A2 | 0.95 | 7.6% | 7.6% - 7.6% | - | 16.7% | 16.7% | - |
+| bge-m3 | A0 | 0.90 | 69.7% | 67.0% - 70.2% | 68.9% | 55.0% | 53.1% | 57.7% |
+| bge-m3 | A0 | 0.95 | 41.1% | 40.3% - 41.3% | - | 28.3% | 27.8% | - |
+| bge-m3 | A2 | 0.90 | 11.7% | 11.5% - 13.2% | 12.5% | 47.2% | 45.3% | 49.2% |
+| bge-m3 | A2 | 0.95 | 8.3% | 8.3% - 9.0% | - | 24.2% | 23.6% | - |
+| langcache-v1 | A0 | 0.90 | 30.6% | 29.1% - 30.8% | 30.1% | 42.2% | 42.2% | 45.1% |
+| langcache-v1 | A0 | 0.95 | 11.7% | 11.2% - 11.7% | - | 18.9% | 19.2% | - |
+| langcache-v1 | A2 | 0.90 | 5.6% | 5.6% - 6.4% | 6.1% | 35.8% | 35.8% | 38.2% |
+| langcache-v1 | A2 | 0.95 | 1.5% | 1.5% - 1.5% | - | 16.1% | 16.4% | - |
 
 ## Harness checks
 
@@ -336,7 +338,7 @@ Every pair's new query is looked up against all 721 distinct stored queries; the
 - Synthetic queries. Every pair is constructed: templates, pairs written by the author (Claude Opus 5.5), and pairs written by gpt-6.1-sol and Claude Sonnet 5.5 (80 of them edits of real BANKING77 queries). Real cache traffic has a different mix: most lookups are neither near-identical traps nor clean paraphrases, so these rates are conditional on a lookup being one of the two, not production hit rates.
 - The authored pairs and the slot guard share one author, and the guard's alias tables were written knowing the slot types. The guard was committed before the pairs existed and not changed after, but its numbers on the authored group are likely optimistic; the gpt-6.1-sol and claude-sonnet-5-5 groups and PAWS are the check, reported separately.
 - Labels are the generators' own plus one human review of 30 pairs (29/30 confirmed; Wilson 95% CI 83-99%). At that n, a few percent of labels can be wrong; generator-assigned slot types are noisier than labels (e.g. some BANKING77 'direction' traps are action swaps).
-- The main tables compare each lookup with one stored query. The full-cache simulation (721 stored queries, nearest entry served) changed wrong-hit rates by at most 2 points for 7 of 8 models (9 for gemini-embedding-2): a trap's nearest neighbour is almost always its own one-detail-different partner. That store is small and spread across topics; a production cache full of near-variants of popular queries is not modelled.
+- The main tables compare each lookup with one stored query. The full-cache simulation (721 stored queries, nearest entry served) moved the estimated wrong-hit rate by under 1 point for 7 of 8 models and by -3 points for gemini-embedding-2: a trap's nearest neighbour is almost always its own one-detail-different partner. That estimate rests on 30 hand-labelled hits (15 per side), and the store is small and spread across topics; a production cache full of near-variants of popular queries is not modelled.
 - Cosine on unit vectors for every model. Library defaults are converted to cosine (see the defaults table); GPTCache's own default ONNX embedding is not normalized and OpenSearch's default effectively has no threshold, so their rows describe the threshold applied to these embeddings, not those libraries end to end.
 - One request setting per embedding model (query mode on both sides where a model has one; Gemini's documented similarity prefix). Other modes, dimensions or prompts can move the cosine distribution.
 - A3 asks each decider once per pair, only for pairs that pass A0 at 0.90 on at least one model, at default sampling. Run-to-run variance of the deciders is not measured here (post 1's noise baseline measured it for judging: Jev and Luna changed 0-2.5% of verdicts between runs).

@@ -412,9 +412,10 @@ LIMITATIONS = [
     "At that n, a few percent of labels can be wrong; generator-assigned slot types are noisier than labels "
     "(e.g. some BANKING77 'direction' traps are action swaps).",
     "The main tables compare each lookup with one stored query. The full-cache simulation (721 stored queries, "
-    "nearest entry served) changed wrong-hit rates by at most 2 points for 7 of 8 models (9 for gemini-embedding-2): a "
-    "trap's nearest neighbour is almost always its own one-detail-different partner. That store is small and spread "
-    "across topics; a production cache full of near-variants of popular queries is not modelled.",
+    "nearest entry served) moved the estimated wrong-hit rate by under 1 point for 7 of 8 models and by -3 points for "
+    "gemini-embedding-2: a trap's nearest neighbour is almost always its own one-detail-different partner. That "
+    "estimate rests on 30 hand-labelled hits (15 per side), and the store is small and spread across topics; a "
+    "production cache full of near-variants of popular queries is not modelled.",
     "Cosine on unit vectors for every model. Library defaults are converted to cosine (see the defaults table); "
     "GPTCache's own default ONNX embedding is not normalized and OpenSearch's default effectively has no "
     "threshold, so their rows describe the threshold applied to these embeddings, not those libraries end to end.",
@@ -443,6 +444,27 @@ HARNESS_BUGS = [
     "Post 1 Claude batch for Haiku 4.5 (noise re-run 2) ended with all 360 requests errored on low credit; errors "
     "are never cached, so the re-run retried them at no double cost.",
 ]
+
+
+def sim_review(review_path: Path, other_hits_path: Path) -> dict | None:
+    """Human labels on a sample of unlabelled full-cache hits: share that served the right answer, by lookup label."""
+    import csv
+    if not review_path.exists() or not other_hits_path.exists():
+        return None
+    rows = list(csv.DictReader(review_path.open()))
+    col = next((c for c in rows[0] if c.startswith("same_answer")), None) if rows else None
+    if not col or any(r[col].strip().lower() not in ("y", "n") for r in rows):
+        return None  # not labelled (yet)
+    label = {}
+    for line in other_hits_path.open():
+        o = json.loads(line)
+        label.setdefault((o["stored_query"], o["new_query"]), o["lookup_label"])
+    out = {}
+    for lab in ("different", "same"):
+        ys = [r[col].strip().lower() == "y" for r in rows if label.get((r["stored_query"], r["new_query"])) == lab]
+        if ys:
+            out[lab] = {"n": len(ys), "right": sum(ys), "share_right": sum(ys) / len(ys)}
+    return out
 
 
 def write_md(M: dict, figs: list[Path], path: Path, smoke: bool) -> None:
@@ -562,23 +584,36 @@ def write_md(M: dict, figs: list[Path], path: Path, smoke: bool) -> None:
     if sim_path.exists() and not smoke:
         S = json.loads(sim_path.read_text())
         store = next(iter(S.values()))["store_size"]
+        rv = M.get("sim_review")
         L += ["## Full-cache simulation (`semcache/simulate.py`, offline)", "",
               f"Every pair's new query is looked up against all {store} distinct stored queries; the nearest is served "
               "if it clears the threshold. A hit on the pair's own partner carries the pair's label; a hit on any "
               "other stored query is unlabelled, so the trap wrong-hit rate is a range: low = partner hits only, "
               "high = every unlabelled hit counted as wrong. An exact-text match counts as correct. Many unlabelled "
               "hits read as correct matches (e.g. a Business Class trap finding another Business Class query), so "
-              "the true rate sits near the low end.", "",
-              "| Model | Arm | t | traps served, single pair | traps wrong, full cache (low - high) | controls served "
-              "correctly, single pair | full cache |", "|---|---|---|---|---|---|---|"]
+              "the true rate sits near the low end.", ""]
+        if rv:
+            d, c = rv["different"], rv["same"]
+            L += [f"Human labels on {d['n'] + c['n']} sampled unlabelled hits at 0.90 (`pairs/review_sim.csv`): for trap "
+                  f"lookups, {d['right']}/{d['n']} served a right answer ({d['n'] - d['right']} wrong); for control "
+                  f"lookups, {c['right']}/{c['n']} served a right answer. The estimate column applies those shares to "
+                  "every model's unlabelled hits at 0.90 (pooled sample, so it assumes the share is the same across "
+                  "models).", ""]
+        L += ["| Model | Arm | t | traps served, single pair | traps wrong, full cache (low - high) | estimate | controls "
+              "served correctly, single pair | full cache (labelled) | estimate |", "|---|---|---|---|---|---|---|---|---|"]
         for m in models:
             for arm in ("A0", "A2"):
                 for t in ("0.90", "0.95"):
                     v = S.get(f"{m}|{arm}|{t}")
                     if v:
+                        est_w = est_c = "-"
+                        if rv and t == "0.90":
+                            tr, ct = v["different"], v["same"]
+                            est_w = f"{100 * (tr['partner'] + (1 - rv['different']['share_right']) * tr['other']) / tr['n']:.1f}%"
+                            est_c = (f"{100 * (ct['partner'] + ct['identical'] + rv['same']['share_right'] * ct['other']) / ct['n']:.1f}%")
                         L.append(f"| {m} | {arm} | {t} | {100 * v['trap_single_pair']:.1f}% | "
-                                 f"{100 * v['trap_wrong_low']:.1f}% - {100 * v['trap_wrong_high']:.1f}% | "
-                                 f"{100 * v['control_single_pair']:.1f}% | {100 * v['control_correct']:.1f}% |")
+                                 f"{100 * v['trap_wrong_low']:.1f}% - {100 * v['trap_wrong_high']:.1f}% | {est_w} | "
+                                 f"{100 * v['control_single_pair']:.1f}% | {100 * v['control_correct']:.1f}% | {est_c} |")
         L.append("")
 
     L += ["## Harness checks", "", "```json", json.dumps(M["checks"], indent=1), "```", "",
@@ -612,6 +647,7 @@ def compute(stem: str) -> tuple[dict, dict]:
         "auc_paws": separation(scores, paws, SEED + 900) if paws else {},
         "costs": costs(decisions, scores, pairs),
         "paws": arm_metrics(arms, paws, SEED + 700) if paws else {},
+        "sim_review": sim_review(PKG / "pairs" / "review_sim.csv", RESULTS / "simulation_other_hits.jsonl"),
     }
     asked = {pid for (_, pid) in decisions}
     need = {p["id"] for p in pairs + paws if any(scores.get((e.name, p["id"]), 0) >= DEFAULT_COSINE for e in EMBEDDERS)}
