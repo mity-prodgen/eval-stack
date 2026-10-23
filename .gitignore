@@ -4,7 +4,7 @@ __pycache__/
 .pytest_cache/
 results/
 .env
-data/
+/data/
 cache/
 persuasion/results/
 .DS_Store

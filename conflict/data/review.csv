@@ -1,0 +1,175 @@
+id,kind,domain,date_format,question,current_answer,stale_answer,new_chunk,old_chunk,reviewer_ok (y/n),reviewer_note
+c004,conflict,refunds,header,Above what order value is return shipping free at Lumora Home?,$150,$75,"Lumora Home | Returns and Refunds Policy
+Effective February 2, 2026
+Return shipping
+Return shipping is free for orders over $150. For smaller orders, a prepaid label costs $12.95 and is deducted from the refund. Customers can also drop items off at any Lumora Home store at no charge.","Lumora Home | Returns and Refunds Policy
+Effective April 14, 2025
+Return shipping
+Return shipping is free for orders over $75. For smaller orders, a prepaid label costs $8.95 and is deducted from the refund. Customers can also drop items off at any Lumora Home store at no charge.",,
+c008,conflict,refunds,header,Within how many days of purchase can a Brightdesk annual plan be cancelled for a full refund?,14 days,30 days,"Brightdesk | Subscription Cancellation and Refund Terms
+Last updated: 2026-01-15
+Annual plans
+Annual plans cancelled within 14 days of the purchase or renewal date receive a full refund. After that period, annual plans are not refundable but remain active until the end of the term. Downgrades on annual plans take effect at renewal, and a reminder is sent 21 days before renewal.","Brightdesk | Subscription Cancellation and Refund Terms
+Last updated: 2024-11-01
+Annual plans
+Annual plans cancelled within 30 days of the purchase or renewal date receive a full refund. After that period, annual plans are not refundable but remain active until the end of the term. Downgrades on annual plans take effect at renewal, and a reminder is sent 10 days before renewal.",,
+c013,conflict,refunds,body,Can a Corvel Rail Saver fare be refunded?,refundable as a travel voucher only,non-refundable,"Corvel Rail | Ticket Changes and Refunds
+Saver fares
+As of June 2026, saver fares are refundable as a travel voucher only. Travel dates on a Saver fare can be changed once for a fee of €25 plus any fare difference, as long as the change is made before the original departure.","Corvel Rail | Ticket Changes and Refunds
+Saver fares
+As of August 2025, saver fares are non-refundable. Travel dates on a Saver fare can be changed once for a fee of €20 plus any fare difference, as long as the change is made before the original departure.",,
+c017,conflict,refunds,body,How many travellers make a booking a group booking at Corvel Rail?,8,10,"Corvel Rail | Ticket Changes and Refunds
+Group bookings
+As of June 2026, group bookings of 8 or more travellers can cancel up to seven days before departure for a full refund. Name changes on group bookings are free until 36 hours before departure.","Corvel Rail | Ticket Changes and Refunds
+Group bookings
+As of August 2025, group bookings of 10 or more travellers can cancel up to seven days before departure for a full refund. Name changes on group bookings are free until 72 hours before departure.",,
+c024,conflict,rate_limits,header,How many queries per second does the Geomesh Geocoding API allow per key?,30 queries per second,50 queries per second,"Geomesh | Maps Platform Usage Limits
+Effective November 10, 2025
+Geocoding
+The Geocoding API allows 30 queries per second per API key. Batch geocoding jobs accept up to 25,000 addresses per job and run asynchronously; batch jobs do not count toward the per-second limit.","Geomesh | Maps Platform Usage Limits
+Effective January 27, 2025
+Geocoding
+The Geocoding API allows 50 queries per second per API key. Batch geocoding jobs accept up to 10,000 addresses per job and run asynchronously; batch jobs do not count toward the per-second limit.",,
+c026,conflict,rate_limits,header,What is the Geomesh rate limit for route calculation requests?,15 requests per second,20 requests per second,"Geomesh | Maps Platform Usage Limits
+Effective November 10, 2025
+Routing
+Route calculations are limited to 15 requests per second per key. A single route request can include at most 50 waypoints, including the origin and destination.","Geomesh | Maps Platform Usage Limits
+Effective January 27, 2025
+Routing
+Route calculations are limited to 20 requests per second per key. A single route request can include at most 25 waypoints, including the origin and destination.",,
+c027,conflict,rate_limits,version,How long may Geomesh static map tiles be cached on the client?,7 days,30 days,"Geomesh | Maps Platform Usage Limits (v6.0)
+Map tiles
+Static map tiles may be cached on the client for up to 7 days. Dynamic tile requests are limited to 300 requests per second per key; mobile SDKs batch tile requests automatically.","Geomesh | Maps Platform Usage Limits (v5.4)
+Map tiles
+Static map tiles may be cached on the client for up to 30 days. Dynamic tile requests are limited to 500 requests per second per key; mobile SDKs batch tile requests automatically.",,
+c032,conflict,rate_limits,body,What is the maximum combined input and output size of one Parlance request?,"256,000 tokens","128,000 tokens","Parlance | Inference API Limits by Tier
+Request size
+As of May 2026, A single request may contain at most 256,000 tokens of input and output combined. Requests with images may include up to 50 images per request.","Parlance | Inference API Limits by Tier
+Request size
+As of December 2025, A single request may contain at most 128,000 tokens of input and output combined. Requests with images may include up to 20 images per request.",,
+c034,conflict,pricing,version,What does Stratacloud charge for Standard object storage for the first 50 TB?,$0.019 per GB-month,$0.023 per GB-month,"Stratacloud | Object Storage Pricing (v8)
+Standard storage
+Standard storage costs $0.019 per GB-month for the first 50 TB each month. Volume discounts apply above 50 TB. Objects in Standard storage have no minimum storage duration, and the first 10 GB each month are free.","Stratacloud | Object Storage Pricing (v7)
+Standard storage
+Standard storage costs $0.023 per GB-month for the first 50 TB each month. Volume discounts apply above 50 TB. Objects in Standard storage have no minimum storage duration, and the first 5 GB each month are free.",,
+c035,conflict,pricing,header,How much does Stratacloud charge for data transfer out to the internet?,$0.05 per GB,$0.09 per GB,"Stratacloud | Object Storage Pricing
+Effective March 1, 2026
+Data transfer out
+Data transferred out to the internet is billed at $0.05 per GB after the free allowance. Transfer between Stratacloud regions costs $0.01 per GB.","Stratacloud | Object Storage Pricing
+Effective March 1, 2025
+Data transfer out
+Data transferred out to the internet is billed at $0.09 per GB after the free allowance. Transfer between Stratacloud regions costs $0.02 per GB.",,
+c040,conflict,pricing,header,How much does the Taskloom Team plan cost per user per month on annual billing?,$12,$10,"Taskloom | Plans and Pricing
+Last updated: 2025-10-06
+Team plan
+The Team plan costs $12 per user per month when billed annually. It includes unlimited projects, timeline views and guest access for up to 10 guests.","Taskloom | Plans and Pricing
+Last updated: 2024-09-16
+Team plan
+The Team plan costs $10 per user per month when billed annually. It includes unlimited projects, timeline views and guest access for up to 5 guests.",,
+c043,conflict,pricing,body,How many users does the Taskloom Free plan support per workspace?,10 users,15 users,"Taskloom | Plans and Pricing
+Free plan
+As of October 2025, the Free plan supports up to 10 users per workspace and includes basic boards and lists. File uploads on the Free plan are limited to 5 MB per file.","Taskloom | Plans and Pricing
+Free plan
+As of September 2024, the Free plan supports up to 15 users per workspace and includes basic boards and lists. File uploads on the Free plan are limited to 10 MB per file.",,
+c044,conflict,pricing,header,What discount do registered nonprofits get on Taskloom paid plans?,30%,50%,"Taskloom | Plans and Pricing
+Last updated: 2025-10-06
+Nonprofit and education discounts
+Registered nonprofits receive 30% off any paid plan. Accredited schools and universities receive 60% off and can apply through the education portal.","Taskloom | Plans and Pricing
+Last updated: 2024-09-16
+Nonprofit and education discounts
+Registered nonprofits receive 50% off any paid plan. Accredited schools and universities receive 40% off and can apply through the education portal.",,
+c054,conflict,leave,version,How far in advance must Harbor & Finch employees request more than two days of paid time off?,10 business days,two weeks,"Harbor & Finch | Employee Handbook: Time Off (Edition 7)
+Requesting time off
+Requests for paid time off of more than two days must be submitted at least 10 business days in advance through the HR portal. Managers respond within three business days.","Harbor & Finch | Employee Handbook: Time Off (Edition 6)
+Requesting time off
+Requests for paid time off of more than two days must be submitted at least two weeks in advance through the HR portal. Managers respond within five business days.",,
+c057,conflict,leave,body,How much job-protected medical leave can eligible Meridian Health staff take in a 12-month period?,16 weeks,12 weeks,"Meridian Health | Leave of Absence Policy
+Medical leave
+As of July 2025, eligible staff may take up to 16 weeks of job-protected unpaid medical leave in a rolling 12-month period. Staff must have worked at least 1,000 hours in the past year to be eligible.","Meridian Health | Leave of Absence Policy
+Medical leave
+As of July 2024, eligible staff may take up to 12 weeks of job-protected unpaid medical leave in a rolling 12-month period. Staff must have worked at least 1,250 hours in the past year to be eligible.",,
+c063,conflict,leave,version,What is the minimum number of days off Quillstone Software expects employees to take per year?,20 days,15 days,"Quillstone Software | People Policies: Leave and Holidays (v2.4)
+Flexible time off
+Quillstone offers flexible time off with no fixed annual cap. Employees are expected to take at least 20 days per year, and a manager check-in happens if less than 8 days has been taken by July 1.","Quillstone Software | People Policies: Leave and Holidays (v2.0)
+Flexible time off
+Quillstone offers flexible time off with no fixed annual cap. Employees are expected to take at least 15 days per year, and a manager check-in happens if less than 5 days has been taken by July 1.",,
+c064,conflict,leave,version,How many weeks of paid parental leave does Quillstone Software give?,20 weeks,18 weeks,"Quillstone Software | People Policies: Leave and Holidays (v2.4)
+Parental leave
+All parents receive 20 weeks of paid parental leave, which can be split into up to three blocks within the first year.","Quillstone Software | People Policies: Leave and Holidays (v2.0)
+Parental leave
+All parents receive 18 weeks of paid parental leave, which can be split into up to two blocks within the first year.",,
+c069,conflict,sdk,body,What is the default request timeout in the Ferrox Python SDK?,30 seconds,60 seconds,"Ferrox | Python SDK: Installation and Requirements
+Default timeouts
+As of December 2025, every request has a default timeout of 30 seconds. Failed requests are retried automatically up to three times with exponential backoff; both values can be changed when the client is created.","Ferrox | Python SDK: Installation and Requirements
+Default timeouts
+As of February 2025, every request has a default timeout of 60 seconds. Failed requests are retried automatically up to two times with exponential backoff; both values can be changed when the client is created.",,
+c074,conflict,sdk,body,What minimum Android API level does the Pulsekit Android SDK require?,API 24,API 21,"Pulsekit | Mobile SDK Requirements
+Android
+As of March 2026, the Android SDK requires a minimum SDK level of API 24 and must be compiled against API level 35 or higher.","Pulsekit | Mobile SDK Requirements
+Android
+As of July 2025, the Android SDK requires a minimum SDK level of API 21 and must be compiled against API level 34 or higher.",,
+c077,conflict,sdk,version,How often does the Pulsekit SDK send event batches?,15 seconds,30 seconds,"Pulsekit | Mobile SDK Requirements (v9.0)
+Event batching
+Events are sent in batches every 15 seconds or when 50 events are queued, whichever comes first. Events that cannot be sent are stored on the device for up to 3 days.","Pulsekit | Mobile SDK Requirements (v8.1)
+Event batching
+Events are sent in batches every 30 seconds or when 50 events are queued, whichever comes first. Events that cannot be sent are stored on the device for up to 7 days.",,
+c083,conflict,sdk,header,What is the oldest macOS version the Driftwood CLI binaries support?,13,11,"Driftwood | CLI Installation Guide
+Published 15 September 2025
+Supported operating systems
+Prebuilt binaries are available for macOS 13 and later, Windows 10 and later, and Linux with glibc 2.31 or later.","Driftwood | CLI Installation Guide
+Published 28 October 2024
+Supported operating systems
+Prebuilt binaries are available for macOS 11 and later, Windows 10 and later, and Linux with glibc 2.28 or later.",,
+c093,conflict,sla,version,How long does Keelhost retain managed backups?,30 days,14 days,"Keelhost | Managed Hosting Service Level Agreement (SLA v3)
+Backups
+Managed backups run daily and are retained for 30 days. Restores from backup start within 1 hour of a request.","Keelhost | Managed Hosting Service Level Agreement (SLA v2)
+Backups
+Managed backups run daily and are retained for 14 days. Restores from backup start within 2 hours of a request.",,
+c096,conflict,sla,version,When is Ledgerline phone support available?,"Monday to Saturday, 7:00 to 19:00","Monday to Friday, 8:00 to 18:00","Ledgerline | Customer Support Policy (v2.0)
+Support hours
+Ledgerline phone support is available Monday to Saturday, 7:00 to 19:00. During the tax filing season, support hours are extended to include Sundays.","Ledgerline | Customer Support Policy (v1.2)
+Support hours
+Ledgerline phone support is available Monday to Friday, 8:00 to 18:00. During the tax filing season, support hours are extended to include Saturdays.",,
+c098,conflict,sla,version,How quickly does Ledgerline reply to support emails?,12 hours,24 hours,"Ledgerline | Customer Support Policy (v2.0)
+Email support
+Emails to support receive a reply within 12 hours. Messages marked as payroll-blocking are escalated and receive a reply within 2 hours.","Ledgerline | Customer Support Policy (v1.2)
+Email support
+Emails to support receive a reply within 24 hours. Messages marked as payroll-blocking are escalated and receive a reply within 4 hours.",,
+k002,control,refunds,header,Above what order value is return shipping free at Lumora Home?,$150,(same as current),"Lumora Home | Returns and Refunds Policy
+Effective February 2, 2026
+Return shipping
+Return shipping is free for orders over $150. For smaller orders, a prepaid label costs $12.95 and is deducted from the refund. Customers can also drop items off at any Lumora Home store at no charge.","Lumora Home | Returns and Refunds Policy
+Effective April 14, 2025
+Return shipping
+Return shipping is free for orders over $150. For smaller orders, a prepaid label costs $8.95 and is deducted from the refund. Customers can also drop items off at any Lumora Home store at no charge.",,
+k005,control,refunds,header,What is the deadline for submitting a Corvel Rail compensation claim?,6 weeks,(same as current),"Corvel Rail | Ticket Changes and Refunds
+Published 1 June 2026
+Claim deadline
+Refund and compensation claims must be submitted within 6 weeks of the travel date using the online form or at a ticket office. Corvel Rail answers claims within 14 days.","Corvel Rail | Ticket Changes and Refunds
+Published 20 August 2025
+Claim deadline
+Refund and compensation claims must be submitted within 6 weeks of the travel date using the online form or at a ticket office. Corvel Rail answers claims within 30 days.",,
+k012,control,rate_limits,header,How many requests per minute can a Parlance Tier 1 organization send to a model?,"1,000 requests per minute",(same as current),"Parlance | Inference API Limits by Tier
+Published 19 May 2026
+Tier 1
+Tier 1 organizations can send up to 1,000 requests per minute to each model. The monthly spend limit at Tier 1 is $200; organizations move to Tier 2 automatically after paying $50 in total.","Parlance | Inference API Limits by Tier
+Published 8 December 2025
+Tier 1
+Tier 1 organizations can send up to 1,000 requests per minute to each model. The monthly spend limit at Tier 1 is $100; organizations move to Tier 2 automatically after paying $50 in total.",,
+k013,control,rate_limits,header,What is the Parlance Tier 1 token-per-minute limit for each model?,"400,000 tokens per minute",(same as current),"Parlance | Inference API Limits by Tier
+Published 19 May 2026
+Token limits
+In addition to request limits, Tier 1 organizations are limited to 400,000 tokens per minute per model. Cached input tokens count as one tenth of a regular token toward this limit.","Parlance | Inference API Limits by Tier
+Published 8 December 2025
+Token limits
+In addition to request limits, Tier 1 organizations are limited to 400,000 tokens per minute per model. Cached input tokens count as one quarter of a regular token toward this limit.",,
+k035,control,sla,body,What is the first-response time for a Priority 1 issue on Nimbusly Premium support?,30 minutes,(same as current),"Nimbusly | Support Plans and Response Times
+Critical issues
+As of February 2026, for Priority 1 issues, where production is down, Premium support customers receive a first response within 30 minutes, 24 hours a day. A dedicated engineer stays on the case until service is restored, with status updates every 60 minutes.","Nimbusly | Support Plans and Response Times
+Critical issues
+As of February 2025, for Priority 1 issues, where production is down, Premium support customers receive a first response within 30 minutes, 24 hours a day. A dedicated engineer stays on the case until service is restored, with status updates every 2 hours.",,
+k037,control,sla,version,How quickly does Ledgerline reply to support emails?,12 hours,(same as current),"Ledgerline | Customer Support Policy (v2.0)
+Email support
+Emails to support receive a reply within 12 hours. Messages marked as payroll-blocking are escalated and receive a reply within 2 hours.","Ledgerline | Customer Support Policy (v1.2)
+Email support
+Emails to support receive a reply within 12 hours. Messages marked as payroll-blocking are escalated and receive a reply within 4 hours.",,

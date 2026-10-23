@@ -1,0 +1,51 @@
+{
+ "n_items": 161,
+ "by_kind": {
+  "conflict": 101,
+  "control": 40,
+  "wiki": 20
+ },
+ "conflict_by_domain": {
+  "leave": 17,
+  "pricing": 17,
+  "rate_limits": 16,
+  "refunds": 17,
+  "sdk": 17,
+  "sla": 17
+ },
+ "conflict_by_date_format": {
+  "body": 34,
+  "header": 34,
+  "version": 33
+ },
+ "control_by_domain": {
+  "leave": 7,
+  "pricing": 7,
+  "rate_limits": 7,
+  "refunds": 7,
+  "sdk": 6,
+  "sla": 6
+ },
+ "control_by_date_format": {
+  "body": 12,
+  "header": 17,
+  "version": 11
+ },
+ "wiki_by_type": {
+  "Explicit": 13,
+  "Implicit (reasoning required)": 7
+ },
+ "doc_sets": 18,
+ "words_per_chunk_authored": {
+  "median": 41.0,
+  "min": 28,
+  "max": 63
+ },
+ "days_between_versions": {
+  "median": 322,
+  "min": 162,
+  "max": 440
+ },
+ "runs_per_item": "2 chunk orders (new_first, old_first)",
+ "prompts_per_generator_per_arm": 322
+}

@@ -1,0 +1,467 @@
+{
+ "source": "ibm-research/Wikipedia_contradict_benchmark @ c20e361f985ed480a659b35d98b49f2311fcd174",
+ "file": "WikiContradict_dataset_v1_rag_qa.csv",
+ "seed": 20261023,
+ "items": [
+  {
+   "id": "w001",
+   "question_ID": "12",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "15",
+     "context": 2
+    },
+    {
+     "question_ID": "173",
+     "context": 2
+    },
+    {
+     "question_ID": "8",
+     "context": 1
+    },
+    {
+     "question_ID": "45",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w002",
+   "question_ID": "20",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "17",
+     "context": 2
+    },
+    {
+     "question_ID": "113",
+     "context": 2
+    },
+    {
+     "question_ID": "80",
+     "context": 2
+    },
+    {
+     "question_ID": "174",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w003",
+   "question_ID": "50",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "10",
+     "context": 1
+    },
+    {
+     "question_ID": "102",
+     "context": 2
+    },
+    {
+     "question_ID": "89",
+     "context": 2
+    },
+    {
+     "question_ID": "48",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w004",
+   "question_ID": "61",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "141",
+     "context": 2
+    },
+    {
+     "question_ID": "8",
+     "context": 1
+    },
+    {
+     "question_ID": "112",
+     "context": 1
+    },
+    {
+     "question_ID": "47",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w005",
+   "question_ID": "65",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "13",
+     "context": 1
+    },
+    {
+     "question_ID": "123",
+     "context": 1
+    },
+    {
+     "question_ID": "48",
+     "context": 1
+    },
+    {
+     "question_ID": "14",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w006",
+   "question_ID": "70",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "41",
+     "context": 1
+    },
+    {
+     "question_ID": "126",
+     "context": 2
+    },
+    {
+     "question_ID": "103",
+     "context": 2
+    },
+    {
+     "question_ID": "112",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w007",
+   "question_ID": "72",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "164",
+     "context": 1
+    },
+    {
+     "question_ID": "224",
+     "context": 2
+    },
+    {
+     "question_ID": "153",
+     "context": 1
+    },
+    {
+     "question_ID": "25",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w008",
+   "question_ID": "85",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "197",
+     "context": 2
+    },
+    {
+     "question_ID": "92",
+     "context": 1
+    },
+    {
+     "question_ID": "187",
+     "context": 1
+    },
+    {
+     "question_ID": "226",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w009",
+   "question_ID": "98",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "252",
+     "context": 1
+    },
+    {
+     "question_ID": "198",
+     "context": 1
+    },
+    {
+     "question_ID": "83",
+     "context": 1
+    },
+    {
+     "question_ID": "116",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w010",
+   "question_ID": "99",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "194",
+     "context": 1
+    },
+    {
+     "question_ID": "51",
+     "context": 1
+    },
+    {
+     "question_ID": "141",
+     "context": 2
+    },
+    {
+     "question_ID": "196",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w011",
+   "question_ID": "105",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "151",
+     "context": 2
+    },
+    {
+     "question_ID": "192",
+     "context": 2
+    },
+    {
+     "question_ID": "13",
+     "context": 1
+    },
+    {
+     "question_ID": "11",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w012",
+   "question_ID": "109",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "222",
+     "context": 2
+    },
+    {
+     "question_ID": "17",
+     "context": 1
+    },
+    {
+     "question_ID": "93",
+     "context": 2
+    },
+    {
+     "question_ID": "183",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w013",
+   "question_ID": "111",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "253",
+     "context": 1
+    },
+    {
+     "question_ID": "29",
+     "context": 2
+    },
+    {
+     "question_ID": "192",
+     "context": 2
+    },
+    {
+     "question_ID": "92",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w014",
+   "question_ID": "120",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "24",
+     "context": 2
+    },
+    {
+     "question_ID": "123",
+     "context": 2
+    },
+    {
+     "question_ID": "49",
+     "context": 1
+    },
+    {
+     "question_ID": "59",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w015",
+   "question_ID": "121",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "59",
+     "context": 1
+    },
+    {
+     "question_ID": "22",
+     "context": 1
+    },
+    {
+     "question_ID": "77",
+     "context": 1
+    },
+    {
+     "question_ID": "100",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w016",
+   "question_ID": "143",
+   "contradictType": "Implicit (reasoning required)",
+   "distractors": [
+    {
+     "question_ID": "150",
+     "context": 1
+    },
+    {
+     "question_ID": "9",
+     "context": 1
+    },
+    {
+     "question_ID": "17",
+     "context": 1
+    },
+    {
+     "question_ID": "52",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w017",
+   "question_ID": "156",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "245",
+     "context": 2
+    },
+    {
+     "question_ID": "82",
+     "context": 2
+    },
+    {
+     "question_ID": "8",
+     "context": 2
+    },
+    {
+     "question_ID": "103",
+     "context": 1
+    }
+   ]
+  },
+  {
+   "id": "w018",
+   "question_ID": "176",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "8",
+     "context": 1
+    },
+    {
+     "question_ID": "116",
+     "context": 2
+    },
+    {
+     "question_ID": "174",
+     "context": 2
+    },
+    {
+     "question_ID": "81",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w019",
+   "question_ID": "220",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "196",
+     "context": 2
+    },
+    {
+     "question_ID": "129",
+     "context": 1
+    },
+    {
+     "question_ID": "15",
+     "context": 2
+    },
+    {
+     "question_ID": "66",
+     "context": 2
+    }
+   ]
+  },
+  {
+   "id": "w020",
+   "question_ID": "232",
+   "contradictType": "Explicit",
+   "distractors": [
+    {
+     "question_ID": "126",
+     "context": 2
+    },
+    {
+     "question_ID": "49",
+     "context": 1
+    },
+    {
+     "question_ID": "124",
+     "context": 2
+    },
+    {
+     "question_ID": "227",
+     "context": 1
+    }
+   ]
+  }
+ ]
+}
