@@ -61,11 +61,15 @@ MODELS: dict[str, ModelPrice] = {
         display="GPT-6 Luna on /v1/decisions (public beta)",
         input=0.10,
         output=0.0,
+        cache_write_5m=0.125,
+        cache_read=0.01,
         source="https://developers.openai.com/api/docs/guides/decisions",
-        notes="Decisions API rate: input only, 'no cache-read, cache-write, or output-token charges'. "
-        "The model page lists $0.10/$0.01/$0.125/$0.50 (input/cached/cache-write/output) for other endpoints - "
-        "not used here. Batch is not documented for /v1/decisions, so no discount is assumed. "
-        "Only snapshot listed is `gpt-6-luna` (no dated pin exists).",
+        checked="2026-10-22",
+        notes="Decisions API: uncached input $0.10/M, output not charged. On 2026-10-13 the guide said 'no cache-read, "
+        "cache-write, or output-token charges'; on 2026-10-22 it says cache hits get discounted input pricing and cache "
+        "writes are charged at 'the standard gpt-6-luna prompt caching rates' (model page: $0.01 cached, $0.125 cache "
+        "write). Estimates price all Luna input at the cache-write rate (upper bound). Batch is not documented for "
+        "/v1/decisions, so no discount is assumed. Only snapshot listed is `gpt-6-luna` (no dated pin exists).",
     ),
     "gpt-6.1-sol": ModelPrice(
         model_id="gpt-6.1-sol",
@@ -76,7 +80,8 @@ MODELS: dict[str, ModelPrice] = {
         batch_discount=0.5,
         source="https://developers.openai.com/api/docs/models/gpt-6.1-sol",
         notes="Reasoning model: effort low/medium(default)/high/xhigh/max; none/minimal unsupported. "
-        "Temperature not documented. Only snapshot listed is `gpt-6.1-sol`.",
+        "Temperature not documented. Only snapshot listed is `gpt-6.1-sol`. Re-checked 2026-10-22 for post 3: "
+        "unchanged ($2 / $0.10 cached / $2.50 cache write / $10; Batch API 50% off; Responses and Batch supported).",
     ),
     # --- Anthropic ---
     "claude-haiku-4-5-20251001": ModelPrice(
@@ -124,6 +129,22 @@ MODELS: dict[str, ModelPrice] = {
         notes="Dateless ID is a pinned snapshot. temperature/top_p/top_k at non-default values return 400, "
         "so temperature 0 is impossible on this model. thinking 'disabled' returns 400; lowest setting is "
         "{'type': 'between_tools'} (no up-front thinking; tool-free requests return text only).",
+    ),
+    # --- Open-weight generator (conflict/, checked 2026-10-22) ---
+    "Qwen/Qwen3.8-27B": ModelPrice(
+        model_id="Qwen/Qwen3.8-27B",
+        display="Qwen3.8 27B on DeepInfra",
+        input=0.20,
+        output=2.50,
+        cache_read=0.05,
+        source="https://deepinfra.com/Qwen/Qwen3.8-27B",
+        checked="2026-10-22",
+        notes="Open weights, Apache-2.0, released August 2026 (huggingface.co/Qwen/Qwen3.8-27B). DeepInfra lists "
+        "$0.20 / $0.05 cached / $2.50 per 1M and currently shows a 25% discount ($0.15 / $0.038 / $1.875); the "
+        "undiscounted rate is used here, so estimates and logged costs are upper bounds. Served bf16 on DeepInfra "
+        "(OpenRouter endpoint listing, 2026-10-22). Thinking is on by default; the documented instruct mode is "
+        "chat_template_kwargs enable_thinking=False. OpenAI-compatible endpoint https://api.deepinfra.com/v1/openai. "
+        "No batch API.",
     ),
     # --- Embedding models (semcache/, checked 2026-10-19). Input-only pricing. ---
     "text-embedding-3-small": ModelPrice(

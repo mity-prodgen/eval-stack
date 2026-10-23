@@ -10,12 +10,15 @@ Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tab
 **Post 2: How often does a semantic cache serve the wrong stored answer?** (`semcache/`)
 Report: [results page](https://claude.ai/artifact/4mqrwg5iaa3hFA5hpZDmKs) · tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md).
 
+**Post 3: Your knowledge base has the old and the new version of a policy. Which one does your RAG answer from, and
+does your eval notice?** (`conflict/`) - setup only, no results yet.
+
 ## Setup
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2; free/trial keys are enough) - .env is gitignored
+cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2; free/trial keys are enough; + DEEPINFRA_API_KEY for post 3) - .env is gitignored
 scripts/download_ragtruth.sh
 ```
 
@@ -189,6 +192,77 @@ allows 1,000 embedding requests a day (the full run needs about 2,000).
 
 Derivations: `DEFAULTS` in `semcache/common.py`.
 
+## Post 3: stale documents in RAG (`conflict/`)
+
+```bash
+scripts/download_wikicontradict.sh                # WikiContradict (pinned HF commit, sha256 checked) into data/
+
+# the item set is frozen in conflict/data/; this verifies it rebuilds, it doesn't change it
+.venv/bin/python -m conflict.build_items          # items.jsonl + wiki_ids.json rebuild byte for byte
+.venv/bin/python -m conflict.show_prompts         # every request body, verbatim, on a real item
+.venv/bin/python -m pytest -q                     # offline
+
+# everything below is a dry run unless you pass --live
+.venv/bin/python -m conflict.run                  # cost table for the whole plan
+.venv/bin/python -m conflict.run --pilot --sync   # STOP 2 pilot: 10 items x 2 orders x 4 arms x 4 generators
+
+set -a && source .env && set +a                   # + DEEPINFRA_API_KEY for the Qwen generator
+.venv/bin/python -m conflict.run --pilot --sync --live
+.venv/bin/python -m conflict.run --live --step precheck gen --max-usd 5     # then --step label, --step judge
+```
+
+`--max-usd` (default 5) aborts **before any call** if the estimate for the not-yet-cached requests is higher, and
+each step is gated again on its refined estimate. Claude and gpt-6.1-sol requests go through the batch APIs (50% off)
+unless `--sync`; batch ids are saved so an interrupted run resumes the same batch. `--gen`, `--arm`, `--labeler`,
+`--judge` narrow a run so a large step fits under the cap.
+
+### Design
+
+| | |
+|---|---|
+| Question | Two versions of the same document are retrieved together. Which one does the answer use, and does a faithfulness judge notice a stale answer? |
+| Data | `conflict/data/`, frozen (sha256 in `MANIFEST.json`). 18 fictional doc sets in 6 domains (refunds/cancellation, API rate limits, pricing, leave policy, SDK/version requirements, support SLAs), 101 sections, each in an old and a new version where the asked value **and** a second value change (`docsets.json`, written by Claude Opus 5.5 in the authoring session, no API call; Opus 5.5 is not a generator, labeler or judge here). **101 stale/current items** (one per section), **40 agreeing controls** (the same questions; the old version gives the current value for the asked slot but keeps its other old value, so the chunks still differ), **20 WikiContradict items** (human-annotated real contradictions; correct behaviour = flag; reported separately). Each item: 2 key chunks + 4 distractors from the same doc set (other sections, random version) or, for wiki, contexts from other articles. Review sheet: `data/review.csv` (30 random items). |
+| Date format | per item, balanced within each domain: **header** ("Effective February 2, 2026" / "Last updated: 2026-02-02" / "Published 2 February 2026"), **body** ("As of February 2026, ..."), **version only** ("(v4.0)", no date anywhere) |
+| Chunk order | every item twice: key chunks at ranks 1-2, **newer first** and **older first**; distractors at 3-6 in a fixed order |
+| Generators | Claude Haiku 5.5, Claude Sonnet 5.5, gpt-6.1-sol, Qwen3.8-27B (DeepInfra), each at its lowest reasoning setting |
+| Default RAG prompt | LangChain Hub `rlm/rag-prompt`, verbatim (commit `50442af1`), sources numbered `[1]`..`[6]` |
+| Arms | F0 default · F1 + "If sources disagree, use the newest dated source and say that an older version exists." · F2jev / F2luna: Jev 1.13.0 or GPT-6 Luna pre-check ("Do these chunks give different answers to the question?" + which source is newest, one request); notice added if P(yes) >= 0.5 · J1 judge rubric + "If the sources disagree, the answer must use the newest source or say that the sources disagree." on F0 answers |
+| Labels | current / stale / blends / flags / refuses / other, plus `conflict_noted`. Labelers Claude Sonnet 5.5 and gpt-6.1-sol, both on every answer; primary = not the generator (Haiku 5.5 -> Sol, Sonnet -> Sol, Sol -> Sonnet, Qwen -> Sonnet). Free string-match check alongside. |
+| Judges | Jev 1.13.0, GPT-6 Luna (Decisions API), Claude Haiku 4.5, Claude Sonnet 5.5 with post 1's P0 faithfulness prompts; passage = {question, numbered chunks}, as post 1's RAGTruth QA passages |
+| Noise | 40 conflict items x 2 orders re-generated at F0 (repeat 1) by every generator |
+
+### Verified models and prices (USD per 1M tokens, checked 2026-10-22)
+
+| Model ID | Role | Input | Output | Cache read | Batch | Source |
+|---|---|---|---|---|---|---|
+| `claude-haiku-5-5` | generator | 0.10 | 0.50 | 0.01 | 50% off | [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) |
+| `claude-sonnet-5-5` | generator, labeler, judge | 2.00 | 10.00 | 0.10 | 50% off | same |
+| `claude-haiku-4-5-20251001` | judge | 1.00 | 5.00 | 0.10 | 50% off | same; Active, "not sooner than October 15, 2026", no deprecation notice ([deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations)) |
+| `gpt-6.1-sol` | generator, labeler | 2.00 | 10.00 | 0.10 | 50% off | [model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) |
+| `Qwen/Qwen3.8-27B` | generator (open, Apache-2.0) | 0.20 | 2.50 | 0.05 | none | [DeepInfra](https://deepinfra.com/Qwen/Qwen3.8-27B) (list price; a 25% discount is shown), [model card](https://huggingface.co/Qwen/Qwen3.8-27B) |
+| `jev-1.13.0` (= `jev-latest`) | judge, F2 pre-check | 0.042 | free | - | - | [docs.typesafe.ai/models](https://docs.typesafe.ai/models) |
+| `gpt-6-luna` (`/v1/decisions`) | judge, F2 pre-check | 0.10 | none | 0.01 (write 0.125) | not documented | [Decisions guide](https://developers.openai.com/api/docs/guides/decisions) |
+
+Data licenses: WikiContradict MIT (dataset card and paper; `ibm-research/Wikipedia_contradict_benchmark` @ `c20e361f`);
+only question ids are committed. The authored doc sets are original to this repo (MIT with the code).
+
+### Deviations from the plan, and why
+
+- **Data author = Claude Opus 5.5 in this session, not an API model.** STOP 1 needs the data and review sheet with
+  zero live calls; Opus 5.5 plays no other role. It is still a Claude model, like two generators and one labeler.
+- **101 stale/current items, not ~100**: one per authored section.
+- **Labels add `other`** (a value that is neither version's) and a separate `conflict_noted` flag, because an
+  answer can give the current value *and* say an older version exists (what F1 asks for); the false-flag rate on
+  controls counts `flags` or `conflict_noted`.
+- **F2 is two arms** (Jev, Luna), reported separately as in post 2; the pre-check also asks which source is newest
+  (both APIs have a `choice` question), so the notice can name it without document metadata.
+- **Sources are numbered** in the context so the notice can name one; otherwise the LangChain prompt is verbatim.
+- **Lowest reasoning for every generator** (Claude thinking off/lowest, Sol `low`, Qwen instruct mode): the setting
+  a RAG answer path usually runs. Reasoning on could change the date results; not tested here.
+- **WikiContradict instances with identical contexts are excluded** (both sides in one passage would make the two
+  chunk orders the same).
+- **Luna pricing changed since post 1**: cache writes are now charged; estimates use the write rate.
+
 ### Files
 
 ```
@@ -225,6 +299,16 @@ semcache/                  post 2 (run as modules: python -m semcache.<name>)
   figures/                 RESULTS.md figures (committed)
   results/                 scores, decisions, usage logs (gitignored)
 scripts/                   dataset downloads (RAGTruth, PAWS, BANKING77), each pinned
+conflict/                  post 3 (run as modules: python -m conflict.<name>)
+  common.py                paths, seeds, models, chunk rendering, every prompt (RAG, F1, F2, labels, J0/J1)
+  build_items.py           doc sets -> frozen items, WikiContradict sample, leak checks, review CSV, stats
+  calls.py                 request builders, parsers, executors (batch or sync) for all four steps
+  estimate.py, run.py      dry-run estimate -> --max-usd gate -> precheck -> gen -> label -> judge
+  show_prompts.py          prints every request body verbatim
+  data/                    authored doc sets, frozen items, wiki ids, review sheet (committed)
+  results/                 answers, labels, judgments, batch ids (gitignored)
+harness/batch.py           generic Anthropic / OpenAI batch runners with resume
+harness/post1_judge.py     post 1's P0 judge wording and shared helpers
 tests/                     offline tests (network blocked)
 ```
 ### Notes
@@ -239,3 +323,4 @@ Code: [MIT](LICENSE). Third-party data keeps its own license:
 - `semcache/pairs/pairs.jsonl` rows whose `source` starts with `banking77+` use real queries from BANKING77
   (Casanueva et al., 2020, PolyAI), licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - PAWS (Google LLC) is not committed, only the sampled row ids; RAGTruth (MIT) passages are not committed.
+- WikiContradict (IBM Research, MIT) is not committed, only the sampled question ids.
