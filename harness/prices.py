@@ -51,9 +51,9 @@ MODELS: dict[str, ModelPrice] = {
         input=0.042,
         output=0.0,
         source="https://docs.typesafe.ai/models",
-        checked="2026-10-20",
-        notes="Released 2026-10-14 as jev-preview; jev-latest moves to it about a week later "
-        "(https://typesafe.ai/blog/jev-1-14). Same price as 1.13.0. Pinned versioned ID.",
+        checked="2026-10-24",
+        notes="Released 2026-10-14 as jev-preview; on 2026-10-24 both jev-latest and jev-preview point to it. "
+        "Same price as 1.13.0. Pinned versioned ID.",
     ),
     # --- OpenAI ---
     "gpt-6-luna": ModelPrice(
@@ -130,21 +130,59 @@ MODELS: dict[str, ModelPrice] = {
         "so temperature 0 is impossible on this model. thinking 'disabled' returns 400; lowest setting is "
         "{'type': 'between_tools'} (no up-front thinking; tool-free requests return text only).",
     ),
-    # --- Open-weight generator (conflict/, checked 2026-10-22) ---
-    "Qwen/Qwen3.8-27B": ModelPrice(
-        model_id="Qwen/Qwen3.8-27B",
-        display="Qwen3.8 27B on DeepInfra",
+    # --- post 3 (freshness/): open generator and decision models, checked 2026-10-24 ---
+    "google/gemma-4-31B-it": ModelPrice(
+        model_id="google/gemma-4-31B-it",
+        display="Gemma 4 31B-it on DeepInfra",
         input=0.20,
-        output=2.50,
-        cache_read=0.05,
-        source="https://deepinfra.com/Qwen/Qwen3.8-27B",
-        checked="2026-10-22",
-        notes="Open weights, Apache-2.0, released August 2026 (huggingface.co/Qwen/Qwen3.8-27B). DeepInfra lists "
-        "$0.20 / $0.05 cached / $2.50 per 1M and currently shows a 25% discount ($0.15 / $0.038 / $1.875); the "
-        "undiscounted rate is used here, so estimates and logged costs are upper bounds. Served bf16 on DeepInfra "
-        "(OpenRouter endpoint listing, 2026-10-22). Thinking is on by default; the documented instruct mode is "
-        "chat_template_kwargs enable_thinking=False. OpenAI-compatible endpoint https://api.deepinfra.com/v1/openai. "
-        "No batch API.",
+        output=0.40,
+        source="https://deepinfra.com/google/gemma-4-31B-it",
+        checked="2026-10-24",
+        notes="Open weights, Apache-2.0 (huggingface.co/google/gemma-4-31B-it, created 2026-03-11; OpenRouter lists "
+        "it from 2026-04-02). Served fp8 on DeepInfra; no cached-input price listed. Thinking is off unless the "
+        "system prompt starts with <|think|>; with it off the 31B still emits an empty thought block. Model card "
+        "sampling: temperature 1.0, top_p 0.95, top_k 64. No batch API.",
+    ),
+    "pplx-decider-v1.2": ModelPrice(
+        model_id="pplx-decider-v1.2",
+        display="Perplexity pplx-decider-v1.2 (Decisions API)",
+        input=0.02,
+        output=0.0,
+        source="https://docs.perplexity.ai/docs/decisions/quickstart",
+        checked="2026-10-24",
+        notes="POST https://api.perplexity.ai/v1/decisions. Released 2026-10-15 (Hugging Face perplexity-ai/"
+        "pplx-decider-v1.2, Apache-2.0, Qwen3.8-27B base). The task named pplx-decider-v1-27b; the API routes that "
+        "legacy name (and v1.1-27b) to v1.2, so v1.2 is pinned explicitly. Input only, no per-request fee. 10 req/s per "
+        "organization shared by both deciders.",
+    ),
+    "pplx-decider-flash-v1.2": ModelPrice(
+        model_id="pplx-decider-flash-v1.2",
+        display="Perplexity pplx-decider-flash-v1.2 (Decisions API)",
+        input=0.01,
+        output=0.0,
+        source="https://docs.perplexity.ai/docs/decisions/quickstart",
+        checked="2026-10-24",
+        notes="Substitute for Microsoft-Decision-1 (not reachable: Azure quota). Released 2026-10-15, Apache-2.0, "
+        "Qwen3.5-4B base (Hugging Face perplexity-ai/pplx-decider-flash-v1.2).",
+    ),
+    "clef": ModelPrice(
+        model_id="clef",
+        display="Cloudflare Clef (@cf/cloudflare/clef, Workers AI)",
+        input=0.24,
+        output=0.0,
+        source="https://developers.cloudflare.com/workers-ai/models/clef/",
+        checked="2026-10-24",
+        notes="27B, Qwen3.8-27B base, Apache-2.0, released 2026-10-01. System One request body; 65,536-token context; "
+        "long text state is truncated to fit. Workers AI's free daily Neuron allowance is ignored (upper bound).",
+    ),
+    "clef-flash": ModelPrice(
+        model_id="clef-flash",
+        display="Cloudflare Clef-flash (@cf/cloudflare/clef-flash, Workers AI)",
+        input=0.038,
+        output=0.0,
+        source="https://developers.cloudflare.com/workers-ai/models/clef-flash/",
+        checked="2026-10-24",
+        notes="9B, Qwen3.5-9B base, Apache-2.0, released 2026-10-01. 24,576-token context.",
     ),
     # --- Embedding models (semcache/, checked 2026-10-19). Input-only pricing. ---
     "text-embedding-3-small": ModelPrice(

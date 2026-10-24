@@ -10,4 +10,6 @@ persuasion/results/
 .DS_Store
 prompts/
 semcache/results/
-conflict/results/
+freshness/results/
+vendor/
+.venv-strands/

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Fetches WikiContradict (IBM Research, NeurIPS 2024 Datasets and Benchmarks; MIT license per the dataset card and
-# the paper) into data/wikicontradict/ for conflict/'s check set. Pinned to a Hugging Face commit. Not committed -
-# data/ is gitignored; conflict/build_items.py draws a fixed-seed sample and commits only the question ids.
+# the paper) into data/wikicontradict/ for freshness/'s check set. Pinned to a Hugging Face commit. Not committed -
+# data/ is gitignored; freshness/build_items.py draws a fixed-seed sample and commits only the question ids.
 set -euo pipefail
 
 DEST="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/data/wikicontradict"

@@ -10,15 +10,14 @@ Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tab
 **Post 2: How often does a semantic cache serve the wrong stored answer?** (`semcache/`)
 Report: [results page](https://claude.ai/artifact/4mqrwg5iaa3hFA5hpZDmKs) · tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md).
 
-**Post 3: Your knowledge base has the old and the new version of a policy. Which one does your RAG answer from, and
-does your eval notice?** (`conflict/`) - setup only, no results yet.
+**Post 3: Can the new decision models catch stale RAG answers?** (`freshness/`) - setup only, no results yet.
 
 ## Setup
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2; free/trial keys are enough; + DEEPINFRA_API_KEY for post 3) - .env is gitignored
+cp .env.example .env    # TYPESAFE_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY (+ CO_API_KEY, VOYAGE_API_KEY, GEMINI_API_KEY for post 2; free/trial keys are enough; + for post 3: DEEPINFRA_API_KEY, PERPLEXITY_API_KEY, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN) - .env is gitignored
 scripts/download_ragtruth.sh
 ```
 
@@ -192,76 +191,101 @@ allows 1,000 embedding requests a day (the full run needs about 2,000).
 
 Derivations: `DEFAULTS` in `semcache/common.py`.
 
-## Post 3: stale documents in RAG (`conflict/`)
+## Post 3: can the new decision models catch stale RAG answers? (`freshness/`)
+
+Seven decision models launched in the last month. The knowledge base holds the old and the new version of a policy.
+Which decision model best catches the conflict, and the stale answer, without false alarms?
 
 ```bash
 scripts/download_wikicontradict.sh                # WikiContradict (pinned HF commit, sha256 checked) into data/
 
-# the item set is frozen in conflict/data/; this verifies it rebuilds, it doesn't change it
-.venv/bin/python -m conflict.build_items          # items.jsonl + wiki_ids.json rebuild byte for byte
-.venv/bin/python -m conflict.show_prompts         # every request body, verbatim, on a real item
+# the item set is frozen in freshness/data/; this verifies it rebuilds, it doesn't change it
+.venv/bin/python -m freshness.build_items         # items.jsonl + wiki_ids.json rebuild byte for byte
+.venv/bin/python -m freshness.show_prompts        # every request body and question, verbatim, on a real item
 .venv/bin/python -m pytest -q                     # offline
 
 # everything below is a dry run unless you pass --live
-.venv/bin/python -m conflict.run                  # cost table for the whole plan
-.venv/bin/python -m conflict.run --pilot --sync   # STOP 2 pilot: 10 items x 2 orders x 4 arms x 4 generators
+.venv/bin/python -m freshness.run                 # cost table for the whole plan
+.venv/bin/python -m freshness.run --pilot --sync  # STOP 2 pilot: 10 items x 2 orders, every model, both jobs
 
-set -a && source .env && set +a                   # + DEEPINFRA_API_KEY for the Qwen generator
-.venv/bin/python -m conflict.run --pilot --sync --live
-.venv/bin/python -m conflict.run --live --step precheck gen --max-usd 5     # then --step label, --step judge
+set -a && source .env && set +a
+.venv/bin/python -m freshness.run --pilot --sync --live
+.venv/bin/python -m freshness.run --live                      # gen, label, baseline, job1, job2, noise
+.venv/bin/python -m freshness.run --live --step latency       # sequential latency sample
 ```
 
-`--max-usd` (default 5) aborts **before any call** if the estimate for the not-yet-cached requests is higher, and
-each step is gated again on its refined estimate. Claude and gpt-6.1-sol requests go through the batch APIs (50% off)
-unless `--sync`; batch ids are saved so an interrupted run resumes the same batch. `--gen`, `--arm`, `--labeler`,
-`--judge` narrow a run so a large step fits under the cap.
+**Budget.** `freshness/results/spend.json` records what every live command actually spent; a command's estimate
+must fit in min(`--max-usd`, $5 - spent so far) before any call, and again before each step. The whole plan
+estimates $2.86 (batch), the pilot $0.32 (sync), the latency sample $0.04.
+
+**Strands Decider runs locally** (Apple M5, PyTorch MPS), in its own environment because it pins older torch and
+transformers than this repo:
+
+```bash
+git clone https://github.com/strands-labs/strands-decider vendor/strands-decider
+git -C vendor/strands-decider checkout b81d443c07438dc5ed51d0e85f9db184ad65d809
+python3.12 -m venv .venv-strands
+.venv-strands/bin/pip install torch==2.7.1 transformers==5.17.0 peft==0.21.0   # the versions its Mac docs test
+.venv-strands/bin/pip install -e vendor/strands-decider
+.venv-strands/bin/hf download StrandsAgents/strands-decider-2B-qwen3.5-v1-2610 \
+    --revision 216d1ccb46a9e9b036eb9187b248db98480f77d4 --local-dir vendor/strands-v1-2610   # pinned weights
+.venv-strands/bin/strands-decider serve vendor/strands-v1-2610 --device mps --port 8099
+```
+
+(`vendor/` and `.venv-strands/` are gitignored. `run.py` refuses to start a decision step if the server is not up,
+unless Strands is left out with `--decider`.)
 
 ### Design
 
 | | |
 |---|---|
-| Question | Two versions of the same document are retrieved together. Which one does the answer use, and does a faithfulness judge notice a stale answer? |
-| Data | `conflict/data/`, frozen (sha256 in `MANIFEST.json`). 18 fictional doc sets in 6 domains (refunds/cancellation, API rate limits, pricing, leave policy, SDK/version requirements, support SLAs), 101 sections, each in an old and a new version where the asked value **and** a second value change (`docsets.json`, written by Claude Opus 5.5 in the authoring session, no API call; Opus 5.5 is not a generator, labeler or judge here). **101 stale/current items** (one per section), **40 agreeing controls** (the same questions; the old version gives the current value for the asked slot but keeps its other old value, so the chunks still differ), **20 WikiContradict items** (human-annotated real contradictions; correct behaviour = flag; reported separately). Each item: 2 key chunks + 4 distractors from the same doc set (other sections, random version) or, for wiki, contexts from other articles. Review sheet: `data/review.csv` (30 random items). |
+| Data | `freshness/data/`, frozen (sha256 in `MANIFEST.json`). 18 fictional doc sets in 6 domains (refunds/cancellation, API rate limits, pricing, leave policy, SDK/version requirements, support SLAs), 101 sections in an old and a new version (`docsets.json`, written by Claude Opus 5.5 in the authoring session, no API call; Opus 5.5 is not tested here). **101 stale/current items**, **40 agreeing controls** (same questions; the old chunk still differs on another value, but not on the answer), **20 WikiContradict items** (real human-annotated contradictions, reported separately). Each item: 2 key chunks + 4 distractors from the same doc set (wiki: contexts from other articles). Review sheet: `data/review.csv` (30 random items). |
 | Date format | per item, balanced within each domain: **header** ("Effective February 2, 2026" / "Last updated: 2026-02-02" / "Published 2 February 2026"), **body** ("As of February 2026, ..."), **version only** ("(v4.0)", no date anywhere) |
-| Chunk order | every item twice: key chunks at ranks 1-2, **newer first** and **older first**; distractors at 3-6 in a fixed order |
-| Generators | Claude Haiku 5.5, Claude Sonnet 5.5, gpt-6.1-sol, Qwen3.8-27B (DeepInfra), each at its lowest reasoning setting |
-| Default RAG prompt | LangChain Hub `rlm/rag-prompt`, verbatim (commit `50442af1`), sources numbered `[1]`..`[6]` |
-| Arms | F0 default · F1 + "If sources disagree, use the newest dated source and say that an older version exists." · F2jev / F2luna: Jev 1.13.0 or GPT-6 Luna pre-check ("Do these chunks give different answers to the question?" + which source is newest, one request); notice added if P(yes) >= 0.5 · J1 judge rubric + "If the sources disagree, the answer must use the newest source or say that the sources disagree." on F0 answers |
-| Labels | current / stale / blends / flags / refuses / other, plus `conflict_noted`. Labelers Claude Sonnet 5.5 and gpt-6.1-sol, both on every answer; primary = not the generator (Haiku 5.5 -> Sol, Sonnet -> Sol, Sol -> Sonnet, Qwen -> Sonnet). Free string-match check alongside. |
-| Judges | Jev 1.13.0, GPT-6 Luna (Decisions API), Claude Haiku 4.5, Claude Sonnet 5.5 with post 1's P0 faithfulness prompts; passage = {question, numbered chunks}, as post 1's RAGTruth QA passages |
-| Noise | 40 conflict items x 2 orders re-generated at F0 (repeat 1) by every generator |
+| Chunk order | every item twice: key chunks at ranks 1-2, **newer first** and **older first**; distractors at 3-6 |
+| Answers to check | Claude Haiku 5.5 (thinking off) and Gemma 4 31B-it (DeepInfra, model-card sampling) with LangChain Hub `rlm/rag-prompt`, verbatim (commit `50442af1`); chunks joined by a blank line as in LangChain's `format_docs` |
+| Labels | current / stale / blends / flags / refuses / other + `conflict_noted`. Claude Sonnet 5.5 and gpt-6.1-sol label every answer; agreement reported; free string-match check alongside |
+| Job 1 (before generation) | "Do these chunks give different answers to the question?" Truth: stale/current and WikiContradict = yes, controls = no |
+| Job 2 (after generation) | "Does this answer use the most recent source in the context?" Truth from the labels, where both labelers agree: current = yes; stale, blends = no; flags, refuses, other left out. Stale/current items (headline) and controls (separately); not WikiContradict (no newer source) |
+| Question wording | identical for all seven: native yes/no type, instructions only (`noul` for the System One APIs, `predicate` for Luna); the same state text (`QUESTION` / `CHUNKS` or `CONTEXT` / `ANSWER`) for all; P(yes) >= 0.5 for the headline, full ROC/AUC too |
+| Baseline | Sonnet 5.5 faithfulness judge with post 1's question (post 1's P0 Claude prompt), on every stale/current and control answer |
+| Noise | both jobs again on 40 conflict items x 2 orders, every decision model |
+| Latency | measured from this machine, per call; the latency table uses a separate sample of 100 sequential Job 1 calls per model after 5 warm-up calls, no automatic retries. Strands is labelled "local M5" and kept apart from the hosted models |
 
-### Verified models and prices (USD per 1M tokens, checked 2026-10-22)
+### Decision models (checked 2026-10-24)
 
-| Model ID | Role | Input | Output | Cache read | Batch | Source |
+| Model (request ID) | Vendor | Released | Endpoint | Price per 1M input | Vendor latency claim | Source |
 |---|---|---|---|---|---|---|
-| `claude-haiku-5-5` | generator | 0.10 | 0.50 | 0.01 | 50% off | [Anthropic pricing](https://platform.claude.com/docs/en/about-claude/pricing) |
-| `claude-sonnet-5-5` | generator, labeler, judge | 2.00 | 10.00 | 0.10 | 50% off | same |
-| `claude-haiku-4-5-20251001` | judge | 1.00 | 5.00 | 0.10 | 50% off | same; Active, "not sooner than October 15, 2026", no deprecation notice ([deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations)) |
-| `gpt-6.1-sol` | generator, labeler | 2.00 | 10.00 | 0.10 | 50% off | [model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) |
-| `Qwen/Qwen3.8-27B` | generator (open, Apache-2.0) | 0.20 | 2.50 | 0.05 | none | [DeepInfra](https://deepinfra.com/Qwen/Qwen3.8-27B) (list price; a 25% discount is shown), [model card](https://huggingface.co/Qwen/Qwen3.8-27B) |
-| `jev-1.13.0` (= `jev-latest`) | judge, F2 pre-check | 0.042 | free | - | - | [docs.typesafe.ai/models](https://docs.typesafe.ai/models) |
-| `gpt-6-luna` (`/v1/decisions`) | judge, F2 pre-check | 0.10 | none | 0.01 (write 0.125) | not documented | [Decisions guide](https://developers.openai.com/api/docs/guides/decisions) |
+| `jev-1.14.0` (= `jev-latest`) | TypeSafe | 2026-10-14 | TypeSafe SDK `system_one` | $0.042, output free | none published | [docs.typesafe.ai/models](https://docs.typesafe.ai/models) |
+| `gpt-6-luna` | OpenAI | 2026-10-06 (Decisions API public beta) | `/v1/decisions`, `predicate` | $0.10 (cache writes $0.125, charged since 2026-10) | none on the docs page | [Decisions guide](https://developers.openai.com/api/docs/guides/decisions) |
+| `pplx-decider-v1.2` | Perplexity | 2026-10-15 | `POST api.perplexity.ai/v1/decisions` | $0.02 | "a few hundred input tokens ... under 2 seconds" (earlier model) | [quickstart](https://docs.perplexity.ai/docs/decisions/quickstart) |
+| `pplx-decider-flash-v1.2` | Perplexity | 2026-10-15 | same | $0.01 | none for short inputs | same |
+| `@cf/cloudflare/clef` | Cloudflare | 2026-10-01 | Workers AI `/ai/run`, System One body | $0.24 | median 209 ms, p95 239 ms (setup not stated) | [model page](https://developers.cloudflare.com/workers-ai/models/clef/), [blog](https://blog.cloudflare.com/clef-decision-models) |
+| `@cf/cloudflare/clef-flash` | Cloudflare | 2026-10-01 | same | $0.038 | median 39 ms, p95 122 ms (setup not stated) | [model page](https://developers.cloudflare.com/workers-ai/models/clef-flash/), blog |
+| `StrandsAgents/strands-decider-2B-qwen3.5-v1-2610` @ `216d1ccb` | AWS Strands Labs | 2026-10-09 (family 2026-10-01) | local server `/v1/systemone`, MPS | $0 API | RTX 3090, vendor-measured, not verified here: median 115 ms, p95 299 ms (checkpoint v19) | [repo](https://github.com/strands-labs/strands-decider) @ `b81d443c`, evaluation/results.md |
 
-Data licenses: WikiContradict MIT (dataset card and paper; `ibm-research/Wikipedia_contradict_benchmark` @ `c20e361f`);
-only question ids are committed. The authored doc sets are original to this repo (MIT with the code).
+**Not reachable: Microsoft-Decision-1** (Azure AI Foundry, preview). The deployment failed with "quota exceeded" in
+every region on 2026-10-24, and the weights are not published. Substitute: `pplx-decider-flash-v1.2`.
+
+Other models: Claude Haiku 5.5 $0.10 / $0.50, Claude Sonnet 5.5 $2 / $10, gpt-6.1-sol $2 / $10 (all 50% off in
+batch), Gemma 4 31B-it on DeepInfra $0.20 / $0.40 (fp8), see `harness/prices.py`. Licenses: every open decision
+model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids committed).
 
 ### Deviations from the plan, and why
 
-- **Data author = Claude Opus 5.5 in this session, not an API model.** STOP 1 needs the data and review sheet with
-  zero live calls; Opus 5.5 plays no other role. It is still a Claude model, like two generators and one labeler.
-- **101 stale/current items, not ~100**: one per authored section.
-- **Labels add `other`** (a value that is neither version's) and a separate `conflict_noted` flag, because an
-  answer can give the current value *and* say an older version exists (what F1 asks for); the false-flag rate on
-  controls counts `flags` or `conflict_noted`.
-- **F2 is two arms** (Jev, Luna), reported separately as in post 2; the pre-check also asks which source is newest
-  (both APIs have a `choice` question), so the notice can name it without document metadata.
-- **Sources are numbered** in the context so the notice can name one; otherwise the LangChain prompt is verbatim.
-- **Lowest reasoning for every generator** (Claude thinking off/lowest, Sol `low`, Qwen instruct mode): the setting
-  a RAG answer path usually runs. Reasoning on could change the date results; not tested here.
-- **WikiContradict instances with identical contexts are excluded** (both sides in one passage would make the two
-  chunk orders the same).
-- **Luna pricing changed since post 1**: cache writes are now charged; estimates use the write rate.
+- **Perplexity `pplx-decider-v1.2`, not `pplx-decider-v1-27b`.** The API routes the v1 name to v1.2, so v1 can't be
+  tested there; v1.2 is pinned by name.
+- **Microsoft-Decision-1 replaced by `pplx-decider-flash-v1.2`** (above).
+- **Strands checkpoint `v1-2610`**, the current reference weights; AWS's 115 ms claim was measured on v19. Its code
+  already has an MPS path (`mps_kernels.py`; `--device mps`); no CUDA-only code needed patching as of commit
+  `b81d443c` (not yet run here, see STOP 1).
+- **Open generator Gemma 4 31B, not a Qwen model**: four of the five open decision models (and Microsoft-Decision-1)
+  are Qwen fine-tunes; a Qwen generator would have them grade their own base model's answers.
+- **Labels add `other`** (neither version's value) and a separate `conflict_noted` flag; Job 2 leaves `other` out
+  with `flags` and `refuses`.
+- **Data author = Claude Opus 5.5 in this session, not an API model**, so the data and review sheet exist with zero
+  live calls; it is a Claude model, like one generator, one labeler and the baseline.
+- **101 stale/current items, not ~100** (one per authored section); **WikiContradict instances whose two contexts
+  are identical are excluded** (both orders would be the same).
 
 ### Files
 
@@ -299,15 +323,16 @@ semcache/                  post 2 (run as modules: python -m semcache.<name>)
   figures/                 RESULTS.md figures (committed)
   results/                 scores, decisions, usage logs (gitignored)
 scripts/                   dataset downloads (RAGTruth, PAWS, BANKING77), each pinned
-conflict/                  post 3 (run as modules: python -m conflict.<name>)
-  common.py                paths, seeds, models, chunk rendering, every prompt (RAG, F1, F2, labels, J0/J1)
+freshness/                 post 3 (run as modules: python -m freshness.<name>)
+  common.py                paths, seeds, decision-model registry, both job questions, chunk rendering, every prompt
   build_items.py           doc sets -> frozen items, WikiContradict sample, leak checks, review CSV, stats
-  calls.py                 request builders, parsers, executors (batch or sync) for all four steps
-  estimate.py, run.py      dry-run estimate -> --max-usd gate -> precheck -> gen -> label -> judge
+  calls.py                 request builders, parsers, executors (batch, sync, sequential) with per-call latency
+  estimate.py, run.py      dry-run estimate -> ledger gate -> gen -> label -> baseline -> job1 -> job2 -> noise/latency
   show_prompts.py          prints every request body verbatim
   data/                    authored doc sets, frozen items, wiki ids, review sheet (committed)
-  results/                 answers, labels, judgments, batch ids (gitignored)
+  results/                 answers, labels, decisions, latency, spend ledger (gitignored)
 harness/batch.py           generic Anthropic / OpenAI batch runners with resume
+harness/ledger.py          spend ledger: one $ cap across all of a post's commands
 harness/post1_judge.py     post 1's P0 judge wording and shared helpers
 tests/                     offline tests (network blocked)
 ```

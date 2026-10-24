@@ -15,8 +15,8 @@ articles). Chunk order is set at run time: key chunks at ranks 1 and 2 in both o
 Doc sets were written by Claude Opus 5.5 in the authoring session (no API call); Opus 5.5 is not a generator,
 labeler or judge in this test.
 
-    python -m conflict.build_items             # check that the frozen files rebuild byte for byte
-    python -m conflict.build_items --refreeze  # rewrite them
+    python -m freshness.build_items             # check that the frozen files rebuild byte for byte
+    python -m freshness.build_items --refreeze  # rewrite them
 """
 
 from __future__ import annotations

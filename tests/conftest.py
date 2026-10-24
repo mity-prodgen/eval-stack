@@ -24,5 +24,6 @@ def no_network(monkeypatch):
     monkeypatch.setattr(socket.socket, "connect", guard)
     monkeypatch.setattr(socket, "create_connection", guard)
     for var in ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "TYPESAFE_API_KEY", "CO_API_KEY", "COHERE_API_KEY",
-                "VOYAGE_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "DEEPINFRA_API_KEY"):
+                "VOYAGE_API_KEY", "GEMINI_API_KEY", "GOOGLE_API_KEY", "DEEPINFRA_API_KEY",
+                "PERPLEXITY_API_KEY", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"):
         monkeypatch.delenv(var, raising=False)

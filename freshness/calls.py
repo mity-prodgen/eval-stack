@@ -1,22 +1,27 @@
-"""Request builders, parsers and executors for every post 3 call: pre-check, generation, labels, judges.
+"""Request builders, parsers and executors for every post 3 call: generation, labels, baseline judge, decisions.
 
 Builders are pure (tests check request shapes with no network). Every result is one record:
 
     ok, status   "ok" | "refusal" | "parse_error" | "empty" | "api_error" (api_error is never cached)
     usage        {"input", "output", "cache_write", "cache_read", "reasoning"} from the API's own usage field
     cost_usd     harness.prices at the pinned model, batch discount applied when sent through a batch
-    raw          the full response body
-  + per step:    text (gen) | p_conflict, newest (precheck) | label, conflict_noted (label) | p_pass (judge)
+    latency_ms   wall clock on our side, request sent -> response parsed (decisions: one attempt, see below)
+  + per step:    text (gen) | label, conflict_noted (label) | p_pass (baseline) | p_yes (decision)
 
-Cache keys hash the request body (+ the repeat index for the noise re-run), so an F2 prompt that gets no notice is
-the F0 prompt and reuses the F0 answer, and an answer that two arms produce word for word is labeled once.
+Decision calls are timed per attempt: the executor makes a single attempt and retries itself only on 429/5xx,
+logging `attempts`, so a retried call is never mistaken for a slow one. The latency table uses a separate
+sequential sample (run.py --step latency), not these throughput calls.
+
+Cache keys hash the request body (+ a repeat tag for the noise and latency re-runs).
 """
 
 from __future__ import annotations
 
 import json
+import os
 import re
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from time import monotonic
@@ -27,14 +32,11 @@ from harness.post1_judge import judge_user_text, p_from_verdict, passage_text
 from harness.post2_judge import parse_judgment
 from harness.prices import usage_cost
 
-from .common import (CLAUDE_GEN_SETTINGS, CLAUDE_J0_SYSTEM, CLAUDE_J1_SYSTEM, CLAUDE_JUDGE_SETTINGS,
-                     CLAUDE_LABEL_SETTINGS, DEEPINFRA_BASE_URL, GEN_MAX_TOKENS, GENERATORS, JEV_J0, JEV_J1,
-                     JEV_PRECHECK, JUDGE_MAX_TOKENS, JUDGES, LABEL_MAX_TOKENS, LABELERS, LABELS, LUNA_J0, LUNA_J1,
-                     LUNA_PRECHECK, PRECHECKERS, QWEN_EXTRA_BODY, QWEN_SAMPLING, SOL_GEN_EFFORT, SOL_LABEL_EFFORT,
-                     WIKI_LABELS, context_text, gen_prompt, judge_passage, label_system, label_user_text,
-                     precheck_input, precheck_state)
-
-SOL_MAX_OUTPUT_TOKENS = 4000   # includes reasoning tokens; a cap against runaway reasoning, not a length target
+from .common import (BASELINE_MAX_TOKENS, BASELINE_MODEL, BASELINE_SYSTEM, DECIDER, DEEPINFRA_BASE_URL, GEMMA_EXTRA_BODY,
+                     GEMMA_SAMPLING, GEN_MAX_TOKENS, GENERATORS, HAIKU_GEN_SETTINGS, LABEL_MAX_TOKENS, LABELERS, LABELS,
+                     SOL_LABEL_EFFORT, SOL_MAX_OUTPUT_TOKENS, SONNET_SETTINGS, WIKI_LABELS, context_text, gen_prompt,
+                     job1_state, job2_state, judge_passage, label_system, label_user_text, luna_questions,
+                     noul_questions)
 
 
 def chunks_for(item: dict, order: str) -> list[str]:
@@ -50,16 +52,14 @@ def context_for(item: dict, order: str) -> str:
 
 @dataclass
 class Call:
-    step: str          # precheck | gen | label | judge
-    who: str           # short name: generator, labeler, judge or pre-checker
+    step: str          # gen | label | baseline | job1 | job2
+    who: str           # generator, labeler, "baseline" or decision-model short name
     model: str
-    provider: str      # anthropic | openai | deepinfra | jev | luna
+    provider: str      # anthropic | openai | deepinfra | jev | luna | systemone
     item_id: str
     order: str
-    arm: str = ""      # gen: F0/F1/F2jev/F2luna; label/judge: the arm of the answer
-    gen: str = ""      # label/judge: which generator wrote the answer
-    rubric: str = ""   # judge: J0/J1
-    repeat: int = 0
+    gen: str = ""      # label/baseline/job2: which generator wrote the answer
+    repeat: str = ""   # "" = main run; "noise1"; "latency1".. for the re-runs
     payload: dict[str, Any] = field(default_factory=dict)
     key: str = ""
 
@@ -68,7 +68,7 @@ class Call:
         return {"step": self.step, "who": self.who, "model": self.model, "provider": self.provider}
 
 
-def _key(kind: str, payload: dict, repeat: int = 0) -> str:
+def _key(kind: str, payload: dict, repeat: str = "") -> str:
     return cache_key(kind, payload) if not repeat else cache_key(kind, payload, {"repeat": repeat})
 
 
@@ -77,11 +77,7 @@ def provider_of(model: str) -> str:
         return "anthropic"
     if model.startswith("gpt-6.1"):
         return "openai"
-    if model.startswith("jev-"):
-        return "jev"
-    if model == "gpt-6-luna":
-        return "luna"
-    if model.startswith("Qwen/"):
+    if model.startswith("google/"):
         return "deepinfra"
     raise ValueError(model)
 
@@ -89,80 +85,62 @@ def provider_of(model: str) -> str:
 # =====================================================================================================
 # Builders
 # =====================================================================================================
-def build_precheck(item: dict, order: str, who: str) -> Call:
-    model = PRECHECKERS[who]
-    ctx = context_for(item, order)
-    c = Call("precheck", who, model, provider_of(model), item["id"], order)
-    if who == "jev":
-        c.payload = {"state": precheck_state(item["question"], ctx), "questions": JEV_PRECHECK}
-        c.key = _key("conflict-precheck-jev", {"model": model, **c.payload})
-    else:
-        c.payload = {"model": model, "input": precheck_input(item["question"], ctx), "questions": LUNA_PRECHECK}
-        c.key = _key("conflict-precheck-luna", c.payload)
-    return c
-
-
-def build_gen(item: dict, order: str, gen: str, arm: str, notice: str | None = None, repeat: int = 0) -> Call:
+def build_gen(item: dict, order: str, gen: str) -> Call:
     model = GENERATORS[gen]
-    prompt = gen_prompt(item["question"], context_for(item, order), arm, notice)
-    c = Call("gen", gen, model, provider_of(model), item["id"], order, arm=arm, gen=gen, repeat=repeat)
+    prompt = gen_prompt(item["question"], context_for(item, order))
+    c = Call("gen", gen, model, provider_of(model), item["id"], order, gen=gen)
     if c.provider == "anthropic":
-        c.payload = {"model": model, "max_tokens": GEN_MAX_TOKENS, **CLAUDE_GEN_SETTINGS[model],
+        c.payload = {"model": model, "max_tokens": GEN_MAX_TOKENS, **HAIKU_GEN_SETTINGS,
                      "messages": [{"role": "user", "content": prompt}]}
-    elif c.provider == "openai":
-        c.payload = {"model": model, "input": prompt, "reasoning": {"effort": SOL_GEN_EFFORT},
-                     "max_output_tokens": SOL_MAX_OUTPUT_TOKENS}
     else:
         c.payload = {"model": model, "messages": [{"role": "user", "content": prompt}], "max_tokens": GEN_MAX_TOKENS,
-                     **QWEN_SAMPLING, "extra_body": QWEN_EXTRA_BODY}
-    c.key = _key("conflict-gen", c.payload, repeat)
+                     **GEMMA_SAMPLING, "extra_body": GEMMA_EXTRA_BODY}
+    c.key = _key("freshness-gen", c.payload)
     return c
 
 
-def build_label(item: dict, answer: str, labeler: str, *, order: str = "", arm: str = "", gen: str = "",
-                repeat: int = 0) -> Call:
+def build_label(item: dict, answer: str, labeler: str, *, order: str = "", gen: str = "") -> Call:
     model = LABELERS[labeler]
     system, user = label_system(item), label_user_text(item, answer)
-    c = Call("label", labeler, model, provider_of(model), item["id"], order, arm=arm, gen=gen, repeat=repeat)
+    c = Call("label", labeler, model, provider_of(model), item["id"], order, gen=gen)
     if c.provider == "anthropic":
-        c.payload = {"model": model, "max_tokens": LABEL_MAX_TOKENS, **CLAUDE_LABEL_SETTINGS, "system": system,
+        c.payload = {"model": model, "max_tokens": LABEL_MAX_TOKENS, **SONNET_SETTINGS, "system": system,
                      "messages": [{"role": "user", "content": user}]}
     else:
         c.payload = {"model": model, "instructions": system, "input": user, "reasoning": {"effort": SOL_LABEL_EFFORT},
                      "max_output_tokens": SOL_MAX_OUTPUT_TOKENS}
-    c.key = _key("conflict-label", c.payload)
+    c.key = _key("freshness-label", c.payload)
     return c
 
 
-def build_judge(item: dict, order: str, answer: str, judge: str, rubric: str, *, arm: str = "F0", gen: str = "") -> Call:
-    model = JUDGES[judge]
+def build_baseline(item: dict, order: str, answer: str, *, gen: str = "") -> Call:
+    """Post 1's P0 Claude faithfulness prompt (post 2's system prompt) on Sonnet 5.5, passage block cached."""
     passage = judge_passage(item, context_for(item, order))
-    c = Call("judge", judge, model, provider_of(model), item["id"], order, arm=arm, gen=gen, rubric=rubric)
-    if judge == "jev":
-        c.payload = {"state": {"source_passage": passage, "response": answer},
-                     "questions": JEV_J0 if rubric == "J0" else JEV_J1}
-        c.key = _key("conflict-judge-jev", {"model": model, **c.payload})
-    elif judge == "luna":
-        c.payload = {"model": model, "input": judge_user_text(passage, answer),
-                     "questions": LUNA_J0 if rubric == "J0" else LUNA_J1}
-        c.key = _key("conflict-judge-luna", c.payload)
+    c = Call("baseline", "baseline", BASELINE_MODEL, "anthropic", item["id"], order, gen=gen)
+    c.payload = {"model": BASELINE_MODEL, "max_tokens": BASELINE_MAX_TOKENS, **SONNET_SETTINGS,
+                 "system": BASELINE_SYSTEM,
+                 "messages": [{"role": "user", "content": [
+                     {"type": "text", "text": f"SOURCE PASSAGE:\n{passage_text(passage)}\n\n",
+                      "cache_control": {"type": "ephemeral"}},
+                     {"type": "text", "text": f"RESPONSE:\n{answer}"}]}]}
+    c.key = _key("freshness-baseline", c.payload)
+    return c
+
+
+def build_decision(item: dict, order: str, decider: str, job: str, answer: str | None = None, *, gen: str = "",
+                   repeat: str = "") -> Call:
+    d = DECIDER[decider]
+    ctx = context_for(item, order)
+    state = job1_state(item["question"], ctx) if job == "job1" else job2_state(item["question"], ctx, answer or "")
+    c = Call(job, decider, d.model, d.api, item["id"], order, gen=gen, repeat=repeat)
+    if d.api == "luna":
+        c.payload = {"model": d.model, "input": state, "questions": luna_questions(job)}
     else:
-        s = CLAUDE_JUDGE_SETTINGS[model]
-        p: dict[str, Any] = {"model": model, "max_tokens": JUDGE_MAX_TOKENS,
-                             "system": CLAUDE_J0_SYSTEM if rubric == "J0" else CLAUDE_J1_SYSTEM}
-        if "thinking" in s:
-            p["thinking"] = s["thinking"]
-        if "temperature" in s:
-            p["temperature"] = s["temperature"]
-        if s.get("cache_passage"):
-            p["messages"] = [{"role": "user", "content": [
-                {"type": "text", "text": f"SOURCE PASSAGE:\n{passage_text(passage)}\n\n",
-                 "cache_control": {"type": "ephemeral"}},
-                {"type": "text", "text": f"RESPONSE:\n{answer}"}]}]
-        else:
-            p["messages"] = [{"role": "user", "content": judge_user_text(passage, answer)}]
-        c.payload = p
-        c.key = _key("conflict-judge-claude", p)
+        c.payload = {"state": state, "questions": noul_questions(job)}
+        if d.send_model:
+            c.payload = {"model": d.model, **c.payload}
+    key_body = c.payload if (d.api == "luna" or d.send_model) else {"model": d.model, "revision": d.revision, **c.payload}
+    c.key = _key(f"freshness-{job}-{decider}", key_body, repeat)
     return c
 
 
@@ -193,9 +171,7 @@ def usage_and_text(raw: dict, provider: str, model: str, batch: bool) -> tuple[d
                        (u.get("output_tokens_details") or {}).get("reasoning_tokens"))
         text = "".join(c.get("text", "") for o in raw.get("output", []) if o.get("type") == "message"
                        for c in o.get("content", []) if c.get("type") == "output_text")
-        stop = raw.get("status") if raw.get("status") != "completed" else "completed"
-        if (raw.get("incomplete_details") or {}).get("reason"):
-            stop = raw["incomplete_details"]["reason"]
+        stop = (raw.get("incomplete_details") or {}).get("reason") or raw.get("status")
     else:  # deepinfra chat completions
         u = raw.get("usage") or {}
         cached = (u.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
@@ -207,8 +183,12 @@ def usage_and_text(raw: dict, provider: str, model: str, batch: bool) -> tuple[d
     return usage, cost, text, stop
 
 
+_EMPTY_THOUGHT = re.compile(r"^\s*<\|channel>thought\s*<channel\|>\s*")
+
+
 def parse_gen(raw: dict, meta: dict) -> dict:
     usage, cost, text, stop = usage_and_text(raw, meta["provider"], meta["model"], meta.get("batch", False))
+    text = _EMPTY_THOUGHT.sub("", text)   # Gemma 4 31B emits an empty thought block with thinking off
     common = {"usage": usage, "cost_usd": cost, "raw": raw, "model": raw.get("model"), "stop": stop,
               "batch": meta.get("batch", False)}
     if stop == "refusal":
@@ -247,44 +227,8 @@ def parse_label(raw: dict, meta: dict) -> dict:
     return _rec("ok", label=label, conflict_noted=noted, **common)
 
 
-def parse_precheck(raw: dict, meta: dict) -> dict:
-    model = meta["model"]
-    if meta["provider"] == "jev":
-        ans = raw.get("answers") or {}
-        p = (ans.get("conflict") or {}).get("noul")
-        newest = (ans.get("newest") or {}).get("choice")
-        probs = (ans.get("newest") or {}).get("probabilities")
-    else:
-        ans = {a.get("name"): a for a in raw.get("answers", [])}
-        p = (ans.get("conflict") or {}).get("probability")
-        newest = (ans.get("newest") or {}).get("choice")
-        probs = (ans.get("newest") or {}).get("probabilities")
-        if any((a or {}).get("type") == "refusal" for a in ans.values()):
-            tok = (raw.get("usage") or {}).get("input_tokens") or 0
-            return _rec("refusal", raw=raw, usage=_usage(tok), cost_usd=usage_cost(model, tok), model=raw.get("model"))
-    tok = (raw.get("usage") or {}).get("input_tokens") or 0
-    common = {"usage": _usage(tok), "cost_usd": usage_cost(model, tok), "raw": raw, "model": raw.get("model")}
-    if p is None:
-        return _rec("parse_error", error="no conflict probability", p_conflict=None, newest=newest, **common)
-    return _rec("ok", p_conflict=float(p), newest=newest, newest_probs=probs, **common)
-
-
-def parse_judge(raw: dict, meta: dict) -> dict:
-    model, provider = meta["model"], meta["provider"]
-    if provider == "jev":
-        p = ((raw.get("answers") or {}).get("supported") or {}).get("noul")
-        tok = (raw.get("usage") or {}).get("input_tokens") or 0
-        common = {"usage": _usage(tok), "cost_usd": usage_cost(model, tok), "raw": raw, "model": raw.get("model")}
-        return _rec("ok", p_pass=float(p), **common) if p is not None else _rec("parse_error", error="no noul", **common)
-    if provider == "luna":
-        a = {x.get("name"): x for x in raw.get("answers", [])}.get("supported") or {}
-        tok = (raw.get("usage") or {}).get("input_tokens") or 0
-        common = {"usage": _usage(tok), "cost_usd": usage_cost(model, tok), "raw": raw, "model": raw.get("model")}
-        if a.get("type") == "refusal":
-            return _rec("refusal", **common)
-        p = a.get("probability")
-        return _rec("ok", p_pass=float(p), **common) if p is not None else _rec("parse_error", error="no probability", **common)
-    usage, cost, text, stop = usage_and_text(raw, "anthropic", model, meta.get("batch", False))
+def parse_baseline(raw: dict, meta: dict) -> dict:
+    usage, cost, text, stop = usage_and_text(raw, "anthropic", meta["model"], meta.get("batch", False))
     common = {"usage": usage, "cost_usd": cost, "raw": raw, "model": raw.get("model"), "batch": meta.get("batch", False)}
     if stop == "refusal":
         return _rec("refusal", **common)
@@ -295,8 +239,31 @@ def parse_judge(raw: dict, meta: dict) -> dict:
     return _rec("ok", p_pass=p_from_verdict(not hallucinated, conf), **common)
 
 
-PARSERS: dict[str, Callable[[dict, dict], dict]] = {"gen": parse_gen, "label": parse_label, "precheck": parse_precheck,
-                                                    "judge": parse_judge}
+def parse_decision(raw: dict, meta: dict) -> dict:
+    """P(yes) from a System One noul (Jev, Perplexity, Clef, Strands) or a Luna predicate. Cloudflare's REST API
+    wraps the body in {"result": ..., "success": ...}; both shapes are read."""
+    job, model = meta["step"], meta["model"]
+    body = raw.get("result") if isinstance(raw.get("result"), dict) and "answers" in raw["result"] else raw
+    tok = (body.get("usage") or {}).get("input_tokens") or 0
+    cost = 0.0 if meta.get("local") else (usage_cost(model, tok) if tok else None)
+    common = {"usage": _usage(tok), "cost_usd": cost, "raw": raw, "model": body.get("model"),
+              "server_latency_ms": body.get("latency_ms")}
+    answers = body.get("answers")
+    if isinstance(answers, list):   # Luna
+        a = {x.get("name"): x for x in answers}.get(job) or {}
+        if a.get("type") == "refusal":
+            return _rec("refusal", p_yes=None, **common)
+        p = a.get("probability")
+    else:
+        p = ((answers or {}).get(job) or {}).get("noul")
+    if p is None:
+        return _rec("parse_error", p_yes=None, error=f"no P(yes) for {job}", **common)
+    return _rec("ok", p_yes=float(p), **common)
+
+
+PARSERS: dict[str, Callable[[dict, dict], dict]] = {"gen": parse_gen, "label": parse_label,
+                                                    "baseline": parse_baseline, "job1": parse_decision,
+                                                    "job2": parse_decision}
 
 
 # =====================================================================================================
@@ -306,53 +273,52 @@ def _meta(c: Call, items_by_id: dict) -> dict:
     m = c.meta
     if c.step == "label":
         m["wiki"] = items_by_id[c.item_id]["kind"] == "wiki"
+    if c.step in ("job1", "job2"):
+        m["local"] = DECIDER[c.who].local
     return m
 
 
-def _sync_kwargs(params: dict) -> dict:
-    """anthropic>=1.0 removed `temperature` from messages.create; Haiku 4.5 still accepts it, so it goes in
-    extra_body (the pinned SDK sends anthropic-version 2023-06-01, where it is valid)."""
-    p = dict(params)
-    return {**p, "extra_body": {"temperature": p.pop("temperature")}} if "temperature" in p else p
+def systemone_url(decider: str) -> str:
+    d = DECIDER[decider]
+    return d.url.replace("{CLOUDFLARE_ACCOUNT_ID}", os.environ.get("CLOUDFLARE_ACCOUNT_ID", "{CLOUDFLARE_ACCOUNT_ID}"))
 
 
-def _batch_params(params: dict) -> dict:
-    return params   # batch requests carry raw API params, temperature included
+RETRY_STATUS = (429, 500, 502, 503, 504)
 
 
 def run_calls(calls: list[Call], cache: DiskCache, items_by_id: dict, batch_dir, *, use_batch: bool = True,
-              max_workers: int = 8, log: Callable[[str], None] = print, clients: dict | None = None) -> dict[str, dict]:
-    """Run every uncached call, grouped by provider. Returns {key: record (+ "cached")}."""
+              max_workers: int = 8, log: Callable[[str], None] = print, clients: dict | None = None,
+              sequential: bool = False) -> dict[str, dict]:
+    """Run every uncached call, grouped by provider (and by decision model). Returns {key: record (+ "cached")}.
+    sequential=True: one call at a time, no automatic retry (the latency sample)."""
     from harness.batch import anthropic_batch, openai_batch
     clients = clients or {}
     uniq = list({c.key: c for c in calls}.values())
     out: dict[str, dict] = {}
-    by_provider: dict[str, list[Call]] = {}
+    groups: dict[tuple, list[Call]] = {}
     for c in uniq:
-        by_provider.setdefault(c.provider, []).append(c)
-
-    def parse_for(c: Call):
-        return PARSERS[c.step]
-
-    for provider, cs in by_provider.items():
-        if provider in ("anthropic", "openai") and use_batch:
-            reqs = [(c.key, _batch_params(c.payload), _meta(c, items_by_id)) for c in cs]
+        groups.setdefault((c.provider, c.who if c.step in ("job1", "job2") else ""), []).append(c)
+    for (provider, who), cs in groups.items():
+        if provider in ("anthropic", "openai") and use_batch and not sequential:
+            reqs = [(c.key, c.payload, _meta(c, items_by_id)) for c in cs]
             parse = lambda raw, m: PARSERS[m["step"]](raw, m)  # noqa: E731
             fn = anthropic_batch if provider == "anthropic" else openai_batch
             out.update(fn(reqs, cache, batch_dir, parse, client=clients.get(provider), log=log))
             continue
-        out.update(_run_sync(provider, cs, cache, items_by_id, max_workers, clients, parse_for))
+        workers = 1 if (sequential or (who and DECIDER[who].local)) else max_workers
+        out.update(_run_sync(provider, who, cs, cache, items_by_id, workers, clients, sequential))
     return out
 
 
-def _run_sync(provider, cs, cache, items_by_id, max_workers, clients, parse_for) -> dict[str, dict]:
+def _run_sync(provider, who, cs, cache, items_by_id, max_workers, clients, sequential) -> dict[str, dict]:
     local, made, lock = threading.local(), [], threading.Lock()
+    retries = 0 if sequential else 4
 
     def jev(model):
         from harness.jev_client import JevClient
         by = local.__dict__.setdefault("by_model", {})
         if model not in by:
-            cl = JevClient(model=model, max_retries=6, timeout=120.0)
+            cl = JevClient(model=model, max_retries=retries, timeout=120.0)
             cl.__enter__()
             by[model] = cl
             with lock:
@@ -362,20 +328,39 @@ def _run_sync(provider, cs, cache, items_by_id, max_workers, clients, parse_for)
     client = clients.get(provider)
     if client is None and provider == "anthropic":
         import anthropic
-        client = anthropic.Anthropic(max_retries=4)
+        client = anthropic.Anthropic(max_retries=retries)
     elif client is None and provider in ("openai", "luna"):
         from openai import OpenAI
-        client = OpenAI(max_retries=4, timeout=120.0)
+        client = OpenAI(max_retries=retries, timeout=120.0)
     elif client is None and provider == "deepinfra":
-        import os
         from openai import OpenAI
-        client = OpenAI(base_url=DEEPINFRA_BASE_URL, api_key=os.environ.get("DEEPINFRA_API_KEY"), max_retries=4,
-                        timeout=120.0)
+        client = OpenAI(base_url=DEEPINFRA_BASE_URL, api_key=os.environ.get("DEEPINFRA_API_KEY"),
+                        max_retries=retries, timeout=120.0)
+    elif client is None and provider == "systemone":
+        import httpx
+        client = httpx.Client(timeout=120.0)
+        made.append(client)
+
+    def systemone(c: Call) -> tuple[dict, int]:
+        d = DECIDER[c.who]
+        headers = {"content-type": "application/json"}
+        if d.key_env:
+            headers["authorization"] = f"Bearer {os.environ.get(d.key_env, '')}"
+        attempts = 0
+        while True:
+            attempts += 1
+            r = client.post(systemone_url(c.who), json=c.payload, headers=headers)
+            if r.status_code in RETRY_STATUS and attempts <= retries:
+                time.sleep(float(r.headers.get("retry-after") or 2 ** attempts))
+                continue
+            r.raise_for_status()
+            return r.json(), attempts
 
     def one(c: Call) -> tuple[str, dict]:
         def do() -> dict:
-            start = monotonic()
             m = _meta(c, items_by_id)
+            attempts = 1
+            start = monotonic()
             try:
                 if provider == "jev":
                     r = jev(c.model).ask(c.payload["state"], c.payload["questions"])
@@ -384,22 +369,26 @@ def _run_sync(provider, cs, cache, items_by_id, max_workers, clients, parse_for)
                     raw = r.raw_response
                 elif provider == "luna":
                     raw = client.decisions.create(**c.payload).model_dump()
+                elif provider == "systemone":
+                    raw, attempts = systemone(c)
                 elif provider == "anthropic":
-                    raw = client.messages.create(**_sync_kwargs(c.payload)).to_dict()
+                    raw = client.messages.create(**c.payload).to_dict()
                 elif provider == "openai":
                     raw = client.responses.create(**c.payload).model_dump()
                 else:
-                    p = dict(c.payload)
-                    raw = client.chat.completions.create(**p).model_dump()
+                    raw = client.chat.completions.create(**c.payload).model_dump()
             except Exception as e:  # noqa: BLE001 - logged, not cached, retried next run
                 return _rec("api_error", error=f"{type(e).__name__}: {e}", latency_ms=(monotonic() - start) * 1000)
-            res = parse_for(c)(raw, m)
-            res["latency_ms"] = (monotonic() - start) * 1000
+            elapsed = (monotonic() - start) * 1000
+            res = PARSERS[c.step](raw, m)
+            res.update({"latency_ms": elapsed, "attempts": attempts, "started_at": time.time() - elapsed / 1000})
             return res
         res, cached = cache.get_or_call(c.key, do)
         return c.key, {**res, "cached": cached}
 
     try:
+        if max_workers == 1:
+            return dict(one(c) for c in cs)
         with ThreadPoolExecutor(max_workers=max_workers) as ex:
             return dict(ex.map(one, cs))
     finally:
@@ -407,5 +396,5 @@ def _run_sync(provider, cs, cache, items_by_id, max_workers, clients, parse_for)
             cl.__exit__(None, None, None)
 
 
-__all__ = ["Call", "build_gen", "build_judge", "build_label", "build_precheck", "chunks_for", "context_for",
-           "run_calls", "GENERATORS", "JUDGES", "LABELERS", "PRECHECKERS"]
+__all__ = ["Call", "build_baseline", "build_decision", "build_gen", "build_label", "chunks_for", "context_for",
+           "run_calls"]
