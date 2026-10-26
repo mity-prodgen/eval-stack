@@ -101,6 +101,10 @@ NOT_REACHABLE = {
                             "region (2026-10-24); weights are not published. Substitute: pplx-decider-flash-v1.2.",
 }
 STRANDS_REPO_COMMIT = "b81d443c07438dc5ed51d0e85f9db184ad65d809"   # github.com/strands-labs/strands-decider, 2026-10-23
+# The checkpoint is a LoRA adapter (202 MB) + pointer head (13 MB); the server loads the base model at start. Its
+# revision comes from the checkpoint's provenance.json (modeling.base_revision), which Strands marks as inferred:
+# "Hub main at training time; hosts did not pin it".
+STRANDS_BASE = ("Qwen/Qwen3.5-2B-Base", "b1485b2fa6dfa1287294f269f5fb618e03d52d7c")
 
 JOB1_QUESTION = "Do these chunks give different answers to the question?"
 JOB2_QUESTION = "Does this answer use the most recent source in the context?"

@@ -232,6 +232,9 @@ python3.12 -m venv .venv-strands
 .venv-strands/bin/strands-decider serve vendor/strands-v1-2610 --device mps --port 8099
 ```
 
+The checkpoint is a LoRA adapter plus a scoring head (235 MB, checksums in its `MANIFEST.sha256`); the server
+downloads the base model `Qwen/Qwen3.5-2B-Base` (about 4 GB) on first start, pinned to revision `b1485b2f` from the
+checkpoint's `provenance.json`, a revision Strands marks as inferred ("hosts did not pin it").
 (`vendor/` and `.venv-strands/` are gitignored. `run.py` refuses to start a decision step if the server is not up,
 unless Strands is left out with `--decider`.)
 
@@ -276,8 +279,9 @@ model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids commi
   tested there; v1.2 is pinned by name.
 - **Microsoft-Decision-1 replaced by `pplx-decider-flash-v1.2`** (above).
 - **Strands checkpoint `v1-2610`**, the current reference weights; AWS's 115 ms claim was measured on v19. Its code
-  already has an MPS path (`mps_kernels.py`; `--device mps`); no CUDA-only code needed patching as of commit
-  `b81d443c` (not yet run here, see STOP 1).
+  already has an MPS path (`mps_kernels.py`; `--device mps`). **No CUDA-only code needed patching**: at commit
+  `b81d443c` it served on the M5 under MPS unchanged (2026-10-25; base `Qwen/Qwen3.5-2B-Base` @ `b1485b2f`; first
+  request 1,354 ms while MPS compiles for that input length, repeats ~122 ms).
 - **Open generator Gemma 4 31B, not a Qwen model**: four of the five open decision models (and Microsoft-Decision-1)
   are Qwen fine-tunes; a Qwen generator would have them grade their own base model's answers.
 - **Labels add `other`** (neither version's value) and a separate `conflict_noted` flag; Job 2 leaves `other` out
