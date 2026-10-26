@@ -133,11 +133,29 @@ def test_generator_and_baseline_shapes():
 
 # ---------------------------------------------------------------- parsers
 def test_parse_label_text():
-    assert calls.parse_label_text('{"label": "stale", "conflict_noted": false}', wiki=False) == ("stale", False)
-    assert calls.parse_label_text('x {"label": "B", "conflict_noted": true}', wiki=True) == ("b", True)
-    for bad in ('{"label": "maybe", "conflict_noted": false}', '{"label": "current", "conflict_noted": "no"}', "none"):
+    ok = '{"label": "stale", "conflict_noted": false, "timeline": true}'
+    assert calls.parse_label_text(ok, wiki=False) == ("stale", False, True)
+    assert calls.parse_label_text('x {"label": "B", "conflict_noted": true}', wiki=True) == ("b", True, None)
+    for bad in ('{"label": "maybe", "conflict_noted": false, "timeline": false}',
+                '{"label": "current", "conflict_noted": "no", "timeline": false}',
+                '{"label": "current", "conflict_noted": false}',                     # timeline missing
+                '{"label": "current", "conflict_noted": false, "timeline": "yes"}', "none"):
         with pytest.raises((ValueError, KeyError)):
             calls.parse_label_text(bad, wiki=False)
+
+
+def test_timeline_field_only_in_the_stale_current_prompt():
+    from freshness.common import LABEL_SYSTEM, WIKI_LABEL_SYSTEM
+    assert '"timeline": true|false' in LABEL_SYSTEM and "timeline" not in WIKI_LABEL_SYSTEM
+    # the hand-checked label definitions are unchanged: no extra rule about dated answers in the blends line
+    assert "even if the newer value comes last" not in LABEL_SYSTEM
+
+
+def test_timeline_status():
+    assert run.timeline_status({"timeline": True}, {"timeline": True}) == "timeline"
+    assert run.timeline_status({"timeline": False}, {"timeline": False}) == "plain"
+    assert run.timeline_status({"timeline": True}, {"timeline": False}) == "split"
+    assert run.timeline_status({"timeline": None}, {"timeline": True}) == "n/a"
 
 
 def test_parse_gen_strips_gemma_empty_thought_and_flags_empty():

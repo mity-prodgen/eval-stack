@@ -290,6 +290,12 @@ model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids commi
   disagree or that the value changed"; saying the versions agree no longer counts (the labelers split on 3 of 8
   control answers). The Sonnet labeler's token cap went from 100 to 400 (it ran out on 3 of 40 answers); the prompt
   is otherwise unchanged. All pilot answers were re-labeled.
+- **`timeline` field (after the human hand-check, 2026-10-26).** On 40 pilot answers the human agreed with Sonnet on
+  38 and with Sol on 35; every disagreement was an answer giving both values with their dates and no word saying
+  which is current ("X as of 2025; starting 2026, Y"), and the human's own labels on near-identical answers of this
+  shape varied. A one-sentence fix to the blends definition made agreement worse (Sonnet 35/40) and was reverted.
+  Instead the labelers mark these answers `timeline`; on the 21 pilot answers both mark non-timeline, Job 2's
+  truth matched the human on all 21. A human spot-checks 15 timeline answers from the full run (`data/spotcheck.csv`).
 - **Job 2 caveat (wording kept as specified).** In the pilot, Gemma's stale answers read the newer document's date
   as a future change ("$0.002 now; effective March 1, 2026 the price will be $0.0015"). Such an answer does mention
   the most recent source, so "Does this answer use the most recent source in the context?" has a defensible literal

@@ -27,6 +27,7 @@ REVIEW = DATA_DIR / "review.csv"
 STATS = DATA_DIR / "stats.json"
 MANIFEST = DATA_DIR / "MANIFEST.json"
 HANDCHECK = DATA_DIR / "handcheck.csv"      # STOP 2: 40 labels for the human hand-check
+SPOTCHECK = DATA_DIR / "spotcheck.csv"      # full run: 15 timeline answers for the human spot-check
 WIKI_RAW = ROOT / "data" / "wikicontradict" / "WikiContradict_dataset_v1_rag_qa.csv"   # scripts/download_wikicontradict.sh
 RESULTS = PKG / "results"                   # gitignored: answers, labels, decisions, latency, spend ledger
 FIGURES = PKG / "figures"
@@ -41,6 +42,7 @@ N_REVIEW = 30
 N_NOISE = 40           # conflict items asked twice (both jobs, both orders) to measure verdict changes
 N_PILOT = 10           # STOP 2: 6 conflict, 2 control, 2 wiki, both orders
 N_HANDCHECK = 40
+N_SPOTCHECK = 15       # full run: timeline answers for a human check of the timeline flag and label
 N_LATENCY = 100        # sequential Job 1 calls per decision model for the latency table (after 5 warm-up calls)
 N_LATENCY_WARMUP = 5
 TOTAL_USD_CAP = 5.0    # hard cap on the whole post, enforced across commands by the spend ledger
@@ -240,6 +242,9 @@ WIKI_LABELS = ("a", "b", "blends", "flags", "refuses", "other")
 # Job 2 ground truth: current = yes; stale, blends = no; flags, refuses, other left out. Used only where both
 # labelers give the same truth value (stale vs blends is the same "no"; a split such as current vs flags is left out
 # and reported). Each labeler alone is a sensitivity check. Fixed 2026-10-26, before any full-run result.
+# Headline: answers both labelers mark timeline=false. Timeline answers (both true) are reported separately, with a
+# sensitivity check counting them all yes, then all no; answers where the labelers split on timeline are reported as
+# a count. A human spot-checks N_SPOTCHECK timeline answers from the full run (data/spotcheck.csv).
 JOB2_TRUTH = {"current": 1, "stale": 0, "blends": 0}
 # conflict_noted was tightened after the pilot (2026-10-26, user decision): it used to also count "an older or newer
 # version exists", and on controls the labelers split (5 of 8 agreed) when an answer said the versions agree.
@@ -249,6 +254,17 @@ _LABEL_FORMAT = (
     'example "14 days" and "two weeks" are the same value).\n\n'
     "Your entire reply must be exactly one line of JSON and nothing else: "
     '{"label": "<one of the labels>", "conflict_noted": true|false}'
+)
+# Stale/current items only: one more field, `timeline`, added after the human hand-check (2026-10-26, user decision).
+# It describes the answer's shape, not which value applies: both values, each tied to its own date or version, with no
+# explicit word saying which one is current or outdated. The human and the labelers disagreed on exactly these answers
+# ("X as of 2025; starting 2026, Y"), so Job 2's headline leaves them out (see JOB2_TRUTH). The label definitions are
+# the ones the hand-check validated, unchanged.
+_LABEL_FORMAT_TIMELINE = (
+    "Judge only what the answer says. Small differences in wording, units or number format do not matter (for "
+    'example "14 days" and "two weeks" are the same value).\n\n'
+    "Your entire reply must be exactly one line of JSON and nothing else: "
+    '{"label": "<one of the labels>", "conflict_noted": true|false, "timeline": true|false}'
 )
 LABEL_SYSTEM = (
     "You label answers written by a question-answering assistant. The assistant answered a QUESTION from retrieved "
@@ -267,7 +283,10 @@ LABEL_SYSTEM = (
     "Also set conflict_noted to true if the answer says or implies that the sources disagree or that the value changed "
     "between versions; otherwise false. Saying that the versions agree, or mentioning a version without saying that "
     "the value differs, does not count. When both versions give the same value, the label is current if the answer "
-    "gives that value.\n\n" + _LABEL_FORMAT
+    "gives that value.\n\n"
+    "Also set timeline to true if the answer gives both values, each tied to its own date or version (for example "
+    "'X as of 2025 ... Y as of 2026'), and does not use an explicit word saying which one is current, latest, newest, "
+    "older, outdated, previous or replaced; otherwise false.\n\n" + _LABEL_FORMAT_TIMELINE
 )
 WIKI_LABEL_SYSTEM = (
     "You label answers written by a question-answering assistant. The assistant answered a QUESTION from retrieved "

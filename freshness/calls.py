@@ -6,7 +6,7 @@ Builders are pure (tests check request shapes with no network). Every result is 
     usage        {"input", "output", "cache_write", "cache_read", "reasoning"} from the API's own usage field
     cost_usd     harness.prices at the pinned model, batch discount applied when sent through a batch
     latency_ms   wall clock on our side, request sent -> response parsed (decisions: one attempt, see below)
-  + per step:    text (gen) | label, conflict_noted (label) | p_pass (baseline) | p_yes (decision)
+  + per step:    text (gen) | label, conflict_noted, timeline (label) | p_pass (baseline) | p_yes (decision)
 
 Decision calls are timed per attempt: the executor makes a single attempt and retries itself only on 429/5xx,
 logging `attempts`, so a retried call is never mistaken for a slow one. The latency table uses a separate
@@ -201,7 +201,8 @@ def parse_gen(raw: dict, meta: dict) -> dict:
 _JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
 
 
-def parse_label_text(text: str, wiki: bool) -> tuple[str, bool]:
+def parse_label_text(text: str, wiki: bool) -> tuple[str, bool, bool | None]:
+    """(label, conflict_noted, timeline); timeline is None for WikiContradict, whose prompt has no such field."""
     m = _JSON_RE.search(text)
     if not m:
         raise ValueError(f"no JSON object in label output: {text!r}")
@@ -212,7 +213,12 @@ def parse_label_text(text: str, wiki: bool) -> tuple[str, bool]:
     noted = d["conflict_noted"]
     if not isinstance(noted, bool):
         raise ValueError(f"conflict_noted not a bool: {noted!r}")
-    return label, noted
+    if wiki:
+        return label, noted, None
+    timeline = d["timeline"]
+    if not isinstance(timeline, bool):
+        raise ValueError(f"timeline not a bool: {timeline!r}")
+    return label, noted, timeline
 
 
 def parse_label(raw: dict, meta: dict) -> dict:
@@ -221,10 +227,10 @@ def parse_label(raw: dict, meta: dict) -> dict:
     if stop == "refusal":
         return _rec("refusal", **common)
     try:
-        label, noted = parse_label_text(text, meta.get("wiki", False))
+        label, noted, timeline = parse_label_text(text, meta.get("wiki", False))
     except (ValueError, KeyError, TypeError, json.JSONDecodeError) as e:
         return _rec("parse_error", error=str(e), **common)
-    return _rec("ok", label=label, conflict_noted=noted, **common)
+    return _rec("ok", label=label, conflict_noted=noted, timeline=timeline, **common)
 
 
 def parse_baseline(raw: dict, meta: dict) -> dict:

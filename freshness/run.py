@@ -37,7 +37,7 @@ from harness.ledger import Ledger
 from .build_items import has, load_items
 from .calls import Call, build_baseline, build_decision, build_gen, build_label, run_calls
 from .common import (CACHE, CACHE_NS, DECIDER, DECIDERS, GENERATORS, HANDCHECK, LABELERS, N_HANDCHECK, N_LATENCY,
-                     N_LATENCY_WARMUP, N_NOISE, ORDERS, RESULTS, SEED, TOTAL_USD_CAP)
+                     N_LATENCY_WARMUP, N_NOISE, N_SPOTCHECK, ORDERS, RESULTS, SEED, SPOTCHECK, TOTAL_USD_CAP)
 from .estimate import PLACEHOLDER_ANSWER, check_budget, estimate, print_table
 
 STEPS = ("gen", "label", "baseline", "job1", "job2", "noise", "latency")
@@ -159,10 +159,13 @@ def agreement(labels: dict, keys: list[tuple]) -> dict:
     pairs = [(a, b) for a, b in pairs if a and b and a["status"] == "ok" and b["status"] == "ok"]
     la, lb = [a["label"] for a, _ in pairs], [b["label"] for _, b in pairs]
     na, nb = [str(a["conflict_noted"]) for a, _ in pairs], [str(b["conflict_noted"]) for _, b in pairs]
+    tl = [(a.get("timeline"), b.get("timeline")) for a, b in pairs if a.get("timeline") is not None]
     n = max(len(pairs), 1)
     return {"n": len(pairs), "label_agree": round(sum(x == y for x, y in zip(la, lb)) / n, 3),
             "label_kappa": round(kappa(la, lb), 3),
             "conflict_noted_agree": round(sum(x == y for x, y in zip(na, nb)) / n, 3),
+            "timeline_agree": round(sum(x == y for x, y in tl) / len(tl), 3) if tl else None,
+            "timeline_both_true": sum(x and y for x, y in tl),
             "disagreements (sonnet->sol)": dict(Counter(f"{x}->{y}" for x, y in zip(la, lb) if x != y).most_common())}
 
 
@@ -215,7 +218,8 @@ def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
                      "answer": a["text"], **human.get((a["item_id"], a["order"], a["gen"]),
                                                       dict.fromkeys(HUMAN_COLS, "")),
                      "sonnet_label": ls.get("label"), "sonnet_conflict_noted": ls.get("conflict_noted"),
-                     "sol_label": lo.get("label"), "sol_conflict_noted": lo.get("conflict_noted")})
+                     "sol_label": lo.get("label"), "sol_conflict_noted": lo.get("conflict_noted"),
+                     "sonnet_timeline": ls.get("timeline"), "sol_timeline": lo.get("timeline")})
     with HANDCHECK.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
@@ -223,6 +227,54 @@ def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
     tiers = Counter(r["priority"] for r in rows)
     print(f"wrote {HANDCHECK} ({len(rows)} answers: {tiers['hard']} hard, {tiers['check']} check, {tiers['clear']} clear;"
           " labeler columns are at the right so you can hide them)")
+
+
+def timeline_status(ls: dict, lo: dict) -> str:
+    """'timeline' (both labelers true), 'plain' (both false), 'split', or 'n/a' (WikiContradict or a failed label)."""
+    a, b = ls.get("timeline"), lo.get("timeline")
+    if a is None or b is None:
+        return "n/a"
+    return "timeline" if a and b else "plain" if not a and not b else "split"
+
+
+SPOT_HUMAN_COLS = ("your_timeline", "your_label", "your_note")
+
+
+def write_spotcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
+    """Full run: N_SPOTCHECK answers the labelers mark as timeline (both true first, then splits), seeded, for a human
+    check of the timeline flag and the label. Human columns survive a rewrite; labeler columns are at the right."""
+    rng = random.Random(SEED + 14)
+    pool = {"timeline": [], "split": []}
+    for a in sorted(answers, key=lambda a: (a["item_id"], a["order"], a["gen"])):
+        k = (a["item_id"], a["order"], a["gen"])
+        st = timeline_status(labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {})
+        if st in pool:
+            pool[st].append(a)
+    pick = rng.sample(pool["timeline"], min(N_SPOTCHECK, len(pool["timeline"])))
+    pick += rng.sample(pool["split"], min(N_SPOTCHECK - len(pick), len(pool["split"])))
+    human = {}
+    if SPOTCHECK.exists():
+        with SPOTCHECK.open(newline="") as f:
+            for h in csv.DictReader(f):
+                human[(h["item_id"], h["order"], h["generator"])] = {c: h.get(c, "") for c in SPOT_HUMAN_COLS}
+    rows = []
+    for n, a in enumerate(sorted(pick, key=lambda a: (a["item_id"], a["gen"], a["order"])), 1):
+        it, k = by_id[a["item_id"]], (a["item_id"], a["order"], a["gen"])
+        ls, lo = labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {}
+        rows.append({"n": n, "item_id": a["item_id"], "generator": a["gen"], "order": a["order"],
+                     "question": it["question"], "current_value": it["current"], "outdated_value": it["stale"],
+                     "answer": a["text"], **human.get(k, dict.fromkeys(SPOT_HUMAN_COLS, "")),
+                     "labelers_timeline": timeline_status(ls, lo), "sonnet_label": ls.get("label"),
+                     "sol_label": lo.get("label")})
+    if not rows:
+        print("spot-check: no timeline answers to sample")
+        return
+    with SPOTCHECK.open("w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    print(f"wrote {SPOTCHECK} ({len(rows)} answers: {len(pool['timeline'])} timeline and {len(pool['split'])} split "
+          "in the pool)")
 
 
 def strands_up() -> bool:
@@ -336,7 +388,7 @@ def main() -> None:
             a = ans_rows[(c.item_id, c.order, c.gen)]
             labels[(c.item_id, c.order, c.gen, c.who)] = {
                 "item_id": c.item_id, "kind": it["kind"], "order": c.order, "gen": c.gen, "labeler": c.who,
-                "label": r.get("label"), "conflict_noted": r.get("conflict_noted"),
+                "label": r.get("label"), "conflict_noted": r.get("conflict_noted"), "timeline": r.get("timeline"),
                 "string_match": string_match(it, a["text"]) if it["kind"] != "wiki" else None, **slim(r)}
         _write(f_lab, labels)
 
@@ -393,6 +445,8 @@ def main() -> None:
         for kind in ("conflict", "control", "wiki"):
             summary["labeler_agreement"][kind] = agreement(labels, [k for k in keys if by_id[k[0]]["kind"] == kind])
         write_handcheck(answers, labels, by_id)
+    elif labels and "label" in steps:
+        write_spotcheck([a for a in answers if by_id[a["item_id"]]["kind"] == "conflict"], labels, by_id)
     (RESULTS / f"run_summary_{stem}.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps(summary, indent=1))
 
