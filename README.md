@@ -248,7 +248,7 @@ unless Strands is left out with `--decider`.)
 | Answers to check | Claude Haiku 5.5 (thinking off) and Gemma 4 31B-it (DeepInfra, model-card sampling) with LangChain Hub `rlm/rag-prompt`, verbatim (commit `50442af1`); chunks joined by a blank line as in LangChain's `format_docs` |
 | Labels | current / stale / blends / flags / refuses / other + `conflict_noted`. Claude Sonnet 5.5 and gpt-6.1-sol label every answer; agreement reported; free string-match check alongside |
 | Job 1 (before generation) | "Do these chunks give different answers to the question?" Truth: stale/current and WikiContradict = yes, controls = no |
-| Job 2 (after generation) | "Does this answer use the most recent source in the context?" Truth from the labels, where both labelers give the same truth value (stale vs blends both count as no): current = yes; stale, blends = no; flags, refuses, other left out. Stale/current items (headline) and controls (separately); not WikiContradict (no newer source) |
+| Job 2 (after generation) | "Does this answer use the most recent source in the context?" Truth: for timeline answers (both values with dates, nothing saying which is current) the human's label under a rule fixed before the full run; elsewhere the labelers' agreed truth value (stale vs blends both count as no): current = yes; stale, blends = no; flags, refuses, other left out. Stale/current items (headline) and controls (separately); not WikiContradict (no newer source) |
 | Question wording | identical for all seven: native yes/no type, instructions only (`noul` for the System One APIs, `predicate` for Luna); the same state text (`QUESTION` / `CHUNKS` or `CONTEXT` / `ANSWER`) for all; P(yes) >= 0.5 for the headline, full ROC/AUC too |
 | Baseline | Sonnet 5.5 faithfulness judge with post 1's question (post 1's P0 Claude prompt), on every stale/current and control answer |
 | Noise | both jobs again on 40 conflict items x 2 orders, every decision model |
@@ -295,7 +295,13 @@ model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids commi
   which is current ("X as of 2025; starting 2026, Y"), and the human's own labels on near-identical answers of this
   shape varied. A one-sentence fix to the blends definition made agreement worse (Sonnet 35/40) and was reverted.
   Instead the labelers mark these answers `timeline`; on the 21 pilot answers both mark non-timeline, Job 2's
-  truth matched the human on all 21. A human spot-checks 15 timeline answers from the full run (`data/spotcheck.csv`).
+  truth matched the human on all 21. But every stale or blended pilot answer was timeline-shaped, so for Job 2 the
+  **human labels every timeline answer from the full run** (`data/timeline_labels.csv`; above 110, a seeded 100)
+  under a rule fixed before the full run (`TIMELINE_RULE` in `freshness/common.py`: label by what a reader in
+  October 2026 would take as the answer - newer value presented as in force = current, as a future change =
+  stale, unresolved = blends, flags only if it says the sources disagree or it can't tell). Those human labels are
+  Job 2's truth for timeline answers; the labelers' agreed truth is used elsewhere. A sensitivity row uses the
+  labelers' truth everywhere.
 - **Job 2 caveat (wording kept as specified).** In the pilot, Gemma's stale answers read the newer document's date
   as a future change ("$0.002 now; effective March 1, 2026 the price will be $0.0015"). Such an answer does mention
   the most recent source, so "Does this answer use the most recent source in the context?" has a defensible literal

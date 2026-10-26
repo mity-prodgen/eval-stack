@@ -228,3 +228,31 @@ def test_dry_run_plan_size_and_cost():
     assert sum("warmup" not in c.repeat for c in lat) == 700
     total = sum(e.usd for e in estimate.estimate(gens + j1 + j2).values())
     assert 0 < total < 5
+
+
+def test_timeline_sheet_takes_timeline_and_split_answers_and_keeps_human_labels(tmp_path, monkeypatch):
+    import csv
+    monkeypatch.setattr(run, "TIMELINE_SHEET", tmp_path / "timeline_labels.csv")
+    items = [json.loads(l) for l in ITEMS.open()]
+    by_id = {i["id"]: i for i in items}
+    conflict = [i for i in items if i["kind"] == "conflict"][:3]
+    control = next(i for i in items if i["kind"] == "control")
+    answers = [{"item_id": i["id"], "order": "new_first", "gen": "gemma", "text": f"A {i['id']}"}
+               for i in conflict + [control]]
+    flags = {conflict[0]["id"]: (True, True), conflict[1]["id"]: (True, False), conflict[2]["id"]: (False, False),
+             control["id"]: (True, True)}
+    labels = {}
+    for iid, (a, b) in flags.items():
+        for who, t in (("sonnet", a), ("sol", b)):
+            labels[(iid, "new_first", "gemma", who)] = {"status": "ok", "label": "blends", "timeline": t}
+    run.write_timeline_sheet(answers, labels, by_id)
+    rows = list(csv.DictReader(open(run.TIMELINE_SHEET)))
+    assert [r["item_id"] for r in rows] == [conflict[0]["id"], conflict[1]["id"]]       # timeline + split, no control
+    assert [r["labelers_timeline"] for r in rows] == ["timeline", "split"]
+    rows[0]["your_label"] = "stale"
+    with open(run.TIMELINE_SHEET, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+    run.write_timeline_sheet(answers, labels, by_id)
+    assert list(csv.DictReader(open(run.TIMELINE_SHEET)))[0]["your_label"] == "stale"

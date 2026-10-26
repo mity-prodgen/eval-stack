@@ -37,7 +37,8 @@ from harness.ledger import Ledger
 from .build_items import has, load_items
 from .calls import Call, build_baseline, build_decision, build_gen, build_label, run_calls
 from .common import (CACHE, CACHE_NS, DECIDER, DECIDERS, GENERATORS, HANDCHECK, LABELERS, N_HANDCHECK, N_LATENCY,
-                     N_LATENCY_WARMUP, N_NOISE, N_SPOTCHECK, ORDERS, RESULTS, SEED, SPOTCHECK, TOTAL_USD_CAP)
+                     N_LATENCY_WARMUP, N_NOISE, N_TIMELINE_MAX, N_TIMELINE_SAMPLE, ORDERS, RESULTS, SEED,
+                     TIMELINE_RULE, TIMELINE_SHEET, TOTAL_USD_CAP)
 from .estimate import PLACEHOLDER_ANSWER, check_budget, estimate, print_table
 
 STEPS = ("gen", "label", "baseline", "job1", "job2", "noise", "latency")
@@ -237,44 +238,46 @@ def timeline_status(ls: dict, lo: dict) -> str:
     return "timeline" if a and b else "plain" if not a and not b else "split"
 
 
-SPOT_HUMAN_COLS = ("your_timeline", "your_label", "your_note")
+TIMELINE_HUMAN_COLS = ("your_label", "your_note")
 
 
-def write_spotcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
-    """Full run: N_SPOTCHECK answers the labelers mark as timeline (both true first, then splits), seeded, for a human
-    check of the timeline flag and the label. Human columns survive a rewrite; labeler columns are at the right."""
-    rng = random.Random(SEED + 14)
-    pool = {"timeline": [], "split": []}
+def write_timeline_sheet(answers: list[dict], labels: dict, by_id: dict) -> None:
+    """Full run: every stale/current answer either labeler marks as timeline, for the human to label under TIMELINE_RULE
+    (these labels are Job 2's truth for timeline answers). Above N_TIMELINE_MAX, a seeded random N_TIMELINE_SAMPLE.
+    Human columns survive a rewrite; the labelers' labels are at the far right so they can be hidden."""
+    pool, n_split = [], 0
     for a in sorted(answers, key=lambda a: (a["item_id"], a["order"], a["gen"])):
+        if by_id[a["item_id"]]["kind"] != "conflict":
+            continue
         k = (a["item_id"], a["order"], a["gen"])
         st = timeline_status(labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {})
-        if st in pool:
-            pool[st].append(a)
-    pick = rng.sample(pool["timeline"], min(N_SPOTCHECK, len(pool["timeline"])))
-    pick += rng.sample(pool["split"], min(N_SPOTCHECK - len(pick), len(pool["split"])))
+        if st in ("timeline", "split"):
+            pool.append(a)
+            n_split += st == "split"
+    pick = pool if len(pool) <= N_TIMELINE_MAX else random.Random(SEED + 14).sample(pool, N_TIMELINE_SAMPLE)
     human = {}
-    if SPOTCHECK.exists():
-        with SPOTCHECK.open(newline="") as f:
+    if TIMELINE_SHEET.exists():
+        with TIMELINE_SHEET.open(newline="") as f:
             for h in csv.DictReader(f):
-                human[(h["item_id"], h["order"], h["generator"])] = {c: h.get(c, "") for c in SPOT_HUMAN_COLS}
+                human[(h["item_id"], h["order"], h["generator"])] = {c: h.get(c, "") for c in TIMELINE_HUMAN_COLS}
     rows = []
     for n, a in enumerate(sorted(pick, key=lambda a: (a["item_id"], a["gen"], a["order"])), 1):
         it, k = by_id[a["item_id"]], (a["item_id"], a["order"], a["gen"])
         ls, lo = labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {}
         rows.append({"n": n, "item_id": a["item_id"], "generator": a["gen"], "order": a["order"],
                      "question": it["question"], "current_value": it["current"], "outdated_value": it["stale"],
-                     "answer": a["text"], **human.get(k, dict.fromkeys(SPOT_HUMAN_COLS, "")),
+                     "answer": a["text"], **human.get(k, dict.fromkeys(TIMELINE_HUMAN_COLS, "")),
                      "labelers_timeline": timeline_status(ls, lo), "sonnet_label": ls.get("label"),
                      "sol_label": lo.get("label")})
     if not rows:
-        print("spot-check: no timeline answers to sample")
+        print("timeline sheet: no timeline answers")
         return
-    with SPOTCHECK.open("w", newline="") as f:
+    with TIMELINE_SHEET.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
-    print(f"wrote {SPOTCHECK} ({len(rows)} answers: {len(pool['timeline'])} timeline and {len(pool['split'])} split "
-          "in the pool)")
+    print(f"wrote {TIMELINE_SHEET}: {len(rows)} answers to label (pool {len(pool)}, of which {n_split} split on "
+          f"timeline{'; seeded sample' if len(pick) < len(pool) else ''}). Rule:\n{TIMELINE_RULE}")
 
 
 def strands_up() -> bool:
@@ -446,7 +449,7 @@ def main() -> None:
             summary["labeler_agreement"][kind] = agreement(labels, [k for k in keys if by_id[k[0]]["kind"] == kind])
         write_handcheck(answers, labels, by_id)
     elif labels and "label" in steps:
-        write_spotcheck([a for a in answers if by_id[a["item_id"]]["kind"] == "conflict"], labels, by_id)
+        write_timeline_sheet(answers, labels, by_id)
     (RESULTS / f"run_summary_{stem}.json").write_text(json.dumps(summary, indent=1) + "\n")
     print(json.dumps(summary, indent=1))
 

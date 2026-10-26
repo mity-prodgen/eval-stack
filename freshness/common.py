@@ -27,7 +27,7 @@ REVIEW = DATA_DIR / "review.csv"
 STATS = DATA_DIR / "stats.json"
 MANIFEST = DATA_DIR / "MANIFEST.json"
 HANDCHECK = DATA_DIR / "handcheck.csv"      # STOP 2: 40 labels for the human hand-check
-SPOTCHECK = DATA_DIR / "spotcheck.csv"      # full run: 15 timeline answers for the human spot-check
+TIMELINE_SHEET = DATA_DIR / "timeline_labels.csv"   # full run: the human labels every timeline answer (Job 2 truth)
 WIKI_RAW = ROOT / "data" / "wikicontradict" / "WikiContradict_dataset_v1_rag_qa.csv"   # scripts/download_wikicontradict.sh
 RESULTS = PKG / "results"                   # gitignored: answers, labels, decisions, latency, spend ledger
 FIGURES = PKG / "figures"
@@ -42,7 +42,8 @@ N_REVIEW = 30
 N_NOISE = 40           # conflict items asked twice (both jobs, both orders) to measure verdict changes
 N_PILOT = 10           # STOP 2: 6 conflict, 2 control, 2 wiki, both orders
 N_HANDCHECK = 40
-N_SPOTCHECK = 15       # full run: timeline answers for a human check of the timeline flag and label
+N_TIMELINE_MAX = 110   # human-labeled timeline answers; above this, a seeded random 100 (Job 2 reports its n)
+N_TIMELINE_SAMPLE = 100
 N_LATENCY = 100        # sequential Job 1 calls per decision model for the latency table (after 5 warm-up calls)
 N_LATENCY_WARMUP = 5
 TOTAL_USD_CAP = 5.0    # hard cap on the whole post, enforced across commands by the spend ledger
@@ -242,9 +243,20 @@ WIKI_LABELS = ("a", "b", "blends", "flags", "refuses", "other")
 # Job 2 ground truth: current = yes; stale, blends = no; flags, refuses, other left out. Used only where both
 # labelers give the same truth value (stale vs blends is the same "no"; a split such as current vs flags is left out
 # and reported). Each labeler alone is a sensitivity check. Fixed 2026-10-26, before any full-run result.
-# Headline: answers both labelers mark timeline=false. Timeline answers (both true) are reported separately, with a
-# sensitivity check counting them all yes, then all no; answers where the labelers split on timeline are reported as
-# a count. A human spot-checks N_SPOTCHECK timeline answers from the full run (data/spotcheck.csv).
+# Job 2 headline truth (user decision, 2026-10-26, before any full-run answer existed):
+#   - timeline answers (stale/current items where either labeler marks timeline=true): the HUMAN's label from
+#     data/timeline_labels.csv, labeled under TIMELINE_RULE below;
+#   - all other answers: the labelers' agreed truth value (as above).
+# Sensitivity row: the labelers' agreed truth everywhere, timeline answers included.
+TIMELINE_RULE = """\
+Label by what a reader today (October 2026) would take as the answer:
+- current: the answer presents the newer value as in force ("As of 2025, 10. However, as of April 2026, 30.")
+- stale:   it presents the newer value as a future change ("Starting March 2026 the price will be $0.0015"),
+           which implies the old value applies now
+- blends:  it does not resolve which applies ("either 100 or 60 nights depending on the date")
+- flags:   only if it says the sources disagree or that it can't tell which applies
+- refuses / other: as in the label definitions (no value / a value from neither version)
+"""
 JOB2_TRUTH = {"current": 1, "stale": 0, "blends": 0}
 # conflict_noted was tightened after the pilot (2026-10-26, user decision): it used to also count "an older or newer
 # version exists", and on controls the labelers split (5 of 8 agreed) when an answer said the versions agree.
