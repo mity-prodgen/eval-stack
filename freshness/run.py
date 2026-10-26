@@ -166,6 +166,9 @@ def agreement(labels: dict, keys: list[tuple]) -> dict:
             "disagreements (sonnet->sol)": dict(Counter(f"{x}->{y}" for x, y in zip(la, lb) if x != y).most_common())}
 
 
+HUMAN_COLS = ("your_label", "your_conflict_noted", "your_note")
+
+
 def review_priority(item: dict, ls: dict, lo: dict, sm: str | None) -> tuple[int, str, str]:
     """(tier, priority, why) for the hand-check sheet, from the labelers' outputs and the string match only.
     1 hard: the labelers split (or one failed); 2 check: worth reading; 3 clear: both say current, value found."""
@@ -192,6 +195,11 @@ def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
     the ordering uses only the labelers' outputs and the string match, never a third model's opinion."""
     rng = random.Random(SEED + 12)
     pool = sorted(answers, key=lambda a: (a["item_id"], a["order"], a["gen"]))
+    human = {}   # keep the human's columns when the sheet is rewritten (e.g. after a re-label)
+    if HANDCHECK.exists():
+        with HANDCHECK.open(newline="") as f:
+            for h in csv.DictReader(f):
+                human[(h["item_id"], h["order"], h["generator"])] = {k: h.get(k, "") for k in HUMAN_COLS}
     picked = []
     for a in rng.sample(pool, min(N_HANDCHECK, len(pool))):
         it = by_id[a["item_id"]]
@@ -204,7 +212,8 @@ def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
         rows.append({"n": n, "priority": prio, "why": why, "item_id": a["item_id"], "kind": it["kind"],
                      "generator": a["gen"], "order": a["order"], "question": it["question"],
                      "current_value / answer_a": it["current"], "outdated_value / answer_b": it["stale"],
-                     "answer": a["text"], "your_label": "", "your_conflict_noted": "", "your_note": "",
+                     "answer": a["text"], **human.get((a["item_id"], a["order"], a["gen"]),
+                                                      dict.fromkeys(HUMAN_COLS, "")),
                      "sonnet_label": ls.get("label"), "sonnet_conflict_noted": ls.get("conflict_noted"),
                      "sol_label": lo.get("label"), "sol_conflict_noted": lo.get("conflict_noted")})
     with HANDCHECK.open("w", newline="") as f:
