@@ -248,7 +248,7 @@ unless Strands is left out with `--decider`.)
 | Answers to check | Claude Haiku 5.5 (thinking off) and Gemma 4 31B-it (DeepInfra, model-card sampling) with LangChain Hub `rlm/rag-prompt`, verbatim (commit `50442af1`); chunks joined by a blank line as in LangChain's `format_docs` |
 | Labels | current / stale / blends / flags / refuses / other + `conflict_noted`. Claude Sonnet 5.5 and gpt-6.1-sol label every answer; agreement reported; free string-match check alongside |
 | Job 1 (before generation) | "Do these chunks give different answers to the question?" Truth: stale/current and WikiContradict = yes, controls = no |
-| Job 2 (after generation) | "Does this answer use the most recent source in the context?" Truth from the labels, where both labelers agree: current = yes; stale, blends = no; flags, refuses, other left out. Stale/current items (headline) and controls (separately); not WikiContradict (no newer source) |
+| Job 2 (after generation) | "Does this answer use the most recent source in the context?" Truth from the labels, where both labelers give the same truth value (stale vs blends both count as no): current = yes; stale, blends = no; flags, refuses, other left out. Stale/current items (headline) and controls (separately); not WikiContradict (no newer source) |
 | Question wording | identical for all seven: native yes/no type, instructions only (`noul` for the System One APIs, `predicate` for Luna); the same state text (`QUESTION` / `CHUNKS` or `CONTEXT` / `ANSWER`) for all; P(yes) >= 0.5 for the headline, full ROC/AUC too |
 | Baseline | Sonnet 5.5 faithfulness judge with post 1's question (post 1's P0 Claude prompt), on every stale/current and control answer |
 | Noise | both jobs again on 40 conflict items x 2 orders, every decision model |
@@ -286,6 +286,16 @@ model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids commi
   are Qwen fine-tunes; a Qwen generator would have them grade their own base model's answers.
 - **Labels add `other`** (neither version's value) and a separate `conflict_noted` flag; Job 2 leaves `other` out
   with `flags` and `refuses`.
+- **After the pilot (2026-10-26, decided before any full-run result):** `conflict_noted` now means "says the sources
+  disagree or that the value changed"; saying the versions agree no longer counts (the labelers split on 3 of 8
+  control answers). The Sonnet labeler's token cap went from 100 to 400 (it ran out on 3 of 40 answers); the prompt
+  is otherwise unchanged. All pilot answers were re-labeled.
+- **Job 2 caveat (wording kept as specified).** In the pilot, Gemma's stale answers read the newer document's date
+  as a future change ("$0.002 now; effective March 1, 2026 the price will be $0.0015"). Such an answer does mention
+  the most recent source, so "Does this answer use the most recent source in the context?" has a defensible literal
+  yes; the ground truth (from the labels) says no. RESULTS.md reports this next to every Job 2 catch rate.
+- **Stale answers are scarce** (pilot: Haiku 0 of 12, Gemma 3 of 12): Job 2 catch rates rest on an expected 30-50
+  stale or blended answers, with wide CIs; accepted rather than adding stale cases another way.
 - **Data author = Claude Opus 5.5 in this session, not an API model**, so the data and review sheet exist with zero
   live calls; it is a Claude model, like one generator, one labeler and the baseline.
 - **101 stale/current items, not ~100** (one per authored section); **WikiContradict instances whose two contexts

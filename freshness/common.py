@@ -238,8 +238,11 @@ def gen_prompt(question: str, context: str) -> str:
 LABELS = ("current", "stale", "blends", "flags", "refuses", "other")
 WIKI_LABELS = ("a", "b", "blends", "flags", "refuses", "other")
 # Job 2 ground truth: current = yes; stale, blends = no; flags, refuses, other left out. Used only where both
-# labelers agree (disagreements are reported, and each labeler alone is a sensitivity check).
+# labelers give the same truth value (stale vs blends is the same "no"; a split such as current vs flags is left out
+# and reported). Each labeler alone is a sensitivity check. Fixed 2026-10-26, before any full-run result.
 JOB2_TRUTH = {"current": 1, "stale": 0, "blends": 0}
+# conflict_noted was tightened after the pilot (2026-10-26, user decision): it used to also count "an older or newer
+# version exists", and on controls the labelers split (5 of 8 agreed) when an answer said the versions agree.
 
 _LABEL_FORMAT = (
     "Judge only what the answer says. Small differences in wording, units or number format do not matter (for "
@@ -261,9 +264,10 @@ LABEL_SYSTEM = (
     "- flags: the answer says that the sources disagree or conflict and does not commit to one value as its answer.\n"
     "- refuses: the answer gives no value: it says it does not know, that the context does not say, or it declines.\n"
     "- other: the answer gives a value that is neither the CURRENT VALUE nor the OUTDATED VALUE.\n\n"
-    "Also set conflict_noted to true if the answer says or implies that the sources disagree, that the value changed, "
-    "or that an older or newer version exists; otherwise false. When both versions give the same value, the label is "
-    "current if the answer gives that value.\n\n" + _LABEL_FORMAT
+    "Also set conflict_noted to true if the answer says or implies that the sources disagree or that the value changed "
+    "between versions; otherwise false. Saying that the versions agree, or mentioning a version without saying that "
+    "the value differs, does not count. When both versions give the same value, the label is current if the answer "
+    "gives that value.\n\n" + _LABEL_FORMAT
 )
 WIKI_LABEL_SYSTEM = (
     "You label answers written by a question-answering assistant. The assistant answered a QUESTION from retrieved "
