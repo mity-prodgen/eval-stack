@@ -166,25 +166,54 @@ def agreement(labels: dict, keys: list[tuple]) -> dict:
             "disagreements (sonnet->sol)": dict(Counter(f"{x}->{y}" for x, y in zip(la, lb) if x != y).most_common())}
 
 
+def review_priority(item: dict, ls: dict, lo: dict, sm: str | None) -> tuple[int, str, str]:
+    """(tier, priority, why) for the hand-check sheet, from the labelers' outputs and the string match only.
+    1 hard: the labelers split (or one failed); 2 check: worth reading; 3 clear: both say current, value found."""
+    if ls.get("status") != "ok" or lo.get("status") != "ok":
+        return 1, "hard", "a labeler failed to answer"
+    if ls["label"] != lo["label"]:
+        return 1, "hard", f"labelers split: sonnet={ls['label']}, sol={lo['label']}"
+    if ls["conflict_noted"] != lo["conflict_noted"]:
+        return 1, "hard", "labelers split on conflict_noted"
+    lab = ls["label"]
+    if item["kind"] == "wiki":
+        return 2, "check", f"WikiContradict, both say {lab}"
+    if lab != "current":
+        return 2, "check", f"both say {lab}"
+    if sm == "both":
+        return 2, "check", "both say current; the answer mentions both values"
+    if sm in ("stale", "neither"):
+        return 2, "check", "both say current; the current value is not in the answer verbatim"
+    return 3, "clear", "both say current; only the current value appears"
+
+
 def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
+    """The 40 answers for the human check, hardest first. Labeler columns are at the right so they can be hidden;
+    the ordering uses only the labelers' outputs and the string match, never a third model's opinion."""
     rng = random.Random(SEED + 12)
     pool = sorted(answers, key=lambda a: (a["item_id"], a["order"], a["gen"]))
-    rows = []
-    for i, a in enumerate(sorted(rng.sample(pool, min(N_HANDCHECK, len(pool))), key=lambda a: (a["item_id"], a["gen"]))):
+    picked = []
+    for a in rng.sample(pool, min(N_HANDCHECK, len(pool))):
         it = by_id[a["item_id"]]
         k = (a["item_id"], a["order"], a["gen"])
         ls, lo = labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {}
-        rows.append({"n": i + 1, "item_id": a["item_id"], "kind": it["kind"], "generator": a["gen"], "order": a["order"],
-                     "question": it["question"], "current_value / answer_a": it["current"],
-                     "outdated_value / answer_b": it["stale"], "answer": a["text"],
-                     "your_label": "", "your_conflict_noted": "", "your_note": "",
+        tier, prio, why = review_priority(it, ls, lo, ls.get("string_match"))
+        picked.append((tier, a["item_id"], a["gen"], a["order"], a, it, ls, lo, prio, why))
+    rows = []
+    for n, (_, _, _, _, a, it, ls, lo, prio, why) in enumerate(sorted(picked, key=lambda x: x[:4]), 1):
+        rows.append({"n": n, "priority": prio, "why": why, "item_id": a["item_id"], "kind": it["kind"],
+                     "generator": a["gen"], "order": a["order"], "question": it["question"],
+                     "current_value / answer_a": it["current"], "outdated_value / answer_b": it["stale"],
+                     "answer": a["text"], "your_label": "", "your_conflict_noted": "", "your_note": "",
                      "sonnet_label": ls.get("label"), "sonnet_conflict_noted": ls.get("conflict_noted"),
                      "sol_label": lo.get("label"), "sol_conflict_noted": lo.get("conflict_noted")})
     with HANDCHECK.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
-    print(f"wrote {HANDCHECK} ({len(rows)} answers; labeler columns are at the right so you can hide them)")
+    tiers = Counter(r["priority"] for r in rows)
+    print(f"wrote {HANDCHECK} ({len(rows)} answers: {tiers['hard']} hard, {tiers['check']} check, {tiers['clear']} clear;"
+          " labeler columns are at the right so you can hide them)")
 
 
 def strands_up() -> bool:
