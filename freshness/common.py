@@ -66,6 +66,7 @@ class Decider:
     send_model: bool = True
     local: bool = False
     revision: str = ""  # local weights: Hugging Face commit
+    max_workers: int = 8   # concurrent requests in the throughput run (Perplexity: 10 req/s per organization)
     vendor_latency: str = ""   # the vendor's own latency claim, verbatim in substance, with its source
 
 
@@ -75,11 +76,11 @@ DECIDERS: tuple[Decider, ...] = (
     Decider("luna", "gpt-6-luna", "luna", "OpenAI", "2026-10-06 (Decisions API public beta)",
             vendor_latency="none on the docs page; launch coverage quotes 'about 10x faster than the Responses API'"),
     Decider("pplx", "pplx-decider-v1.2", "systemone", "Perplexity", "2026-10-15",
-            url="https://api.perplexity.ai/v1/decisions", key_env="PERPLEXITY_API_KEY",
+            url="https://api.perplexity.ai/v1/decisions", key_env="PERPLEXITY_API_KEY", max_workers=2,
             vendor_latency="'a few hundred input tokens took under 2 seconds' (quickstart, tests of 2026-09-30, earlier "
                            "model)"),
     Decider("pplx-flash", "pplx-decider-flash-v1.2", "systemone", "Perplexity", "2026-10-15",
-            url="https://api.perplexity.ai/v1/decisions", key_env="PERPLEXITY_API_KEY",
+            url="https://api.perplexity.ai/v1/decisions", key_env="PERPLEXITY_API_KEY", max_workers=2,
             vendor_latency="none for short inputs (quickstart gives 16 s for ~248k input tokens)"),
     Decider("clef", "clef", "systemone", "Cloudflare", "2026-10-01",
             url="https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/cloudflare/clef",

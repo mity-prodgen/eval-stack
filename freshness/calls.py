@@ -305,7 +305,9 @@ def run_calls(calls: list[Call], cache: DiskCache, items_by_id: dict, batch_dir,
             fn = anthropic_batch if provider == "anthropic" else openai_batch
             out.update(fn(reqs, cache, batch_dir, parse, client=clients.get(provider), log=log))
             continue
-        workers = 1 if (sequential or (who and DECIDER[who].local)) else max_workers
+        # pilot (2026-10-25): 8 workers hit Perplexity's 10 req/s org limit (36 calls needed a retry); 2 stay under it
+        workers = 1 if (sequential or (who and DECIDER[who].local)) else min(max_workers, DECIDER[who].max_workers
+                                                                             if who else max_workers)
         out.update(_run_sync(provider, who, cs, cache, items_by_id, workers, clients, sequential))
     return out
 
