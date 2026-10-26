@@ -174,10 +174,9 @@ def write_handcheck(answers: list[dict], labels: dict, by_id: dict) -> None:
         it = by_id[a["item_id"]]
         k = (a["item_id"], a["order"], a["gen"])
         ls, lo = labels.get(k + ("sonnet",)) or {}, labels.get(k + ("sol",)) or {}
-        wiki = it["kind"] == "wiki"
         rows.append({"n": i + 1, "item_id": a["item_id"], "kind": it["kind"], "generator": a["gen"], "order": a["order"],
                      "question": it["question"], "current_value / answer_a": it["current"],
-                     "outdated_value / answer_b": it["stale"] if not wiki or True else "", "answer": a["text"],
+                     "outdated_value / answer_b": it["stale"], "answer": a["text"],
                      "your_label": "", "your_conflict_noted": "", "your_note": "",
                      "sonnet_label": ls.get("label"), "sonnet_conflict_noted": ls.get("conflict_noted"),
                      "sol_label": lo.get("label"), "sol_conflict_noted": lo.get("conflict_noted")})

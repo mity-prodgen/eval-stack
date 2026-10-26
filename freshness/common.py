@@ -145,7 +145,9 @@ DEEPINFRA_BASE_URL = "https://api.deepinfra.com/v1/openai"
 GEMMA_SAMPLING = {"temperature": 1.0, "top_p": 0.95}
 GEMMA_EXTRA_BODY = {"top_k": 64}
 
-LABEL_MAX_TOKENS = 100
+# pilot (2026-10-25): at 100, Sonnet hit max_tokens on 3 of 40 answers - on hard cases it reasons in prose before
+# the JSON despite the format instruction. The parser takes the JSON wherever it is, so only the cap changes.
+LABEL_MAX_TOKENS = 400
 SOL_LABEL_EFFORT = "low"
 SOL_MAX_OUTPUT_TOKENS = 4000
 SONNET_SETTINGS = {"thinking": {"type": "between_tools"}}   # Sonnet 5.5's lowest setting; "disabled" returns 400
