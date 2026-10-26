@@ -256,3 +256,29 @@ def test_timeline_sheet_takes_timeline_and_split_answers_and_keeps_human_labels(
         w.writerows(rows)
     run.write_timeline_sheet(answers, labels, by_id)
     assert list(csv.DictReader(open(run.TIMELINE_SHEET)))[0]["your_label"] == "stale"
+
+
+def test_final_label_and_job2_truth():
+    from freshness import analyze
+    ok = lambda label, tl: {"status": "ok", "label": label, "timeline": tl}  # noqa: E731
+    items = {"c1": {"kind": "conflict"}, "k1": {"kind": "control"}}
+    D = {"items": items, "human": {("c1", "new_first", "gemma"): "stale"}, "labels": {
+        ("c1", "new_first", "gemma", "sonnet"): ok("current", True), ("c1", "new_first", "gemma", "sol"): ok("current", True),
+        ("c1", "old_first", "gemma", "sonnet"): ok("stale", False), ("c1", "old_first", "gemma", "sol"): ok("blends", False),
+        ("c1", "new_first", "haiku55", "sonnet"): ok("current", False), ("c1", "new_first", "haiku55", "sol"): ok("flags", False),
+        ("c1", "old_first", "haiku55", "sonnet"): ok("current", True), ("c1", "old_first", "haiku55", "sol"): ok("current", False),
+    }}
+    assert analyze.final_label(D, ("c1", "new_first", "gemma")) == ("stale", "human")          # human wins on timeline
+    assert analyze.labeler_truth(D, ("c1", "new_first", "gemma")) == 1                          # sensitivity: labelers
+    assert analyze.final_label(D, ("c1", "old_first", "gemma")) == ("stale/blends", "labelers")
+    assert analyze.truth_of("stale/blends") == 0
+    assert analyze.final_label(D, ("c1", "new_first", "haiku55")) == (None, "split")
+    assert analyze.final_label(D, ("c1", "old_first", "haiku55")) == (None, "timeline-unlabeled")   # split timeline
+
+
+def test_auc_ci_and_roc():
+    from freshness import analyze
+    a = analyze.auc_ci([0.9, 0.8, 0.7], [0.1, 0.2], seed=1)
+    assert a[0] == 1.0 and a[1] <= a[0] <= a[2]
+    roc = analyze.roc_points([0.9, 0.4], [0.5, 0.1])
+    assert roc[0][1:] == (0.0, 0.0) and roc[-1][1:] == (1.0, 1.0)
