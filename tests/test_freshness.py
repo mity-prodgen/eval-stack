@@ -282,3 +282,21 @@ def test_auc_ci_and_roc():
     assert a[0] == 1.0 and a[1] <= a[0] <= a[2]
     roc = analyze.roc_points([0.9, 0.4], [0.5, 0.1])
     assert roc[0][1:] == (0.0, 0.0) and roc[-1][1:] == (1.0, 1.0)
+
+
+def test_latency_skips_cached_calls():
+    from freshness import analyze
+    dec = lambda ms, cached: {"decider": "jev", "repeat": "latency1", "status": "ok", "latency_ms": ms,  # noqa: E731
+                              "cached": cached}
+    L = analyze.latency({"decisions": [dec(100, False), dec(200, False), dec(5, True)]})
+    assert L["jev"]["n"] == 2 and L["jev"]["median_ms"] >= 100
+
+
+def test_h3_reports_ties():
+    from freshness import analyze
+    ci = lambda x: {"ci": (x, x, x)}  # noqa: E731
+    m = {"catch": ci(1.0), "catch_header": ci(1.0), "catch_body": ci(1.0), "catch_version": ci(1.0)}
+    M = {"baseline": {}, "job1": {"jev": m}, "job2": {"jev": {**m, "catch_body": ci(0.2)}}}
+    h3 = analyze.hypotheses(M)["H3 version-only dates are missed most"]
+    assert h3["job1|jev"]["lowest"] == "tie: header, body, version"
+    assert h3["job2|jev"]["lowest"] == "body"

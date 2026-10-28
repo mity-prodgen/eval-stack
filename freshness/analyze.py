@@ -163,6 +163,7 @@ def job2(D: dict) -> dict:
         s = lambda *p: seed_of("job2", dec.name, *p)  # noqa: E731
         no = lambda d: float(d["p_yes"] < THRESHOLD)  # noqa: E731
         head, sens, ctrl = [], [], []
+        _label = lambda d: final_label(D, (d["item_id"], d["order"], d["gen"]))[0]  # noqa: E731
         for d in r:
             k = (d["item_id"], d["order"], d["gen"])
             lab, src = final_label(D, k)
@@ -185,6 +186,14 @@ def job2(D: dict) -> dict:
              "catch_timeline": rate([no(d) for d, t, src in head if t == 0 and src == "human"], s("ct")),
              "catch_non_timeline": rate([no(d) for d, t, src in head if t == 0 and src != "human"], s("cn")),
              "auc": auc_ci([1 - d["p_yes"] for d in stale], [1 - d["p_yes"] for d in fresh], s("auc")),
+             # Within the human-labeled timeline answers only: every answer here mentions both values, so this AUC
+             # can't come from "the answer mentions the old value". Stale vs blends asks whether a model tells a
+             # future-change answer from an unresolved one.
+             "auc_timeline": auc_ci([1 - d["p_yes"] for d, t, src in head if t == 0 and src == "human"],
+                                    [1 - d["p_yes"] for d, t, src in head if t == 1 and src == "human"], s("auct")),
+             "auc_stale_vs_blends": auc_ci([1 - d["p_yes"] for d, _, src in head if src == "human" and _label(d) == "stale"],
+                                           [1 - d["p_yes"] for d, _, src in head if src == "human" and _label(d) == "blends"],
+                                           s("aucsb")),
              "roc": roc_points([1 - d["p_yes"] for d in stale], [1 - d["p_yes"] for d in fresh])}
         for o in ORDERS:
             m[f"catch_{o}"] = rate([no(d) for d in stale if d["order"] == o], s("c", o))
@@ -203,7 +212,7 @@ def truth_counts(D: dict) -> dict:
         if D["items"][k[0]]["kind"] == "wiki":
             continue
         lab, src = final_label(D, k)
-        c[(D["items"][k[0]]["kind"], src, {0: "stale", 1: "fresh", None: "left out"}[truth_of(lab)])] += 1
+        c[(D["items"][k[0]]["kind"], src, {0: "stale/blends", 1: "fresh", None: "left out"}[truth_of(lab)])] += 1
     return {"|".join(k): v for k, v in sorted(c.items())}
 
 
@@ -271,7 +280,7 @@ def latency(D: dict) -> dict:
     out = {}
     for dec in DECIDERS:
         ms = [d["latency_ms"] for d in D["decisions"] if d["decider"] == dec.name and d["repeat"] == "latency1"
-              and d.get("status") == "ok" and d.get("latency_ms") is not None]
+              and d.get("status") == "ok" and d.get("latency_ms") is not None and not d.get("cached")]
         tp = [d["latency_ms"] for d in D["decisions"] if d["decider"] == dec.name and d["repeat"] == ""
               and d.get("status") == "ok" and d.get("latency_ms") is not None and (d.get("attempts") or 1) == 1
               and not d.get("cached")]
@@ -317,7 +326,9 @@ def hypotheses(M: dict) -> dict:
         for name, m in M[job].items():
             cs = {f: m.get(f"catch_{f}", {}).get("ci") for f in DATE_FORMATS}
             if all(cs.values()):
-                h3[f"{job}|{name}"] = {"lowest": min(cs, key=lambda f: cs[f][0]),
+                low = min(cs[f][0] for f in DATE_FORMATS)
+                lows = [f for f in DATE_FORMATS if cs[f][0] == low]
+                h3[f"{job}|{name}"] = {"lowest": lows[0] if len(lows) == 1 else "tie: " + ", ".join(lows),
                                        **{f: round(cs[f][0], 3) for f in DATE_FORMATS}}
     return {"H1 faithfulness judge passes most stale answers": h1,
             "H2 decision models catch conflicts more often than stale answers": h2,
@@ -326,7 +337,8 @@ def hypotheses(M: dict) -> dict:
 
 def compute(stem: str) -> tuple[dict, dict]:
     D = load(stem)
-    M = {"job1": job1(D), "job2": job2(D), "truth_counts": truth_counts(D), "baseline": baseline(D),
+    M = {"job1": job1(D), "job2": job2(D), "truth_counts": truth_counts(D),
+         "human_labels": dict(Counter(D["human"].values()).most_common()), "baseline": baseline(D),
          "answer_mix": answer_mix(D), "labeler_agreement": labeler_agreement(D), "noise": noise(D),
          "latency": latency(D), "costs": costs(D), "harness": harness_checks(D)}
     M["hypotheses"] = hypotheses(M)
@@ -372,6 +384,7 @@ def figures(M: dict, out_dir: Path, suffix: str) -> list[Path]:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    import matplotlib.ticker
 
     out_dir.mkdir(parents=True, exist_ok=True)
     paths = []
@@ -381,6 +394,7 @@ def figures(M: dict, out_dir: Path, suffix: str) -> list[Path]:
     for ax, job, title in ((axes[0], "job1", "Job 1: conflict check (before generation)"),
                            (axes[1], "job2", "Job 2: freshness check (after generation)")):
         _style(ax)
+        pts = []
         for name, m in M[job].items():
             c, f = m["catch"].get("ci"), m["false_alarm"].get("ci")
             if not c or not f:
@@ -389,14 +403,21 @@ def figures(M: dict, out_dir: Path, suffix: str) -> list[Path]:
             ax.errorbar(100 * f[0], 100 * c[0], xerr=[[100 * (f[0] - f[1])], [100 * (f[2] - f[0])]],
                         yerr=[[100 * (c[0] - c[1])], [100 * (c[2] - c[0])]], fmt="o", color=color, ms=5,
                         elinewidth=0.8, capsize=2)
-            ax.annotate(name, (100 * f[0], 100 * c[0]), textcoords="offset points", xytext=(5, 4), fontsize=7,
-                        color=INK)
+            pts.append((100 * c[0], 100 * f[0], name))
+        # The points cluster in a corner, so the labels go in a column toward the middle with a leader line each.
+        pts.sort(key=lambda t: (-t[0], t[1]))
+        top = sum(y for y, _, _ in pts) / len(pts) > 50 if pts else True
+        for i, (y, x, name) in enumerate(pts if top else pts[::-1]):
+            ty = 88 - 7 * i if top else 12 + 7 * i
+            ax.annotate(f"{name} ({y:.0f}%, {x:.0f}%)", (x, y), xytext=(22, ty), textcoords="data", fontsize=7,
+                        color=INK, va="center", ha="left",
+                        arrowprops={"arrowstyle": "-", "color": GRID, "lw": 0.6, "relpos": (0, 0.5)})
         ax.set_xlim(-3, 103)
         ax.set_ylim(-3, 103)
         ax.set_xlabel("false-alarm rate (%)", fontsize=8, color=INK2)
         ax.set_ylabel("catch rate (%)", fontsize=8, color=INK2)
         ax.set_title(title, fontsize=9, color=INK, loc="left")
-    fig.suptitle("Catch vs false alarm at P(yes) >= 0.5, 95% bootstrap CIs (grey = local Strands)", fontsize=8,
+    fig.suptitle("Catch vs false alarm at P(yes) >= 0.5, 95% bootstrap CIs; labels read (catch, false alarm); grey = local Strands", fontsize=8,
                  color=INK2, x=0.01, ha="left")
     fig.tight_layout()
     p = out_dir / f"catch_vs_false_alarm{suffix}.png"
@@ -418,6 +439,9 @@ def figures(M: dict, out_dir: Path, suffix: str) -> list[Path]:
     ax.set_yticks(range(len(names)))
     ax.set_yticklabels([n + (" (local M5)" if DECIDER[n].local else "") for n in names], fontsize=7)
     ax.set_xscale("log")
+    ticks = [t for t in (50, 100, 200, 300, 500, 1000, 2000) if t <= 1.2 * max(M["latency"][n]["p95_ms"] for n in names)]
+    ax.set_xticks(ticks, [str(t) for t in ticks], fontsize=7)
+    ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     ax.set_xlabel("latency per call, ms (dot = median, bar = p95; log scale)", fontsize=8, color=INK2)
     ax.set_title("Latency from this machine (sequential sample)", fontsize=9, color=INK, loc="left")
     ax = axes[1]
@@ -428,7 +452,7 @@ def figures(M: dict, out_dir: Path, suffix: str) -> list[Path]:
     ax.set_yticklabels(names, fontsize=7)
     for i, v in enumerate(vals):
         ax.annotate(f"${v:.3f}", (v, i), textcoords="offset points", xytext=(4, -3), fontsize=7, color=INK)
-    ax.set_xlabel("USD per 1,000 decisions (billed; Strands = $0 API cost)", fontsize=8, color=INK2)
+    ax.set_xlabel("USD per 1,000 decisions (list price; Strands = $0 API cost)", fontsize=8, color=INK2)
     ax.set_title("Cost per 1,000 decisions", fontsize=9, color=INK, loc="left")
     fig.tight_layout()
     p = out_dir / f"latency_cost{suffix}.png"
@@ -487,9 +511,9 @@ LIMITATIONS = """\
 - **Authored data.** The 101 stale/current items and 40 controls are fictional policy documents written by Claude
   Opus 5.5 (not tested here). They are clean by design (one changed value, dated versions next to each other); real
   knowledge bases are messier. WikiContradict (20 items) is the real-data check and is reported separately.
-- **Few stale answers, mostly one shape.** Job 2's catch rate rests on the stale and blended answers the two
-  generators happened to write. In the pilot, all of them gave both values with their dates and no word saying which
-  is current (\"timeline\" answers), and their truth came from one human under a rule fixed before the full run.
+- **Few stale answers, one generator, one shape.** Job 2's catch rate rests on the 95 stale or blended answers the
+  two generators happened to write: 94 from Gemma, 1 from Haiku 5.5. 91 of them are \"timeline\" answers (both values
+  with their dates), and their truth comes from one human (the post's author) under a rule fixed before the full run.
 - **Job 2's wording has a literal reading.** A timeline answer that treats the newer date as a future change does
   mention the most recent source, so a decision model can say \"yes\" to \"Does this answer use the most recent
   source in the context?\" and be literally right while the answer is stale.
@@ -498,13 +522,18 @@ LIMITATIONS = """\
   row.
 - **One threshold, one wording, default settings.** Every model gets the same question text with no criteria and is
   read at P(yes) >= 0.5; vendors' own phrasing or calibrated thresholds could change the ranking. The ROC/AUC columns
-  show how much a different threshold would help.
-- **Latency is from one machine and one network**, on short inputs (about 1,000 tokens), 100 sequential calls per
-  model; vendor figures were measured on other setups and are not comparable. Strands ran on an Apple M5 (MPS) and
+  show how much a different threshold would help, but Job 2's all-answers AUC is inflated by a shortcut (answers that
+  mention the old value score lower); the within-timeline AUCs are the fairer test, and they rest on 8 current
+  answers.
+- **Latency is from one machine and one network**, on short inputs (about 1,000 tokens), 99 timed sequential calls per
+  model (the 100th was already cached by the pilot and has no fresh timing); vendor figures were measured on other setups and are not comparable. Strands ran on an Apple M5 (MPS) and
   is not comparable with the hosted models or with AWS's RTX 3090 figure.
 - **Model versions.** pplx-decider-v1.2 stands in for the v1 the task named (the API routes v1 to v1.2);
   pplx-decider-flash-v1.2 stands in for Microsoft-Decision-1, which was not reachable. Hosted models can change
   behind the same ID; the cache keeps the responses this report used.
+- **Cloudflare ran on two days and two plans.** Clef and Clef-flash ran Job 1 and Job 2 on Cloudflare's free plan on
+  2026-10-27 (UTC); their noise re-run and latency sample ran on Workers Paid on 2026-10-28. Costs everywhere are
+  list prices; the free-plan calls were not actually billed.
 """
 
 
@@ -548,6 +577,12 @@ def write_md(M: dict, figs: list[Path], path: Path, pilot: bool) -> None:
           "| Model | Catch | False alarm |", "|---|---|---|"]
     for n, m in M["job2"].items():
         L.append(f"| {n} | {pct(m['catch_labelers_truth'])} | {pct(m['false_alarm_labelers_truth'])} |")
+    L += ["", "Post hoc (added after seeing the full-run numbers): AUC within the human-labeled timeline answers only, where "
+          "every answer mentions both values, so a model can't separate them by \"mentions the old value\". Human truth: "
+          f"{M['human_labels']}", "",
+          "| Model | AUC, stale/blends vs current | AUC, stale vs blends |", "|---|---|---|"]
+    for n, m in M["job2"].items():
+        L.append(f"| {n} | {fmt_auc(m['auc_timeline'])} | {fmt_auc(m['auc_stale_vs_blends'])} |")
     L += ["", "Splits (catch rate):", "",
           "| Model | Newer first | Older first | Header | Body | Version only | Haiku 5.5 answers | Gemma answers |",
           "|---|---|---|---|---|---|---|---|"]

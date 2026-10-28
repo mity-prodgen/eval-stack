@@ -216,7 +216,12 @@ set -a && source .env && set +a
 
 **Budget.** `freshness/results/spend.json` records what every live command actually spent; a command's estimate
 must fit in min(`--max-usd`, $5 - spent so far) before any call, and again before each step. The whole plan
-estimates $2.86 (batch), the pilot $0.32 (sync), the latency sample $0.04.
+estimates $2.86 (batch), the pilot $0.32 (sync), the latency sample $0.04. **Actually spent: $2.24** for the whole
+post (pilot, full run, noise, latency), at list prices, including one hand-entered ledger line (below).
+
+```bash
+.venv/bin/python -m freshness.analyze             # RESULTS.md, figures/, results/metrics_full.json (offline)
+```
 
 **Strands Decider runs locally** (Apple M5, PyTorch MPS), in its own environment because it pins older torch and
 transformers than this repo:
@@ -307,7 +312,18 @@ model and Gemma 4 are Apache-2.0; WikiContradict is MIT (only question ids commi
   the most recent source, so "Does this answer use the most recent source in the context?" has a defensible literal
   yes; the ground truth (from the labels) says no. RESULTS.md reports this next to every Job 2 catch rate.
 - **Stale answers are scarce** (pilot: Haiku 0 of 12, Gemma 3 of 12): Job 2 catch rates rest on an expected 30-50
-  stale or blended answers, with wide CIs; accepted rather than adding stale cases another way.
+  stale or blended answers, with wide CIs; accepted rather than adding stale cases another way. The full run gave
+  95 (94 from Gemma), 91 of them timeline answers.
+- **Full run (2026-10-26 to 10-28).** The timeline sheet held 107 answers, so no sampling; the human labeled all
+  107. The first full-run process ended with its Claude session before recording the Sonnet label batch's cost;
+  that $0.52 was priced from Anthropic's usage numbers and added to the ledger by hand. Clef and Clef-flash ran Job 1
+  and Job 2 on Cloudflare's free plan, which ran out (about 12,300 of 10,000 daily neurons); their noise re-run and
+  latency sample ran a day later on Workers Paid. Latency has 99 timed calls per model: the pilot had already cached
+  one sampled call. Details: `freshness/findings.md`, harness bugs.
+- **Two Job 2 rows added after seeing the full-run numbers.** All-answers AUC was 0.95-1.00 while catch at 0.5 was
+  0-8%; the cause is a shortcut (stale answers mention the old value, current ones mostly don't). RESULTS.md adds AUC
+  within the human-labeled timeline answers (stale/blends vs current, and stale vs blends). They are post hoc and
+  labelled as such; no headline metric or threshold changed.
 - **Data author = Claude Opus 5.5 in this session, not an API model**, so the data and review sheet exist with zero
   live calls; it is a Claude model, like one generator, one labeler and the baseline.
 - **101 stale/current items, not ~100** (one per authored section); **WikiContradict instances whose two contexts
@@ -355,7 +371,11 @@ freshness/                 post 3 (run as modules: python -m freshness.<name>)
   calls.py                 request builders, parsers, executors (batch, sync, sequential) with per-call latency
   estimate.py, run.py      dry-run estimate -> ledger gate -> gen -> label -> baseline -> job1 -> job2 -> noise/latency
   show_prompts.py          prints every request body verbatim
-  data/                    authored doc sets, frozen items, wiki ids, review sheet (committed)
+  analyze.py               truth, catch/false alarm, ROC/AUC, splits, baseline, noise, latency, cost; figures; RESULTS.md
+  findings.md              top findings and harness bugs (hand-written after the run, pasted into RESULTS.md)
+  data/                    authored doc sets, frozen items, wiki ids, review sheet, human hand-check and timeline
+                           labels (committed)
+  figures/                 RESULTS.md figures (committed)
   results/                 answers, labels, decisions, latency, spend ledger (gitignored)
 harness/batch.py           generic Anthropic / OpenAI batch runners with resume
 harness/ledger.py          spend ledger: one $ cap across all of a post's commands
