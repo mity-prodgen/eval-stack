@@ -11,7 +11,8 @@ Report: [results page](https://claude.ai/artifact/Gx6BMTmdnpmUVWFt35Adf4) · tab
 Report: [results page](https://claude.ai/artifact/4mqrwg5iaa3hFA5hpZDmKs) · tables and figures in [semcache/RESULTS.md](semcache/RESULTS.md).
 
 **Post 3: Can the new decision models catch stale RAG answers?** (`freshness/`)
-Report: tables, figures and top findings in [freshness/RESULTS.md](freshness/RESULTS.md).
+Report: [results page](https://claude.ai/artifact/FgdZJC2JjB55Vr569boHVf) · tables and figures in
+[freshness/RESULTS.md](freshness/RESULTS.md)
 
 ## Setup
 

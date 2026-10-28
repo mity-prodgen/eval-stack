@@ -34,6 +34,6 @@
   latency, which came from a separate sequential sample with no retries.
 - **The pilot and the full run shared a latency cache tag.** One sampled call per model was already cached, so each
   model has 99 timed calls instead of 100.
-- **Analysis fixes made before reading the headline numbers:** latency had counted that cached call, H3 named a
+- **Analysis changes made after the first full-run report:** latency had counted that cached call, H3 named a
   "lowest" date format when all three were tied, and two within-timeline AUC rows were added to Job 2 once the
-  shortcut showed up.
+  shortcut showed up. No headline metric or threshold changed.
